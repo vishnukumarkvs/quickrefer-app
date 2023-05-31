@@ -26,24 +26,24 @@ import {
 
 const statuses = [
   {
-    value: "backlog",
-    label: "Backlog",
+    value: "java",
+    label: "java",
   },
   {
-    value: "todo",
-    label: "Todo",
+    value: "python",
+    label: "python",
   },
   {
-    value: "in progress",
-    label: "In Progress",
+    value: "linux",
+    label: "linux",
   },
   {
-    value: "done",
-    label: "Done",
+    value: "react",
+    label: "react",
   },
   {
-    value: "canceled",
-    label: "Canceled",
+    value: "cloud",
+    label: "cloud",
   },
 ];
 
