@@ -1,5 +1,6 @@
 "use client";
 
+import DatePicker from "@/components/DatePicker";
 import SelectDropdown from "@/components/SelectDropdowm";
 import SkillAdder from "@/components/SkillAdder";
 import { Button } from "@/components/ui/button";
@@ -27,75 +28,85 @@ const Page = () => {
     salaryOptions[0].label
   );
   const [input, setInput] = useState("");
-  // const [isLoading, setIsLoading] = useState(false);
 
   return (
-    <div className="w-full h-screen items-center justify-center">
-      <div className="max-w-lg mx-auto py-5">
-        <p className="text-5xl font-bold my-2 text-center">
-          {" "}
+    <div className="w-full h-screen bg-gray-200 flex items-center justify-center py-10">
+      <div className="bg-white rounded-lg shadow-md max-w-lg mx-auto p-6">
+        <p className="text-3xl font-bold my-4 text-center text-gray-700">
           Create A Job Post
         </p>
 
-        <div className="flex items-center justify-start mt-10">
-          <p className="font-semibold text-md pr-4">Job Title: </p>
+        <div className="flex items-center justify-between mb-6">
+          <p className="font-semibold text-lg">Job Title: </p>
           <Input
             type="text"
             id="Job Title"
             placeholder="Software Developer"
-            className="italic flex-1 border-2 border-black-600 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none focus:border-none"
+            className="border-gray-300 h-10 pl-5 pr-10 rounded-lg text-sm focus:outline-none w-2/3"
           />
         </div>
 
-        <div className="flex items-start justify-start mt-10">
-          <p className="font-semibold text-md pr-4 mt-1">Skills required: </p>
-          <SkillAdder />
+        <div className="flex items-start justify-between mb-6">
+          <p className="font-semibold text-lg">Skills required: </p>
+          <SkillAdder className="w-2/3" />
         </div>
 
-        <div className="flex items-start justify-start mt-10">
-          <p className="font-semibold text-md pr-4 mt-1">Experience: </p>
-          <Input className="w-[4rem] text-center" placeholder="2" />
-          <p className="mt-2 mx-4">-</p>
-          <Input className="w-[4rem] text-center mr-2" placeholder="4" />
-          <SelectDropdown
-            selectItems={experienceOptions}
-            defaultValue={defaultExperienceValue}
-          />
-        </div>
-        <div className="flex items-start justify-start mt-10">
-          <p className="font-semibold text-md pr-4 mt-1 flex-1">
-            Est Salary Range:{" "}
-          </p>
-          <Input className="w-[4rem] text-center" placeholder="10" />
-          <p className="mt-2 mx-4">-</p>
-          <Input className="w-[4rem] text-center mr-2" placeholder="12" />
-          <SelectDropdown
-            selectItems={salaryOptions}
-            defaultValue={defaultSalaryValue}
-          />
-        </div>
-        {/* TextArea */}
-        <p className="font-semibold mt-6">Description</p>
-        <div className="pt-1 mb-2 sm:mb-0">
-          <div className="relative flex-1 overflow-hidden rounded-lg shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
-            <TextAreaAutosize
-              onKeyDown={(e) => {
-                console.log(e.key);
-              }}
-              minRows={4}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              className="p-3 block w-full resize-none border-1 bg-transparent text-gray-900 placeholder-gray-400 focus:ring-0 focus:outline-none sm:py-1.5 sm:text-sm sm:leading-6"
+        <div className="flex items-center justify-between mb-6">
+          <p className="font-semibold text-lg">Experience: </p>
+          <div className="flex items-center">
+            <Input className="w-16 text-center mr-2" placeholder="2" />
+            <p>-</p>
+            <Input className="w-16 text-center ml-2 mr-2" placeholder="4" />
+            <SelectDropdown
+              selectItems={experienceOptions}
+              defaultValue={defaultExperienceValue}
+              className="w-24"
             />
           </div>
         </div>
-        {/* Submit */}
-        <div className="flex justify-between pt-4">
-          <div className="flex-shrink-0">
-            <Button onClick={() => {}} type="submit">
-              POST
-            </Button>
+
+        <div className="flex items-center justify-between mb-6">
+          <p className="font-semibold text-lg">Est Salary Range: </p>
+          <div className="flex items-center">
+            <Input className="w-16 text-center mr-2" placeholder="10" />
+            <p>-</p>
+            <Input className="w-16 text-center ml-2 mr-2" placeholder="12" />
+            <SelectDropdown
+              selectItems={salaryOptions}
+              defaultValue={defaultSalaryValue}
+              className="w-24"
+            />
           </div>
+        </div>
+
+        <div className="flex items-center justify-between mb-6">
+          <p className="font-semibold text-lg">Expires At: </p>
+          <div className="flex items-center">
+            <DatePicker />
+          </div>
+        </div>
+
+        <p className="font-semibold text-lg mb-2">Description</p>
+        <div className="mb-6 border rounded-lg overflow-hidden">
+          <TextAreaAutosize
+            onKeyDown={(e) => {
+              console.log(e.key);
+            }}
+            minRows={4}
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            className="p-3 w-full resize-none border-0 bg-gray-100 text-gray-700 placeholder-gray-400 focus:ring-0 focus:outline-none sm:py-1.5 sm:text-sm sm:leading-6"
+          />
+        </div>
+
+        <div className="flex justify-end">
+          <Button
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            onClick={() => {}}
+            type="submit"
+          >
+            POST
+          </Button>
         </div>
       </div>
     </div>

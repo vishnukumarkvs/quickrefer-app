@@ -110,7 +110,7 @@ function SkillAdder() {
         {selectedStatuses.map((status) => (
           <span
             key={status.value}
-            className="flex items-center px-2 py-1 space-x-2 border border-blue-800 bg-blue-100 rounded-sm"
+            className="flex items-center px-2 py-1 space-x-2 border border-blue-800 bg-indigo-100 rounded-sm"
           >
             <span>{status.label}</span>
             <XCircle
