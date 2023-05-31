@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/select";
 
 export function SelectDropdown({ selectItems, defaultValue }) {
-  console.log(defaultValue);
   const selectItemMap = selectItems.reduce((map, item) => {
     map[item.value] = item.label;
     return map;
