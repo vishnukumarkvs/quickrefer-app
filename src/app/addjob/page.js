@@ -8,6 +8,8 @@ import { Input } from "@/components/ui/input";
 import { useRef, useState } from "react";
 import TextAreaAutosize from "react-textarea-autosize";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { JobFormSchema } from "@/lib/validations/jobform-post";
 
 const experienceOptions = [
   { value: "yr", label: "in years" },
@@ -26,8 +28,9 @@ const Page = () => {
     control,
     setError,
     formState: { errors },
-  } = useForm();
-  const textareaRef = useRef(null);
+  } = useForm({
+    resolver: zodResolver(JobFormSchema),
+  });
 
   const [defaultExperienceValue, setDefaultExperienceValue] = useState(
     experienceOptions[0].label
@@ -68,17 +71,19 @@ const Page = () => {
             <p className="font-semibold text-lg">Experience: </p>
             <div className="flex items-center">
               <Input
-                {...register("baseExp")}
+                {...register("baseExp", { valueAsNumber: true })}
                 className="w-16 text-center mr-2"
                 placeholder="2"
               />
               <p>-</p>
               <Input
-                {...register("highExp")}
+                {...register("highExp", { valueAsNumber: true })}
                 className="w-16 text-center ml-2 mr-2"
                 placeholder="4"
               />
               <SelectDropdown
+                name="expUnit"
+                control={control}
                 selectItems={experienceOptions}
                 defaultValue={defaultExperienceValue}
                 className="w-24"
@@ -90,17 +95,19 @@ const Page = () => {
             <p className="font-semibold text-lg">Est Salary Range: </p>
             <div className="flex items-center">
               <Input
-                {...register("baseSalary")}
+                {...register("baseSalary", { valueAsNumber: true })}
                 className="w-16 text-center mr-2"
                 placeholder="10"
               />
               <p>-</p>
               <Input
-                {...register("highSalary")}
+                {...register("highSalary", { valueAsNumber: true })}
                 className="w-16 text-center ml-2 mr-2"
                 placeholder="12"
               />
               <SelectDropdown
+                name="salaryUnit"
+                control={control}
                 selectItems={salaryOptions}
                 defaultValue={defaultSalaryValue}
                 className="w-24"
@@ -127,6 +134,13 @@ const Page = () => {
           </div>
 
           <div className="flex justify-end">
+            <div className="flex-grow">
+              {Object.keys(errors).map((field) => (
+                <p key={field} className="text-red-500">
+                  {field}: {errors[field]?.message}
+                </p>
+              ))}
+            </div>
             <Button
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
               type="submit"

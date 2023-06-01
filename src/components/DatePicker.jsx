@@ -13,12 +13,14 @@ import {
 } from "@/components/ui/popover";
 
 export function DatePicker({ control, name }) {
+  const [isOpen, setIsOpen] = React.useState(false);
+
   return (
     <Controller
       control={control}
       name={name}
       render={({ field: { onChange, value } }) => (
-        <Popover>
+        <Popover isOpen={isOpen} onDismiss={() => setIsOpen(false)}>
           <PopoverTrigger asChild>
             <Button
               variant={"outline"}
@@ -26,20 +28,25 @@ export function DatePicker({ control, name }) {
                 "w-[280px] justify-start text-left font-normal",
                 !value && "text-muted-foreground"
               )}
-              onClick={onChange}
+              onClick={() => setIsOpen(true)}
             >
               <CalendarIcon className="mr-2 h-4 w-4" />
               {value ? format(value, "PPP") : <span>Pick a date</span>}
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-auto p-0">
-            <Calendar
-              mode="single"
-              selected={value}
-              onSelect={onChange}
-              initialFocus
-            />
-          </PopoverContent>
+          {isOpen && (
+            <PopoverContent className="w-auto p-0">
+              <Calendar
+                mode="single"
+                selected={value}
+                onSelect={(date) => {
+                  onChange(date);
+                  setIsOpen(false); // Close the popover after date selection
+                }}
+                initialFocus
+              />
+            </PopoverContent>
+          )}
         </Popover>
       )}
     />
