@@ -7,13 +7,22 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useRef, useState } from "react";
 import TextAreaAutosize from "react-textarea-autosize";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { JobFormSchema } from "@/lib/validations/jobform-post";
+import CreatableSelect from "react-select/creatable";
+import Select from "react-select";
+import { de } from "date-fns/locale";
 
 const experienceOptions = [
   { value: "yr", label: "in years" },
   { value: "mnth", label: "in months" },
+];
+
+const skillOptions = [
+  { value: "java", label: "java" },
+  { value: "python", label: "python" },
+  { value: "c++", label: "c++" },
 ];
 
 const salaryOptions = [
@@ -28,15 +37,16 @@ const Page = () => {
     control,
     setError,
     formState: { errors },
+    setValue,
   } = useForm({
     resolver: zodResolver(JobFormSchema),
   });
 
   const [defaultExperienceValue, setDefaultExperienceValue] = useState(
-    experienceOptions[0].label
+    experienceOptions[0]
   );
   const [defaultSalaryValue, setDefaultSalaryValue] = useState(
-    salaryOptions[0].label
+    salaryOptions[0]
   );
   const [input, setInput] = useState("");
 
@@ -64,7 +74,22 @@ const Page = () => {
 
           <div className="flex items-start justify-between mb-6">
             <p className="font-semibold text-lg">Skills required: </p>
-            <SkillAdder control={control} name="skills" className="w-2/3" />
+            {/* <SkillAdder control={control} name="skills" className="w-2/3" /> */}
+            <Controller
+              name="skills"
+              control={control}
+              defaultValue=""
+              rules={{ required: true }} // optional validation rule
+              render={({ field }) => (
+                <CreatableSelect
+                  {...field}
+                  options={skillOptions}
+                  isClearable
+                  isSearchable
+                  isMulti
+                />
+              )}
+            />
           </div>
 
           <div className="flex items-center justify-between mb-6">
@@ -81,12 +106,25 @@ const Page = () => {
                 className="w-16 text-center ml-2 mr-2"
                 placeholder="4"
               />
-              <SelectDropdown
+              {/* <SelectDropdown
                 name="expUnit"
                 control={control}
                 selectItems={experienceOptions}
                 defaultValue={defaultExperienceValue}
                 className="w-24"
+              /> */}
+              <Controller
+                name="experienceUnit"
+                control={control}
+                defaultValue={defaultExperienceValue}
+                rules={{ required: true }} // optional validation rule
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    defaultValue={defaultExperienceValue}
+                    options={experienceOptions}
+                  />
+                )}
               />
             </div>
           </div>
@@ -105,12 +143,18 @@ const Page = () => {
                 className="w-16 text-center ml-2 mr-2"
                 placeholder="12"
               />
-              <SelectDropdown
+              <Controller
                 name="salaryUnit"
                 control={control}
-                selectItems={salaryOptions}
                 defaultValue={defaultSalaryValue}
-                className="w-24"
+                rules={{ required: true }} // optional validation rule
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    defaultValue={defaultSalaryValue}
+                    options={salaryOptions}
+                  />
+                )}
               />
             </div>
           </div>

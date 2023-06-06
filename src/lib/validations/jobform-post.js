@@ -9,4 +9,6 @@ export const JobFormSchema = z.object({
   highSalary: z.number(),
   date: z.date(),
   description: z.string(),
+  experienceUnit: z.object({ value: z.string(), label: z.string() }),
+  salaryUnit: z.object({ value: z.string(), label: z.string() }),
 });
