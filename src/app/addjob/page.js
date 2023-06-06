@@ -202,16 +202,33 @@ export default Page;
 
 // current form output
 // {
-//   jobTitle: 'IT operations',
-//   baseExp: '6',
-//   highExp: '8',
-//   baseSalary: '5',
-//   highSalary: '9',
-//   date: Tue Jun 20 2023 00:00:00 GMT+0530 (India Standard Time) {},
-//   description: 'gg',
-//   skills: [
-//     { value: 'linux', label: 'linux' },
-//     { value: 'react', label: 'react' },
-//     { value: 'cloud', label: 'cloud' }
+//   "baseExp": 1,
+//   "baseSalary": 1,
+//   "date": "Thu Jun 29 2023 00:00:00 GMT+0530 (India Standard Time)",
+//   "description": "1111",
+//   "experienceUnit": {
+//     "value": "mnth",
+//     "label": "in months"
+//   },
+//   "highExp": 1,
+//   "highSalary": 1,
+//   "jobTitle": "www",
+//   "salaryUnit": {
+//     "value": "LPA",
+//     "label": "in lakhs"
+//   },
+//   "skills": [
+//     {
+//       "value": "python",
+//       "label": "python"
+//     },
+//     {
+//       "value": "hyy",
+//       "label": "hyy"
+//     },
+//     {
+//       "value": "sgak",
+//       "label": "sgak"
+//     }
 //   ]
 // }
