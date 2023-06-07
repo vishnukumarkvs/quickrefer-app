@@ -1,4 +1,4 @@
-"This is react - select"
+"Dynamodb auth"
 
 https://react-select.com/home
 
