@@ -18,6 +18,7 @@ const CredentialsLogin = ({}) => {
   });
 
   const validateCredentials = async (email, password) => {
+    console.log("validateCredentials");
     console.log("tdata", email, password);
     try {
       const validatedCredentials = credentialsValidator.parse({

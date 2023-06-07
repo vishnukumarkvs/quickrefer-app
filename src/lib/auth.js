@@ -1,5 +1,5 @@
 import { DynamoDBAdapter } from "@next-auth/dynamodb-adapter";
-import { DynamoDB } from "@aws-sdk/client-dynamodb";
+import { DynamoDB, QueryCommand } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -89,32 +89,43 @@ const getGoogleCredentials = () => {
 };
 
 const authorizeCredentials = async (credentials) => {
+  // Use secondary index GSI1 to fetch the user by email
   const params = {
     TableName: "Users",
-    Key: {
-      email: { S: credentials.email },
+    IndexName: "GSI1",
+    KeyConditionExpression: "GSI1PK = :partitionValue AND GSI1SK = :sortValue",
+    ExpressionAttributeValues: {
+      ":partitionValue": { S: `USER#${credentials.email}` },
+      ":sortValue": { S: `USER#${credentials.email}` },
     },
   };
-  const getCommand = new GetItemCommand(params);
+
+  let userResult;
 
   try {
-    const userResult = await client.send(getCommand);
+    userResult = await client.send(new QueryCommand(params));
     console.log("User result:", userResult);
     // Handle the user result accordingly
   } catch (error) {
     console.error("Error getting user:", error);
+    throw error;
   }
 
-  const user = userResult.Item;
+  const user =
+    userResult.Items && userResult.Items[0]
+      ? unmarshall(userResult.Items[0])
+      : null;
 
   if (!user) {
     throw new Error("No user found");
   }
 
   const { password, salt } = user;
-  const hash = await bcrypt.hash(credentials.password, salt);
 
-  if (hash !== password) {
+  // Note: bcrypt.compare() function should be used to verify hashed password
+  const passwordIsValid = await bcrypt.compare(credentials.password, password);
+
+  if (!passwordIsValid) {
     throw new Error("Incorrect password");
   }
 

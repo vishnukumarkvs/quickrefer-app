@@ -1,23 +1,32 @@
 import bcrypt from "bcrypt";
 import { nanoid } from "nanoid";
 import client from "@/lib/ddbclient";
-import { GetItemCommand, PutItemCommand } from "@aws-sdk/client-dynamodb";
+import { QueryCommand, PutItemCommand } from "@aws-sdk/client-dynamodb";
+const { marshall, unmarshall } = require("@aws-sdk/util-dynamodb");
 
 export async function POST(req) {
   const { email, password } = await req.json();
 
   try {
     // Check if user already exists in DynamoDB
-    const getUserCommand = new GetItemCommand({
+    const params = {
       TableName: "Users",
-      Key: {
-        email: { S: email },
+      IndexName: "GSI1",
+      KeyConditionExpression:
+        "GSI1PK = :partitionValue AND GSI1SK = :sortValue",
+      ExpressionAttributeValues: {
+        ":partitionValue": { S: `USER#${email}` },
+        ":sortValue": { S: `USER#${email}` },
       },
-    });
+    };
 
-    const userResult = await client.send(getUserCommand);
+    console.log("checking user");
 
-    if (userResult.Item) {
+    const userResult = await client.send(new QueryCommand(params));
+    console.log("...");
+    console.log("User found:", userResult);
+
+    if (userResult.Items.length > 0) {
       throw new Error("User already exists");
     }
 
@@ -28,16 +37,23 @@ export async function POST(req) {
     const id = nanoid();
 
     const user = {
-      id,
-      email,
+      pk: `USER#${id}`,
+      sk: `USER#${id}`,
+      id: id,
+      email: email,
       password: hash,
       salt,
+      type: "USER",
+      GSI1PK: `USER#${email}`,
+      GSI1SK: `USER#${email}`,
     };
+
+    console.log("User:", user);
 
     // Save user to DynamoDB
     const createUserCommand = new PutItemCommand({
       TableName: "Users",
-      Item: user,
+      Item: marshall(user),
     });
 
     try {

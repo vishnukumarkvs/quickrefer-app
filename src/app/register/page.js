@@ -56,7 +56,7 @@ export default function RegisterForm() {
             <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
               <div>
                 <label
-                  for="email"
+                  htmlFor="email"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
                   Your email
@@ -74,7 +74,7 @@ export default function RegisterForm() {
               </div>
               <div>
                 <label
-                  for="password"
+                  htmlFor="password"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
                   Password
@@ -92,7 +92,7 @@ export default function RegisterForm() {
               </div>
               <div>
                 <label
-                  for="confirm-password"
+                  htmlFor="confirm-password"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
                   Confirm password
@@ -120,7 +120,7 @@ export default function RegisterForm() {
                 </div>
                 <div className="ml-3 text-sm">
                   <label
-                    for="terms"
+                    htmlFor="terms"
                     className="font-light text-gray-500 dark:text-gray-300"
                   >
                     I accept the{" "}
