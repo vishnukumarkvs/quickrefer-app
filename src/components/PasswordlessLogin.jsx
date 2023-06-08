@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Button } from "./ui/Button";
+import { Button } from "./ui/button";
 import { toast } from "react-hot-toast";
 
 const PasswordlessLogin = ({}) => {

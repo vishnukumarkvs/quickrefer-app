@@ -1,7 +1,7 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { Button } from "./ui/Button";
+import { Button } from "./ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { credentialsValidator } from "@/lib/validations/credentials";

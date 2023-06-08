@@ -3,7 +3,7 @@
 import { Loader2, LogOut } from "lucide-react";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
-import { Button } from "./ui/Button";
+import { Button } from "./ui/button";
 import { signOut } from "next-auth/react";
 
 const SignOutButton = ({ ...props }) => {
