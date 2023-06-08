@@ -83,7 +83,7 @@ const CredentialsLogin = ({}) => {
         </div>
         <p className="mt-1 text-sm text-red-600">{errors.email?.message}</p>
       </div>
-      <Button>Submit</Button>
+      <Button className="mt-4 bg-blue-600 hover:bg-blue-900">Submit</Button>
     </form>
   );
 };
