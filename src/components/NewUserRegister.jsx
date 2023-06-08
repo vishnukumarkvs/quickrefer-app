@@ -3,8 +3,10 @@
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const Register = () => {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -33,13 +35,24 @@ const Register = () => {
         }
       } else {
         toast.success("Account created successfully");
-        signIn("credentials", {
+        const signInSuccessful = await signIn("credentials", {
+          redirect: false,
           email,
           password,
         });
+
+        console.log("blabla", signInSuccessful);
+
+        if (signInSuccessful) {
+          console.log("Signed in successfully");
+          router.push("/profile");
+        } else {
+          console.log("Failed to sign in");
+          toast.error("Failed to sign in");
+        }
       }
     } catch (error) {
-      console.lof(error);
+      console.log(error);
       console.error("Failed to create account:", error);
       toast.error("Failed to create account");
     }

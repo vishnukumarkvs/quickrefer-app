@@ -104,7 +104,7 @@ const authorizeCredentials = async (credentials) => {
 
   try {
     userResult = await client.send(new QueryCommand(params));
-    console.log("User result:", userResult);
+    // console.log("User result:", userResult);
     // Handle the user result accordingly
   } catch (error) {
     console.error("Error getting user:", error);
@@ -132,7 +132,8 @@ const authorizeCredentials = async (credentials) => {
   return user;
 };
 
-const jwtCallback = async ({ token, user, session, trigger }) => {
+const jwtCallback = async ({ token, user, session, trigger, isNewUser }) => {
+  console.log("JWT callback:", { token, user, session, trigger, isNewUser });
   const params = {
     TableName: "Users",
     Key: {
@@ -236,5 +237,8 @@ export const authOptions = {
     jwt: jwtCallback,
     session: sessionCallback,
     redirect: () => "/",
+  },
+  pages: {
+    newUser: "/profile",
   },
 };
