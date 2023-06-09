@@ -81,7 +81,7 @@ const PasswordlessLogin = ({}) => {
           onClick={() => signIn("google")}
           className="p-2 rounded-md bg-white hover:bg-gray-300 border-2 text-blue-600 font-semibold text-center block w-full focus:outline-none focus:ring focus:ring-offset-2 focus:ring-indigo-500 focus:ring-opacity-80 cursor-pointer"
         >
-          Google SignIn
+          Google
         </Button>
       </div>
     </div>

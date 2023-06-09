@@ -35,21 +35,16 @@ const Register = () => {
         }
       } else {
         toast.success("Account created successfully");
-        const signInSuccessful = await signIn("credentials", {
-          redirect: false,
+        signIn("credentials", {
           email,
           password,
+          redirect: false,
         });
 
-        console.log("blabla", signInSuccessful);
+        router.push("/profile");
 
-        if (signInSuccessful) {
-          console.log("Signed in successfully");
-          router.push("/profile");
-        } else {
-          console.log("Failed to sign in");
-          toast.error("Failed to sign in");
-        }
+        // Not figured how to make redirect as false
+        // for now it throws error like url not constructed but works
       }
     } catch (error) {
       console.log(error);
