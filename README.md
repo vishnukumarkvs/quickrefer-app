@@ -37,3 +37,5 @@ npx json-server -p 8000 -w db.json -> Start json server
 
 npm i @tanstack/react-query
 npm i @tanstack/react-query-devtools --save-dev
+
+ft: need to add job company name and hr id

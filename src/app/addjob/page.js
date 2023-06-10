@@ -15,6 +15,7 @@ import Select from "react-select";
 import { de } from "date-fns/locale";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { toast } from "react-hot-toast";
 
 const experienceOptions = [
   { value: "YR", label: "in years" },
@@ -73,12 +74,34 @@ const Page = () => {
     console.log("salaryUnit:", salaryUnit);
     console.log("restData:", restData);
 
-    try {
-      const { data } = await axios.get("http://localhost:8000/JobData");
-      console.log("Returned data", data);
-    } catch (error) {
-      console.error("Error fetching job data:", error);
-    }
+    const apiUrl =
+      "https://3dn57btku4.execute-api.us-east-1.amazonaws.com/dev/testing";
+
+    const payload = {
+      skills: skills,
+      experienceUnit: experienceUnit,
+      salaryUnit: salaryUnit,
+      restData: restData,
+    };
+
+    // const { isLoading, data, isError } = await axios.get(apiUrl, payload, {
+    //   headers: { "Content-Type": "application/json" },
+    // });
+
+    // if (isError) {
+    //   toast.error("Some error occured. please submit again");
+    // }
+
+    await axios
+      .get(apiUrl)
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    // console.log("post neo4j data", data);
   };
 
   return (
