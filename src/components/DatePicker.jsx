@@ -19,6 +19,7 @@ export function DatePicker({ control, name }) {
     <Controller
       control={control}
       name={name}
+      // rules={{ required: true }} // not functioning as expected
       render={({ field: { onChange, value } }) => (
         <Popover isOpen={isOpen} onDismiss={() => setIsOpen(false)}>
           <PopoverTrigger asChild>

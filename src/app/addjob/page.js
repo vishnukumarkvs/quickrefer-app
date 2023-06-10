@@ -13,10 +13,12 @@ import { JobFormSchema } from "@/lib/validations/jobform-post";
 import CreatableSelect from "react-select/creatable";
 import Select from "react-select";
 import { de } from "date-fns/locale";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 const experienceOptions = [
-  { value: "yr", label: "in years" },
-  { value: "mnth", label: "in months" },
+  { value: "YR", label: "in years" },
+  { value: "MNTH", label: "in months" },
 ];
 
 const skillOptions = [
@@ -50,8 +52,33 @@ const Page = () => {
   );
   const [input, setInput] = useState("");
 
-  const onSubmit = (data) => {
-    console.log("my data", data);
+  const onSubmit = async (submitted_data) => {
+    console.log("my data", JSON.stringify(submitted_data, null, 2));
+    console.log("----");
+
+    const skills = submitted_data.skills.map((skill) =>
+      skill.value.toLowerCase()
+    );
+    const experienceUnit = submitted_data.experienceUnit.value;
+    const salaryUnit = submitted_data.salaryUnit.value;
+    const {
+      skills: _,
+      experienceUnit: __,
+      salaryUnit: ___,
+      ...restData
+    } = submitted_data;
+
+    console.log("skills:", skills);
+    console.log("experienceUnit:", experienceUnit);
+    console.log("salaryUnit:", salaryUnit);
+    console.log("restData:", restData);
+
+    try {
+      const { data } = await axios.get("http://localhost:8000/JobData");
+      console.log("Returned data", data);
+    } catch (error) {
+      console.error("Error fetching job data:", error);
+    }
   };
 
   return (
@@ -65,6 +92,7 @@ const Page = () => {
             <p className="font-semibold text-lg">Job Title: </p>
             <Input
               {...register("jobTitle")}
+              required
               type="text"
               id="Job Title"
               placeholder="Software Developer"
@@ -87,6 +115,7 @@ const Page = () => {
                   isClearable
                   isSearchable
                   isMulti
+                  required
                 />
               )}
             />
@@ -99,12 +128,14 @@ const Page = () => {
                 {...register("baseExp", { valueAsNumber: true })}
                 className="w-16 text-center mr-2"
                 placeholder="2"
+                required
               />
               <p>-</p>
               <Input
                 {...register("highExp", { valueAsNumber: true })}
                 className="w-16 text-center ml-2 mr-2"
                 placeholder="4"
+                required
               />
               {/* <SelectDropdown
                 name="expUnit"
@@ -136,12 +167,14 @@ const Page = () => {
                 {...register("baseSalary", { valueAsNumber: true })}
                 className="w-16 text-center mr-2"
                 placeholder="10"
+                required
               />
               <p>-</p>
               <Input
                 {...register("highSalary", { valueAsNumber: true })}
                 className="w-16 text-center ml-2 mr-2"
                 placeholder="12"
+                required
               />
               <Controller
                 name="salaryUnit"
@@ -170,6 +203,7 @@ const Page = () => {
           <div className="mb-6 border rounded-lg overflow-hidden">
             <TextAreaAutosize
               {...register("description")}
+              required
               minRows={4}
               value={input}
               onChange={(e) => setInput(e.target.value)}

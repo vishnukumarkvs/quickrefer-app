@@ -31,3 +31,9 @@ can also get options from async, remote etc
 https://neo4j.com/docs/cypher-cheat-sheet/5/auradb-enterprise/
 
 need to implement tanstack and backend neo4j api
+
+npm i json-server --save-dev
+npx json-server -p 8000 -w db.json -> Start json server
+
+npm i @tanstack/react-query
+npm i @tanstack/react-query-devtools --save-dev

@@ -1,0 +1,27 @@
+{
+  "JobData": [
+    {
+      "jobTitle": "IT operations",
+      "skills": [
+        {
+          "value": "python",
+          "label": "python"
+        }
+      ],
+      "baseExp": 1,
+      "highExp": 2,
+      "baseSalary": 10,
+      "highSalary": 12,
+      "date": "2023-06-07T18:30:00.000Z",
+      "description": "It guy needed",
+      "experienceUnit": {
+        "value": "yr",
+        "label": "in years"
+      },
+      "salaryUnit": {
+        "value": "LPA",
+        "label": "in lakhs"
+      }
+    }
+  ]
+}
