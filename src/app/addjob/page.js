@@ -75,7 +75,7 @@ const Page = () => {
     console.log("restData:", restData);
 
     const apiUrl =
-      "https://3dn57btku4.execute-api.us-east-1.amazonaws.com/dev/testing";
+      "https://3dn57btku4.execute-api.us-east-1.amazonaws.com/dev/postjob";
 
     const payload = {
       skills: skills,
@@ -84,24 +84,22 @@ const Page = () => {
       restData: restData,
     };
 
-    // const { isLoading, data, isError } = await axios.get(apiUrl, payload, {
-    //   headers: { "Content-Type": "application/json" },
-    // });
+    const { isLoading, data, isError } = await axios.post(apiUrl, payload);
 
-    // if (isError) {
-    //   toast.error("Some error occured. please submit again");
-    // }
+    if (isError) {
+      toast.error("Some error occured. please submit again");
+    }
 
-    await axios
-      .get(apiUrl)
-      .then((response) => {
-        console.log(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    // await axios
+    //   .get(apiUrl)
+    //   .then((response) => {
+    //     console.log(response.data);
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //   });
 
-    // console.log("post neo4j data", data);
+    console.log("post neo4j data", data);
   };
 
   return (
