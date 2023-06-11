@@ -39,3 +39,6 @@ npm i @tanstack/react-query
 npm i @tanstack/react-query-devtools --save-dev
 
 ft: need to add job company name and hr id
+add loading state to post button
+
+Query used for fetching data, mutation used for post or updating data in server

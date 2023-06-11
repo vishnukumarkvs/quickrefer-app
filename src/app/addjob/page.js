@@ -13,7 +13,7 @@ import { JobFormSchema } from "@/lib/validations/jobform-post";
 import CreatableSelect from "react-select/creatable";
 import Select from "react-select";
 import { de } from "date-fns/locale";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 
@@ -53,10 +53,13 @@ const Page = () => {
   );
   const [input, setInput] = useState("");
 
-  const onSubmit = async (submitted_data) => {
-    console.log("my data", JSON.stringify(submitted_data, null, 2));
-    console.log("----");
+  const postJobMutation = useMutation((payload) => {
+    const apiUrl =
+      "https://3dn57btku4.execute-api.us-east-1.amazonaws.com/dev/postjob";
+    return axios.post(apiUrl, payload);
+  });
 
+  const onSubmit = async (submitted_data) => {
     const skills = submitted_data.skills.map((skill) =>
       skill.value.toLowerCase()
     );
@@ -69,14 +72,6 @@ const Page = () => {
       ...restData
     } = submitted_data;
 
-    console.log("skills:", skills);
-    console.log("experienceUnit:", experienceUnit);
-    console.log("salaryUnit:", salaryUnit);
-    console.log("restData:", restData);
-
-    const apiUrl =
-      "https://3dn57btku4.execute-api.us-east-1.amazonaws.com/dev/postjob";
-
     const payload = {
       skills: skills,
       experienceUnit: experienceUnit,
@@ -84,22 +79,14 @@ const Page = () => {
       restData: restData,
     };
 
-    const { isLoading, data, isError } = await axios.post(apiUrl, payload);
-
-    if (isError) {
-      toast.error("Some error occured. please submit again");
-    }
-
-    // await axios
-    //   .get(apiUrl)
-    //   .then((response) => {
-    //     console.log(response.data);
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
-
-    console.log("post neo4j data", data);
+    postJobMutation.mutate(payload, {
+      onSuccess: (data) => {
+        console.log("post neo4j data", data);
+      },
+      onError: () => {
+        toast.error("Some error occured. please submit again");
+      },
+    });
   };
 
   return (
@@ -242,6 +229,7 @@ const Page = () => {
             </div>
             <Button
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              isLoading={postJobMutation.isLoading}
               type="submit"
             >
               POST
