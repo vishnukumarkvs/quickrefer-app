@@ -197,7 +197,7 @@ const Page = () => {
           </div>
 
           <div className="flex items-center justify-between mb-6">
-            <p className="font-semibold text-lg">Est Salary Range: </p>
+            <p className="font-semibold text-lg mr-2">Est Salary Range: </p>
             <div className="flex items-center">
               <Input
                 {...register("baseSalary", { valueAsNumber: true })}
@@ -230,9 +230,9 @@ const Page = () => {
 
           <div className="flex justify-between items-center mb-6">
             <p className="font-semibold text-lg mr-2">Location: </p>
-            <div className="w-full">
+            <div className="w-[60%]">
               <Controller
-                name="location"
+                name="locations"
                 control={control}
                 defaultValue=""
                 rules={{ required: true }}
