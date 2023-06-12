@@ -16,6 +16,20 @@ import { de } from "date-fns/locale";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { toast } from "react-hot-toast";
+import { options } from "@/assets/location-options";
+import AsyncSelect from "react-select/async";
+
+const filterColors = (inputValue) => {
+  return options.filter((i) =>
+    i.label.toLowerCase().includes(inputValue.toLowerCase())
+  );
+};
+
+const loadOptions = (inputValue, callback) => {
+  setTimeout(() => {
+    callback(filterColors(inputValue));
+  }, 1000);
+};
 
 const experienceOptions = [
   { value: "YR", label: "in years" },
@@ -29,8 +43,21 @@ const skillOptions = [
 ];
 
 const salaryOptions = [
-  { value: "LPA", label: "in lakhs" },
-  { value: "TPA", label: "in thousands" },
+  { value: "LPA", label: "lakhs per year" },
+  { value: "DPA", label: "dollars per year" },
+];
+
+const defaultLocationOptions = [
+  { value: "Bangalore, India", label: "Bangalore, India" },
+  { value: "Mumbai, India", label: "Mumbai, India" },
+  { value: "Delhi, India", label: "Delhi, India" },
+  { value: "Chennai, India", label: "Chennai, India" },
+  { value: "Hyderabad, India", label: "Hyderabad, India" },
+  { value: "Kolkata, India", label: "Kolkata, India" },
+  { value: "Pune, India", label: "Pune, India" },
+  { value: "Ahmedabad, India", label: "Ahmedabad, India" },
+  { value: "Noida, India", label: "Noida, India" },
+  { value: "Gurgaon, India", label: "Gurgaon, India" },
 ];
 
 const Page = () => {
@@ -196,6 +223,32 @@ const Page = () => {
                     defaultValue={defaultSalaryValue}
                     options={salaryOptions}
                   />
+                )}
+              />
+            </div>
+          </div>
+
+          <div className="flex justify-between items-center mb-6">
+            <p className="font-semibold text-lg mr-2">Location: </p>
+            <div className="w-full">
+              <Controller
+                name="location"
+                control={control}
+                defaultValue=""
+                rules={{ required: true }}
+                render={({ field }) => (
+                  <div className="w-full">
+                    <AsyncSelect
+                      {...field}
+                      placeholder="Search..."
+                      loadOptions={loadOptions}
+                      defaultOptions={defaultLocationOptions}
+                      isClearable
+                      isSearchable
+                      isMulti
+                      required
+                    />
+                  </div>
                 )}
               />
             </div>
