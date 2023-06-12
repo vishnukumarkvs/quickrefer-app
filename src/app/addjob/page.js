@@ -81,6 +81,7 @@ const Page = () => {
 
     postJobMutation.mutate(payload, {
       onSuccess: (data) => {
+        toast.success("Job posted successfully");
         console.log("post neo4j data", data);
       },
       onError: () => {
