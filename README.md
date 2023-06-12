@@ -42,3 +42,5 @@ ft: need to add job company name and hr id
 add loading state to post button
 
 Query used for fetching data, mutation used for post or updating data in server
+
+merged tanstack, job company, hr id, some query unit and experience changes needs to be done
