@@ -3,6 +3,7 @@
 import { Toaster } from "react-hot-toast";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { SessionProvider } from "next-auth/react";
 
 const Provider = ({ children }) => {
   const queryClient = new QueryClient();
@@ -10,7 +11,7 @@ const Provider = ({ children }) => {
     <>
       <QueryClientProvider client={queryClient}>
         <Toaster position="top-center" reverseOrder={false} />
-        {children}
+        <SessionProvider>{children}</SessionProvider>
         <ReactQueryDevtools />
       </QueryClientProvider>
     </>

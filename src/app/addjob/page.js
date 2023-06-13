@@ -1,8 +1,6 @@
 "use client";
 
 import DatePicker from "@/components/DatePicker";
-import SelectDropdown from "@/components/SelectDropdowm";
-import SkillAdder from "@/components/SkillAdder";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useRef, useState } from "react";
@@ -12,12 +10,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { JobFormSchema } from "@/lib/validations/jobform-post";
 import CreatableSelect from "react-select/creatable";
 import Select from "react-select";
-import { de } from "date-fns/locale";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { options } from "@/assets/location-options";
 import AsyncSelect from "react-select/async";
+import { useSession } from "next-auth/react";
 
 const filterColors = (inputValue) => {
   return options.filter((i) =>
@@ -61,6 +59,8 @@ const defaultLocationOptions = [
 ];
 
 const Page = () => {
+  const { data: session, status } = useSession();
+
   const {
     register,
     handleSubmit,
@@ -123,6 +123,7 @@ const Page = () => {
         <p className="text-3xl font-bold my-4 text-center text-gray-700">
           Create A Job Post
         </p>
+        <p>{JSON.stringify(session)}</p>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="flex items-center justify-between mb-6">
             <p className="font-semibold text-lg">Job Title: </p>
