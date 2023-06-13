@@ -86,24 +86,42 @@ const Page = () => {
     return axios.post(apiUrl, payload);
   });
 
+  // form submit function
   const onSubmit = async (submitted_data) => {
+    console.log("submitted_data", submitted_data);
     const skills = submitted_data.skills.map((skill) =>
       skill.value.toLowerCase()
     );
+
+    const locationsArray = submitted_data.locations.map((location) => {
+      const [city, country] = location.value.split(", ");
+      return {
+        city: city.toLowerCase(),
+        country: country.toLowerCase(),
+      };
+    });
     const experienceUnit = submitted_data.experienceUnit.value;
     const salaryUnit = submitted_data.salaryUnit.value;
     const {
       skills: _,
       experienceUnit: __,
       salaryUnit: ___,
+      locations: ____,
       ...restData
     } = submitted_data;
+
+    console.log("restData", restData);
+    console.log("skills", skills);
+    console.log("experienceUnit", experienceUnit);
+    console.log("salaryUnit", salaryUnit);
+    console.log("locationsArray", locationsArray);
 
     const payload = {
       skills: skills,
       experienceUnit: experienceUnit,
       salaryUnit: salaryUnit,
       restData: restData,
+      locations: locationsArray,
     };
 
     postJobMutation.mutate(payload, {
