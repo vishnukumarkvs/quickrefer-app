@@ -136,9 +136,9 @@ const Page = () => {
   };
 
   return (
-    <div className="w-full h-screen bg-transparent flex items-center justify-center py-10">
-      <div className="bg-white rounded-lg shadow-md max-w-lg mx-auto p-6">
-        <p className="text-3xl font-bold my-4 text-center text-gray-700">
+    <div className="w-full h-full bg-transparent flex items-center justify-center py-10">
+      <div className="bg-white border-2 border-[#ffc800e5] rounded-lg shadow-md max-w-lg mx-auto py-2 px-7">
+        <p className="text-3xl font-bold mb-3 text-center text-gray-700">
           Create A Job Post
         </p>
         {/* <p>{JSON.stringify(session)}</p> */}
@@ -285,7 +285,7 @@ const Page = () => {
             <TextAreaAutosize
               {...register("description")}
               required
-              minRows={4}
+              minRows={3}
               value={input}
               onChange={(e) => setInput(e.target.value)}
               className="p-3 w-full resize-none border-0 bg-gray-100 text-gray-700 placeholder-gray-400 focus:ring-0 focus:outline-none sm:py-1.5 sm:text-sm sm:leading-6"
@@ -301,7 +301,7 @@ const Page = () => {
               ))}
             </div>
             <Button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              className="bg-[#ffc800] hover:bg-[#ffc800] text-black font-bold py-2 mb-2 px-4 rounded"
               isLoading={postJobMutation.isLoading}
               type="submit"
             >
