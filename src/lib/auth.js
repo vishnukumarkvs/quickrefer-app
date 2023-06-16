@@ -8,6 +8,7 @@ import bcrypt from "bcrypt";
 import { createTransport } from "nodemailer";
 import client from "@/lib/ddbclient";
 import { GetItemCommand, PutItemCommand } from "@aws-sdk/client-dynamodb";
+import { nanoid } from "nanoid";
 const { marshall, unmarshall } = require("@aws-sdk/util-dynamodb");
 
 const config = {
@@ -161,14 +162,38 @@ const jwtCallback = async ({ token, user, session, trigger, isNewUser }) => {
     const name = username.replace(/\./g, " ");
 
     dbUser.name = name;
+
+    const putParams = {
+      TableName: "Users",
+      Item: marshall(dbUser),
+    };
+
+    await client.send(new PutItemCommand(putParams));
   }
 
-  const putParams = {
-    TableName: "Users",
-    Item: marshall(dbUser),
-  };
+  if (!dbUser.jtusername) {
+    const uid = nanoid(5);
+    const jtusername =
+      dbUser.name.replace(/\s+/g, "").toLowerCase() + "#" + uid;
+    dbUser.jtusername = jtusername;
 
-  await client.send(new PutItemCommand(putParams));
+    let dbUsernamesResult = {};
+    dbUsernamesResult.jtusername = jtusername;
+    dbUsernamesResult.id = dbUser.id;
+
+    const putParams = {
+      TableName: "Users",
+      Item: marshall(dbUser),
+    };
+
+    const putParams2 = {
+      TableName: "Usernames",
+      Item: marshall(dbUsernamesResult),
+    };
+
+    await client.send(new PutItemCommand(putParams2));
+    await client.send(new PutItemCommand(putParams));
+  }
 
   if (trigger === "update") {
     return { ...token, ...session.user };

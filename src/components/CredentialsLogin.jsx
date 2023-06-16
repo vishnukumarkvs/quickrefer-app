@@ -59,7 +59,7 @@ const CredentialsLogin = ({}) => {
             type="email"
             name="email"
             id="email"
-            className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-indigo-600 focus:border-indigo-600 block w-full p-2.5"
+            className="border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-indigo-600 focus:border-indigo-600 block w-full p-2.5"
             placeholder="name@example.com"
             required
           />
@@ -77,13 +77,15 @@ const CredentialsLogin = ({}) => {
             name="password"
             id="password"
             placeholder="••••••••"
-            className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-indigo-600 focus:border-indigo-600 block w-full p-2.5"
+            className="border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-indigo-600 focus:border-indigo-600 block w-full p-2.5"
             required
           />
         </div>
         <p className="mt-1 text-sm text-red-600">{errors.email?.message}</p>
       </div>
-      <Button className="mt-4 bg-blue-600 hover:bg-blue-900">Submit</Button>
+      <Button className="mt-4 bg-[#ffc800] text-black hover:bg-[#ffc800e5]">
+        Submit
+      </Button>
     </form>
   );
 };

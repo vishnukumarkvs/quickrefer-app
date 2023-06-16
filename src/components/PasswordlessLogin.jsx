@@ -60,14 +60,14 @@ const PasswordlessLogin = ({}) => {
                 type="email"
                 name="email"
                 id="email"
-                className="w-full bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-indigo-600 focus:border-indigo-600 block p-2.5"
+                className="w-full border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-indigo-600 focus:border-indigo-600 block p-2.5"
                 placeholder="name@example.com"
                 required
               />
             </div>
             <p className="mt-1 text-sm text-red-600">{errors.email?.message}</p>
           </div>
-          <Button className="w-full bg-blue-600 hover:bg-blue-900">
+          <Button className="w-full bg-[#ffc800] text-black hover:bg-[#ffc800e5]">
             Sign In with Email
           </Button>
         </form>
@@ -79,7 +79,7 @@ const PasswordlessLogin = ({}) => {
         <Button
           type="sumbit"
           onClick={() => signIn("google")}
-          className="p-2 rounded-md bg-white hover:bg-gray-300 border-2 text-blue-600 font-semibold text-center block w-full focus:outline-none focus:ring focus:ring-offset-2 focus:ring-indigo-500 focus:ring-opacity-80 cursor-pointer"
+          className="p-2 rounded-md bg-white hover:bg-gray-50 border-2 border-[#ffc800e5] text-black font-semibold text-center block w-full focus:outline-none focus:ring focus:ring-offset-1 focus:ring-indigo-500 focus:ring-opacity-80 cursor-pointer"
         >
           Google
         </Button>

@@ -136,12 +136,12 @@ const Page = () => {
   };
 
   return (
-    <div className="w-full h-screen bg-gray-200 flex items-center justify-center py-10">
+    <div className="w-full h-screen bg-transparent flex items-center justify-center py-10">
       <div className="bg-white rounded-lg shadow-md max-w-lg mx-auto p-6">
         <p className="text-3xl font-bold my-4 text-center text-gray-700">
           Create A Job Post
         </p>
-        <p>{JSON.stringify(session)}</p>
+        {/* <p>{JSON.stringify(session)}</p> */}
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="flex items-center justify-between mb-6">
             <p className="font-semibold text-lg">Job Title: </p>
