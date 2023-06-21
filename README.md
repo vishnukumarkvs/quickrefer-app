@@ -46,3 +46,7 @@ Query used for fetching data, mutation used for post or updating data in server
 merged tanstack, job company, hr id, some query unit and experience changes needs to be done
 
 doing add role
+
+done above
+
+lets work on homepage now
