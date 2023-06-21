@@ -3,7 +3,7 @@ import { Check, Loader2 } from "lucide-react";
 import { Input } from "./ui/input";
 import axios from "axios";
 
-const UniqueUsernameInput = () => {
+const UniqueUsernameInput = ({ onUsernameChange, onUsernameTakenChange }) => {
   const [username, setUsername] = useState("");
   const [isChecking, setIsChecking] = useState(false);
   const [isUsernameTaken, setIsUsernameTaken] = useState(false);
@@ -13,6 +13,7 @@ const UniqueUsernameInput = () => {
     clearTimeout(timeoutRef.current);
     setUsername(event.target.value);
     timeoutRef.current = setTimeout(validateUsername, 500);
+    onUsernameChange(event.target.value); // Pass the username to the parent component
   };
 
   const validateUsername = async () => {
@@ -24,6 +25,7 @@ const UniqueUsernameInput = () => {
       });
 
       setIsUsernameTaken(data.isUsernameTaken);
+      onUsernameTakenChange(data.isUsernameTaken); // Pass the isUsernameTaken value to the parent component
     } catch (error) {
       console.error("Error checking username:", error);
     } finally {
@@ -46,6 +48,7 @@ const UniqueUsernameInput = () => {
         onChange={handleUsernameChange}
         onBlur={handleBlur}
         placeholder="ex: johndoe"
+        required
       />
       {isChecking && <Loader2 className="animate-spin" />}
       {isUsernameTaken ? (
