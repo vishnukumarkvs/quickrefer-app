@@ -25,7 +25,12 @@ const Page = () => {
           <div className="flex flex-row gap-x-2 items-center m-2">
             <p className="font-semibold text-lg">Resume: </p>
             <div>
-              <Input {...register("resume")} type="file" id="resume" />
+              <Input
+                {...register("resume")}
+                type="file"
+                id="resume"
+                className="cursor-pointer"
+              />
             </div>
           </div>
         </div>
