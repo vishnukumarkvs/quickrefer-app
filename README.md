@@ -50,3 +50,5 @@ doing add role
 done above
 
 lets work on homepage now
+https://serpapi.com/google-jobs-api - google jobs api
+https://serpapi.com/pricing
