@@ -1,4 +1,4 @@
-import client from "@/lib/ddbclient";
+import ddbClient from "@/lib/ddbclient";
 import { QueryCommand } from "@aws-sdk/client-dynamodb";
 
 export async function POST(req) {
@@ -21,7 +21,7 @@ export async function POST(req) {
   const command = new QueryCommand(params);
 
   try {
-    const data = await client.send(command);
+    const data = await ddbClient.send(command);
 
     if (data.Items && data.Items.length > 0) {
       return new Response(JSON.stringify({ isUsernameTaken: true }), {

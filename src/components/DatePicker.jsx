@@ -38,6 +38,7 @@ export function DatePicker({ control, name }) {
           {isOpen && (
             <PopoverContent className="w-auto p-0">
               <Calendar
+                className="bg-white"
                 mode="single"
                 selected={value}
                 onSelect={(date) => {

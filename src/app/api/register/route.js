@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import { nanoid } from "nanoid";
-import client from "@/lib/ddbclient";
+import ddbClient from "@/lib/ddbclient";
 import { QueryCommand, PutItemCommand } from "@aws-sdk/client-dynamodb";
 const { marshall, unmarshall } = require("@aws-sdk/util-dynamodb");
 
@@ -22,7 +22,7 @@ export async function POST(req) {
 
     console.log("checking user");
 
-    const userResult = await client.send(new QueryCommand(params));
+    const userResult = await ddbClient.send(new QueryCommand(params));
     console.log("...");
     console.log("User found:", userResult);
 
@@ -57,7 +57,7 @@ export async function POST(req) {
     });
 
     try {
-      const result = await client.send(createUserCommand);
+      const result = await ddbClient.send(createUserCommand);
       console.log("User created successfully:", result);
       // Handle the result accordingly
     } catch (error) {

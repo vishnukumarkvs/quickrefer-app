@@ -6,7 +6,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import EmailProvider from "next-auth/providers/email";
 import bcrypt from "bcrypt";
 import { createTransport } from "nodemailer";
-import client from "@/lib/ddbclient";
+import ddbClient from "@/lib/ddbclient";
 import { GetItemCommand, PutItemCommand } from "@aws-sdk/client-dynamodb";
 import { nanoid } from "nanoid";
 const { marshall, unmarshall } = require("@aws-sdk/util-dynamodb");
@@ -104,7 +104,7 @@ const authorizeCredentials = async (credentials) => {
   let userResult;
 
   try {
-    userResult = await client.send(new QueryCommand(params));
+    userResult = await ddbClient.send(new QueryCommand(params));
     // console.log("User result:", userResult);
     // Handle the user result accordingly
   } catch (error) {
@@ -143,7 +143,7 @@ const jwtCallback = async ({ token, user, session, trigger, isNewUser }) => {
     },
   };
 
-  const dbUserResult = await client.send(new GetItemCommand(params));
+  const dbUserResult = await ddbClient.send(new GetItemCommand(params));
 
   if (!dbUserResult.Item) {
     if (user) {
@@ -168,7 +168,7 @@ const jwtCallback = async ({ token, user, session, trigger, isNewUser }) => {
       Item: marshall(dbUser),
     };
 
-    await client.send(new PutItemCommand(putParams));
+    await ddbClient.send(new PutItemCommand(putParams));
   }
 
   if (!dbUser.jtusername) {
@@ -191,8 +191,8 @@ const jwtCallback = async ({ token, user, session, trigger, isNewUser }) => {
       Item: marshall(dbUsernamesResult),
     };
 
-    await client.send(new PutItemCommand(putParams2));
-    await client.send(new PutItemCommand(putParams));
+    await ddbClient.send(new PutItemCommand(putParams2));
+    await ddbClient.send(new PutItemCommand(putParams));
   }
 
   if (trigger === "update") {
