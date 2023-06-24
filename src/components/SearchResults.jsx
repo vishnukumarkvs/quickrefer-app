@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { useEffect } from "react";
+import JobCard from "./JobCard"; // Make sure this path points to your JobCard component
 
 const SearchResults = ({ skill, jobTitle, company, clicked }) => {
   const fetchJobs = async () => {
@@ -36,9 +36,11 @@ const SearchResults = ({ skill, jobTitle, company, clicked }) => {
   return (
     <div className="w-[80%] mx-auto mt-10">
       <div className="flex justify-center items-center">
-        <h2>Search Results</h2>
-        {/* Render the data appropriately here instead of just stringifying it */}
-        <p>{JSON.stringify(data, null, 2)}</p>
+        {/* Render the JobCard for each item in data */}
+        {data &&
+          data.map((jobData, index) => (
+            <JobCard key={index} jobData={jobData} />
+          ))}
       </div>
     </div>
   );

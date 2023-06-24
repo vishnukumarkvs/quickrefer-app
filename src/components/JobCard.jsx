@@ -6,24 +6,46 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Button } from "./ui/button";
 
-const JobCard = ({ job }) => {
-  const { id, title, description, company, location, type } = job;
+const JobCard = ({ jobData }) => {
+  const {
+    job: {
+      properties: {
+        jobTitle,
+        description,
+        highSalary,
+        baseSalary,
+        baseExp,
+        highExp,
+      },
+      identity: { low: id },
+    },
+    eligibleLocations,
+    skills,
+  } = jobData;
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{title}</CardTitle>
-        <CardDescription>{company}</CardDescription>
-        <CardDescription>{location}</CardDescription>
+        <CardTitle>{jobTitle}</CardTitle>
+        <CardDescription>Base Salary: {baseSalary}</CardDescription>
+        <CardDescription>High Salary: {highSalary}</CardDescription>
+        <CardDescription>
+          Locations: {eligibleLocations.join(", ")}
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <CardDescription>{description}</CardDescription>
+        <CardDescription>Base Experience: {baseExp}</CardDescription>
+        <CardDescription>High Experience: {highExp}</CardDescription>
+        <CardDescription>Skills: {skills.join(", ")}</CardDescription>
       </CardContent>
       <CardFooter>
-        <CardDescription>{type}</CardDescription>
-        <Link href={`/jobs/${id}`}>
+        {/* <Link href={`/jobs/${id}`}>
           <a className="ml-auto text-primary">View Details</a>
-        </Link>
+        </Link> */}
+        <Button>Apply</Button>
       </CardFooter>
     </Card>
   );
