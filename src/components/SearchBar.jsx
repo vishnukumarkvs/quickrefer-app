@@ -3,7 +3,7 @@
 import { Search } from "lucide-react";
 import React, { useState } from "react";
 
-const SearchBar = () => {
+const SearchBar = ({ onSearch }) => {
   const [skill, setSkill] = useState("");
   const [jobTitle, setJobTitle] = useState("");
   const [company, setCompany] = useState("");
@@ -22,8 +22,10 @@ const SearchBar = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // Perform your search or other actions here
-    console.log(skill, jobTitle, company);
+    // console.log(skill, jobTitle, company);
+    if (onSearch) {
+      onSearch(skill, jobTitle, company);
+    }
   };
 
   return (
