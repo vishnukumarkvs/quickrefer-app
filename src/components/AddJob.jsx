@@ -16,6 +16,7 @@ import { toast } from "react-hot-toast";
 import { options } from "@/assets/location-options";
 import AsyncSelect from "react-select/async";
 import { useSession } from "next-auth/react";
+import { nanoid } from "nanoid";
 
 const filterColors = (inputValue) => {
   return options.filter((i) =>
@@ -125,6 +126,7 @@ const AddJob = ({ company, userid }) => {
       locations: locationsArray,
       company: company,
       userid: userid,
+      jobId: nanoid(10),
     };
     console.log(payload);
 

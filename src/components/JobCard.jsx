@@ -23,22 +23,26 @@ const JobCard = ({ jobData }) => {
     },
     eligibleLocations,
     skills,
+    company,
   } = jobData;
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>{jobTitle}</CardTitle>
-        <CardDescription>Base Salary: {baseSalary}</CardDescription>
-        <CardDescription>High Salary: {highSalary}</CardDescription>
+        <CardDescription>Company: {company}</CardDescription>
+        <CardDescription>
+          Est Salary: {baseSalary} - {highSalary} LPA
+        </CardDescription>
         <CardDescription>
           Locations: {eligibleLocations.join(", ")}
         </CardDescription>
       </CardHeader>
       <CardContent>
         <CardDescription>{description}</CardDescription>
-        <CardDescription>Base Experience: {baseExp}</CardDescription>
-        <CardDescription>High Experience: {highExp}</CardDescription>
+        <CardDescription>
+          Exp: {baseExp} - {highExp} years
+        </CardDescription>
         <CardDescription>Skills: {skills.join(", ")}</CardDescription>
       </CardContent>
       <CardFooter>
