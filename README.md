@@ -58,3 +58,4 @@ const decodedString = decodeURIComponent(encodedString);
 console.log(decodedString); // "hello world"
 
 Lets work on referral submit. small feature
+needs link company, add referrer in new user option
