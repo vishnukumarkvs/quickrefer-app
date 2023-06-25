@@ -1,4 +1,5 @@
 import Homepage from "@/components/Homepage";
+import ReferralSubmit from "@/components/ReferralSubmit";
 
 const Page = () => {
   return (
@@ -6,6 +7,7 @@ const Page = () => {
       <div className=" flex flex-col items-center justify-center">
         <h1>Home Page</h1>
         <Homepage />
+        <ReferralSubmit />
       </div>
     </div>
   );
