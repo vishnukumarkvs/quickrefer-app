@@ -84,7 +84,7 @@ const AddJob = ({ company, userid }) => {
 
   const postJobMutation = useMutation((payload) => {
     const apiUrl =
-      "https://3dn57btku4.execute-api.us-east-1.amazonaws.com/dev/postjob";
+      "https://e80yu93nsk.execute-api.us-east-1.amazonaws.com/dev/postjob";
     return axios.post(apiUrl, payload);
   });
 

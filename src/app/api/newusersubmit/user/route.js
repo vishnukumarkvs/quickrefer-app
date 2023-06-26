@@ -1,16 +1,28 @@
 import { authOptions } from "@/lib/auth";
 import driver from "@/lib/neo4jClient";
 import { getServerSession } from "next-auth";
-import { UpdateItemCommand } from "@aws-sdk/client-dynamodb";
 import ddbClient from "@/lib/ddbclient";
+import s3Client from "@/lib/s3Client";
+import { AbortMultipartUploadCommand } from "@aws-sdk/client-s3";
+import { UpdateItemCommand } from "@aws-sdk/client-dynamodb";
 
 export async function POST(req) {
   const session = await getServerSession(authOptions);
 
-  const { username, company, linkedin_profile } = await req.json();
+  const { username, company, isJobReferrer } = await req.json();
+  // console.log("resume", resume);
 
   const id = session.user.id;
   const email = session.user.email;
+
+  // const params = {
+  //   Bucket: "JtResumes",
+  //   Key: id,
+  //   Body: resume.data, // Set the file data
+  // };
+  // const command = new AbortMultipartUploadCommand(params);
+  // const data = await s3Client.send(command);
+  // console.log("data", data);
 
   try {
     const paramsUpdate = {
@@ -34,9 +46,9 @@ export async function POST(req) {
   try {
     const neo4jSession = driver.session({ database: "neo4j" });
     const query = `
-        WITH $username AS username, $id AS id, $email AS email, $company AS company, $linkedin_profile AS linkedin_profile, $userRole AS userRole
+        WITH $username AS username, $id AS id, $email AS email, $company AS company, $userRole AS userRole, $isJobReferrer AS isJobReferrer
         MERGE (u:User {userId: $id})
-        ON CREATE SET u.username = $username, u.email = $email, u.linkedin_profile = $linkedin_profile, u.userRole = $userRole
+        ON CREATE SET u.username = $username, u.email = $email, u.userRole = $userRole, u.isJobReferrer = $isJobReferrer, u.jobReferralScore = 0
         MERGE (c:Company {name: $company})
         MERGE (u)-[:WORKS_AT]->(c)
         `;
@@ -46,8 +58,8 @@ export async function POST(req) {
         id: id,
         email: email,
         company: company,
-        linkedin_profile: linkedin_profile,
-        userRole: "HR",
+        userRole: "User",
+        isJobReferrer: isJobReferrer,
       })
     );
     await neo4jSession.close();
@@ -57,16 +69,3 @@ export async function POST(req) {
     return new Response(err, { status: 500 });
   }
 }
-
-//  const query = `
-//         WITH $username AS username, $id AS id, $email AS email, $company AS company, $linkedin_profile AS linkedin_profile
-//         CREATE (:User {
-//         username: $username,
-//         id: $id,
-//         email: $email,
-//         linkedin_profile: $linkedin_profile
-//         })
-//         MERGE (c:Company {name: $company})
-//         MERGE (u:User {id: $id})
-//         MERGE (u)-[:WORKS_AT]->(c)
-//         `;

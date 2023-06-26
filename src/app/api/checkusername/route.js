@@ -9,7 +9,7 @@ export async function POST(req) {
   }
 
   const params = {
-    TableName: "Usernames",
+    TableName: "Users",
     IndexName: "jtusername-index",
     KeyConditionExpression: "jtusername = :input",
     ExpressionAttributeValues: {

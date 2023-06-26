@@ -30,10 +30,9 @@ const Page = () => {
     // Handle form submission
     console.log(data);
     console.log(username);
-    console.log(isUsernameTaken);
+    // console.log(isUsernameTaken);
     try {
       await axios.post("/api/newusersubmit/hr", {
-        userRole: "hr",
         username: username,
         company: data.company,
         linkedin_profile: data.linkedin_profile,

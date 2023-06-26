@@ -59,3 +59,17 @@ console.log(decodedString); // "hello world"
 
 Lets work on referral submit. small feature
 needs link company, add referrer in new user option
+
+```
+import { S3Client } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+
+const client = new S3Client(config);
+const params = {
+  Bucket: "examplebucket",
+  Key: "exampleobject",
+  Expires: 315360000 // 10 years
+};
+const url = await getSignedUrl(client, "getObject", params);
+
+```

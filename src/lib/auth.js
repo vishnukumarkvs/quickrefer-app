@@ -186,12 +186,6 @@ const jwtCallback = async ({ token, user, session, trigger, isNewUser }) => {
       Item: marshall(dbUser),
     };
 
-    const putParams2 = {
-      TableName: "Usernames",
-      Item: marshall(dbUsernamesResult),
-    };
-
-    await ddbClient.send(new PutItemCommand(putParams2));
     await ddbClient.send(new PutItemCommand(putParams));
   }
 

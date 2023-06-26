@@ -10,7 +10,7 @@ const SearchResults = ({ skill, jobTitle, company, clicked }) => {
     const encodedCompany = encodeURIComponent(company);
     const encodedSkill = encodeURIComponent(skill);
 
-    const url = `https://3dn57btku4.execute-api.us-east-1.amazonaws.com/dev/searchByParameter?jobTitle=${encodedJobTitle}&companyName=${encodedCompany}&skillValue=${encodedSkill}`;
+    const url = `https://e80yu93nsk.execute-api.us-east-1.amazonaws.com/dev/searchByParameter?jobTitle=${encodedJobTitle}&companyName=${encodedCompany}&skillValue=${encodedSkill}`;
 
     try {
       const { data } = await axios.get(url);
