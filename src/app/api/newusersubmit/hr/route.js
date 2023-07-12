@@ -19,9 +19,12 @@ export async function POST(req) {
         pk: { S: `USER#${id}` }, // replace 'userPK' and 'userSK' with actual values
         sk: { S: `USER#${id}` },
       },
-      UpdateExpression: "SET jtusername = :jtusernameVal",
+      UpdateExpression:
+        "SET jtusername = :jtusernameVal, userRole = :userRoleVal, company = :companyVal",
       ExpressionAttributeValues: {
         ":jtusernameVal": { S: username }, // replace 'newUsername' with the new username
+        ":userRoleVal": { S: "HR" },
+        ":companyVal": { S: company },
       },
     };
 

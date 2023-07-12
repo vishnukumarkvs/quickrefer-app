@@ -6,8 +6,10 @@ import Select from "react-select";
 import { toast } from "react-hot-toast";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
+import { useSession } from "next-auth/react";
 
 const ReferralSubmit = () => {
+  const { data: session, status } = useSession();
   const [url, setUrl] = useState("");
   const [company, setCompany] = useState("");
   const [options, setOptions] = useState([]);
@@ -43,7 +45,10 @@ const ReferralSubmit = () => {
 
     try {
       console.log(url, company);
-      // const response = await axios.post("/api/sendURL", { url, company });
+      const response = await axios.post(
+        "https://e80yu93nsk.execute-api.us-east-1.amazonaws.com/dev/referralSubmit",
+        { url: url, company: company.value, targetUserId: session.user.id }
+      );
       toast.success("Referral submitted successfully");
     } catch (err) {
       console.error(err);

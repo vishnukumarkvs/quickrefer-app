@@ -73,3 +73,18 @@ const params = {
 const url = await getSignedUrl(client, "getObject", params);
 
 ```
+
+// Name:
+// Email:
+// Phone Number:
+// Job Title:
+// Company:
+// Location:
+// Experience:
+// Key Skills:
+// Additional Skills:
+// Online Links:
+// Certifications:
+// Projects:
+// Languages:
+// Resume:

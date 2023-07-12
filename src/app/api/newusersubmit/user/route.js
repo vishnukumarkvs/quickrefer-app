@@ -9,7 +9,7 @@ import { UpdateItemCommand } from "@aws-sdk/client-dynamodb";
 export async function POST(req) {
   const session = await getServerSession(authOptions);
 
-  const { username, company, isJobReferrer } = await req.json();
+  const { username, company, isJobReferrer, skills } = await req.json();
   // console.log("resume", resume);
 
   const id = session.user.id;
@@ -31,9 +31,12 @@ export async function POST(req) {
         pk: { S: `USER#${id}` }, // replace 'userPK' and 'userSK' with actual values
         sk: { S: `USER#${id}` },
       },
-      UpdateExpression: "SET jtusername = :jtusernameVal",
+      UpdateExpression:
+        "SET jtusername = :jtusernameVal, userRole = :userRoleVal, company = :companyVal",
       ExpressionAttributeValues: {
-        ":jtusernameVal": { S: username }, // replace 'newUsername' with the new username
+        ":jtusernameVal": { S: username },
+        ":userRoleVal": { S: "User" },
+        ":companyVal": { S: company },
       },
     };
 
@@ -46,12 +49,16 @@ export async function POST(req) {
   try {
     const neo4jSession = driver.session({ database: "neo4j" });
     const query = `
-        WITH $username AS username, $id AS id, $email AS email, $company AS company, $userRole AS userRole, $isJobReferrer AS isJobReferrer
         MERGE (u:User {userId: $id})
         ON CREATE SET u.username = $username, u.email = $email, u.userRole = $userRole, u.isJobReferrer = $isJobReferrer, u.jobReferralScore = 0
         MERGE (c:Company {name: $company})
         MERGE (u)-[:WORKS_AT]->(c)
-        `;
+        WITH u
+        UNWIND $topSkills AS skill
+        MERGE (s:Skill {name: skill})
+        MERGE (u)-[:HAS_TOP_SKILL]->(s)
+        MERGE (c)-[:HAS_SKILL]->(s)
+    `;
     const writeResult = await neo4jSession.executeWrite((tx) =>
       tx.run(query, {
         username: username,
@@ -60,8 +67,10 @@ export async function POST(req) {
         company: company,
         userRole: "User",
         isJobReferrer: isJobReferrer,
+        topSkills: skills,
       })
     );
+
     await neo4jSession.close();
     return new Response({ status: 201 });
   } catch (err) {

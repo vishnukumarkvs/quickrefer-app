@@ -28,8 +28,8 @@ const Page = () => {
   // TODO: update role in ddb auth table
   const onSubmit = async (data) => {
     // Handle form submission
-    console.log(data);
-    console.log(username);
+    // console.log(data);
+    // console.log(username);
     // console.log(isUsernameTaken);
     try {
       await axios.post("/api/newusersubmit/hr", {

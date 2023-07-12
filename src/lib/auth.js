@@ -134,7 +134,7 @@ const authorizeCredentials = async (credentials) => {
 };
 
 const jwtCallback = async ({ token, user, session, trigger, isNewUser }) => {
-  console.log("JWT callback:", { token, user, session, trigger, isNewUser });
+  // console.log("JWT callback:", { token, user, session, trigger, isNewUser });
   const params = {
     TableName: "Users",
     Key: {

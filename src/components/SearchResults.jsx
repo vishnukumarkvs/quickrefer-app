@@ -5,6 +5,7 @@ import axios from "axios";
 import JobCard from "./JobCard"; // Make sure this path points to your JobCard component
 
 const SearchResults = ({ skill, jobTitle, company, clicked }) => {
+  console.log("search results", skill, jobTitle, company, clicked);
   const fetchJobs = async () => {
     const encodedJobTitle = encodeURIComponent(jobTitle);
     const encodedCompany = encodeURIComponent(company);
@@ -14,6 +15,7 @@ const SearchResults = ({ skill, jobTitle, company, clicked }) => {
 
     try {
       const { data } = await axios.get(url);
+      console.log("data", data);
       return data;
     } catch (error) {
       console.error("Error fetching jobs:", error);
