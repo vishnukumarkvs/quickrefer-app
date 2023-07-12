@@ -3,6 +3,23 @@ import { rajdhani } from "@/lib/fonts";
 import Link from "next/link";
 import SignOutButton from "@/components/SignOutButton";
 import { MessagesSquare } from "lucide-react";
+import { usePathname } from "next/navigation";
+
+const SideBarItem = ({ title, href }) => {
+  const pathname = usePathname();
+
+  return (
+    <p
+      className={`${
+        rajdhani.className
+      } py-1 cursor-pointer hover:text-gray-600 ${
+        pathname === href ? "text-gray-600 bg-white -ml-1 p-1 rounded-md" : ""
+      }`}
+    >
+      <Link href={href || "/"}>{title}</Link>
+    </p>
+  );
+};
 
 const SideBar = () => {
   return (
@@ -15,21 +32,10 @@ const SideBar = () => {
             >
               Job Search
             </p>
-            <Link
-              href="/homepage"
-              className={`${rajdhani.className} py-1 cursor-pointer hover:text-gray-600`}
-            >
-              Online Jobs
-            </Link>
-            <p className={`${rajdhani.className} py-1 cursor-pointer`}>
-              Referral Jobs
-            </p>
-            <p className={`${rajdhani.className} py-1 cursor-pointer`}>
-              HR jobs
-            </p>
-            <p className={`${rajdhani.className} py-1 cursor-pointer`}>
-              Ask for Referral
-            </p>
+            <SideBarItem title="Online Jobs" href="/homepage" />
+            <SideBarItem title="Referral Jobs" />
+            <SideBarItem title="HR jobs" />
+            <SideBarItem title="Ask for Referral" />
           </div>
           <div className="my-10">
             <p
@@ -38,15 +44,9 @@ const SideBar = () => {
             >
               Job Status
             </p>
-            <p className={`${rajdhani.className} py-1 cursor-pointer`}>
-              Applied Jobs
-            </p>
-            <p className={`${rajdhani.className} py-1 cursor-pointer`}>
-              Saved Jobs
-            </p>
-            <p className={`${rajdhani.className} py-1 cursor-pointer`}>
-              Jobs Dashboard
-            </p>
+            <SideBarItem title="Applied Jobs" />
+            <SideBarItem title="Saved Jobs" />
+            <SideBarItem title="Jobs Dashboard" />
           </div>
           <div className="my-10">
             <p
@@ -54,25 +54,19 @@ const SideBar = () => {
             >
               Job Create
             </p>
-            <p className={`${rajdhani.className} py-1 cursor-pointer`}>
-              Create Job
-            </p>
-            <p className={`${rajdhani.className} py-1 cursor-pointer`}>
-              Dashboard
-            </p>
+            <SideBarItem title="Create Job" href="/addjob" />
+            <SideBarItem title="Dashboard" />
           </div>
           <div className="my-12">
-            <div className="">
-              <a
-                href="/homepage"
-                className={`${rajdhani.className} py-1 cursor-pointer`}
-              >
-                <span className="flex gap-x-2 items-center">
-                  Chat
-                  <MessagesSquare size={20} />
-                </span>
-              </a>
-            </div>
+            <a
+              href="/homepage"
+              className={`${rajdhani.className} py-1 cursor-pointer`}
+            >
+              <span className="flex gap-x-2 items-center">
+                Chat
+                <MessagesSquare size={20} />
+              </span>
+            </a>
           </div>
         </div>
         <div className="flex items-center">
