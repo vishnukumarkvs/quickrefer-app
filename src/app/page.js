@@ -1,4 +1,3 @@
-import SignOutButton from "@/components/SignOutButton";
 import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
 
@@ -11,7 +10,6 @@ export default async function Home() {
         name
         <pre>{JSON.stringify(session, null, 2)}</pre>
       </div>
-      <SignOutButton />
     </main>
   );
 }

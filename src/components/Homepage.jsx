@@ -19,8 +19,8 @@ const Homepage = () => {
   };
 
   return (
-    <div className="w-full">
-      <div>
+    <div className="w-full mt-4">
+      <div className="flex flex-col items-center">
         <SearchBar onSearch={handleSearch} />
         <SearchResults
           skill={searchData.skill}

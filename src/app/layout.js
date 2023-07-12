@@ -1,8 +1,7 @@
 import Provider from "@/components/Providers";
 import "./globals.css";
-import { Inter } from "next/font/google";
-
-const inter = Inter({ subsets: ["latin"] });
+import SideBar from "@/components/Sidebar";
+import { inter } from "@/lib/fonts";
 
 export const metadata = {
   title: "Create Next App",
@@ -12,8 +11,11 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className="bg-[#fbf9f0]">
-        <Provider>{children}</Provider>
+      <body className={`bg-[#fbf9f0] flex ${inter.classname}`}>
+        <Provider>
+          <SideBar />
+          {children}
+        </Provider>
       </body>
     </html>
   );
