@@ -88,3 +88,6 @@ const url = await getSignedUrl(client, "getObject", params);
 // Projects:
 // Languages:
 // Resume:
+
+// scrollbar
+// https://youtu.be/RaeXdPsSvfM

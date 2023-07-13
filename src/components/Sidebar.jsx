@@ -24,7 +24,7 @@ const SideBarItem = ({ title, href }) => {
 const SideBar = () => {
   return (
     <div className="w-[25%] md:w-[20%] lg:w-[15%] min-w-[200px] max-w-[300px] h-screen bg-[#ffc800]">
-      <div className="mt-10 flex flex-col justify-center items-center">
+      <div className="mt-5 flex flex-col justify-center items-center">
         <div className="text-left">
           <div className="my-10">
             <p
@@ -35,7 +35,7 @@ const SideBar = () => {
             <SideBarItem title="Online Jobs" href="/homepage" />
             <SideBarItem title="Referral Jobs" />
             <SideBarItem title="HR jobs" />
-            <SideBarItem title="Ask for Referral" />
+            <SideBarItem title="Ask for Referral" href="/askforreferral" />
           </div>
           <div className="my-10">
             <p
