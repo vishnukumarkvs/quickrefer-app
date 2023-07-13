@@ -91,3 +91,5 @@ const url = await getSignedUrl(client, "getObject", params);
 
 // scrollbar
 // https://youtu.be/RaeXdPsSvfM
+
+applied, viewed , shortlisted, result

@@ -44,9 +44,8 @@ const SideBar = () => {
             >
               Job Status
             </p>
-            <SideBarItem title="Applied Jobs" />
+            <SideBarItem title="Kanban Board" href="/kanbanjobstatus" />
             <SideBarItem title="Saved Jobs" />
-            <SideBarItem title="Jobs Dashboard" />
           </div>
           <div className="my-10">
             <p
