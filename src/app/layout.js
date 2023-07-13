@@ -2,6 +2,7 @@ import Provider from "@/components/Providers";
 import "./globals.css";
 import SideBar from "@/components/Sidebar";
 import { inter } from "@/lib/fonts";
+import TopBar from "@/components/TopBar";
 
 export const metadata = {
   title: "Create Next App",
@@ -11,10 +12,13 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`bg-[#fbf9f0] flex ${inter.classname}`}>
+      <body className={`bg-[#fbf9f0] ${inter.classname}`}>
         <Provider>
-          <SideBar />
-          {children}
+          {/* <TopBar /> */}
+          <div className="flex">
+            <SideBar className="w-1/4" />
+            <main className="flex-grow">{children}</main>
+          </div>
         </Provider>
       </body>
     </html>

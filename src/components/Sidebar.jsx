@@ -23,7 +23,7 @@ const SideBarItem = ({ title, href }) => {
 
 const SideBar = () => {
   return (
-    <div className="w-[25%] md:w-[20%] lg:w-[15%] min-w-[200px] max-w-[300px] h-screen bg-[#ffc800]">
+    <div className="w-[25%] md:w-[20%] lg:w-[15%] min-w-[200px] max-w-[300px] h-screen bg-[#ffc800] border">
       <div className="mt-5 flex flex-col justify-center items-center">
         <div className="text-left">
           <div className="my-10">
