@@ -1,9 +1,15 @@
 "use client";
 
-import Kanban from "@/components/Kanban";
+import ApplyKanban from "@/components/ApplyKanban";
+import ReferralKanban from "@/components/ReferralKanban";
 
 const Page = () => {
-  return <Kanban />;
+  return (
+    <>
+      {/* <ApplyKanban /> */}
+      <ReferralKanban />
+    </>
+  );
 };
 
 export default Page;

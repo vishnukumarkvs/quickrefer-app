@@ -6,13 +6,13 @@ import { Input } from "./ui/input";
 import DatePickerWithRange from "./DateRangePicker";
 
 const initialJobs = [
-  { id: 1, title: "job 1", status: "Applied", appliedDate: "2023-06-01" },
-  { id: 2, title: "job 2", status: "Applied", appliedDate: "2023-06-03" },
-  { id: 3, title: "job 3", status: "Shortlisted", appliedDate: "2023-06-10" },
-  { id: 4, title: "job 4", status: "Done", appliedDate: "2023-06-15" },
+  { id: 1, title: "job 1", status: "Requested", appliedDate: "2023-06-01" },
+  { id: 2, title: "job 2", status: "Requested", appliedDate: "2023-06-03" },
+  { id: 3, title: "job 3", status: "Chat Mode", appliedDate: "2023-06-10" },
+  { id: 4, title: "job 4", status: "Result", appliedDate: "2023-06-15" },
 ];
 
-const Kanban = () => {
+const ReferralKanban = () => {
   const [selectedDates, setSelectedDates] = useState(null);
   const handleDateChange = (dateRange) => {
     setSelectedDates(dateRange);
@@ -54,8 +54,8 @@ const Kanban = () => {
           <DatePickerWithRange onDateChange={handleDateChange} />
         </div>
       </div>
-      <div className="w-full flex justify-between p-5 gap-x-2">
-        {["Applied", "Viewed", "Shortlisted", "Result"].map((status) => (
+      <div className="w-full flex justify-between p-5 gap-x-4">
+        {["Requested", "Chat Mode", "Result"].map((status) => (
           <Column
             key={status}
             status={status}
@@ -69,7 +69,7 @@ const Kanban = () => {
 
 const Column = ({ status, jobs }) => {
   return (
-    <div className="w-1/4 bg-gray-200 p-2 rounded border border-gray-300">
+    <div className="w-1/3 bg-gray-200 p-2 rounded border border-gray-300">
       <h2 className="text-lg font-bold mb-2 text-center border-b pb-1">
         {status}
       </h2>
@@ -90,4 +90,4 @@ const Card = ({ job }) => {
     </div>
   );
 };
-export default Kanban;
+export default ReferralKanban;
