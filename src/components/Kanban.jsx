@@ -42,7 +42,7 @@ const Kanban = () => {
         <div className="w-full">
           <Input
             type="text"
-            placeholder="Search here for any applied job"
+            placeholder="Search here for any applied job ..."
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
             className="p-2 border border-zinc-400 rounded placeholder:italic placeholder:text-slate-500"

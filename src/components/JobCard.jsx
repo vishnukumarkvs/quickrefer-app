@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Card,
   CardContent,
@@ -7,11 +9,15 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "./ui/button";
+import axios from "axios";
+import { useMutation } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 
 const JobCard = ({ jobData }) => {
   const {
     job: {
       properties: {
+        jobId,
         jobTitle,
         description,
         highSalary,
@@ -25,6 +31,25 @@ const JobCard = ({ jobData }) => {
     skills,
     company,
   } = jobData;
+
+  const applyToJob = () => {
+    return axios
+      .post("/api/applyjob", { jobId: jobId })
+      .then((res) => res.data);
+  };
+
+  const mutation = useMutation(applyToJob, {
+    onSuccess: () => {
+      console.log("Applied to job");
+    },
+    onError: (error) => {
+      toast.error(`Application failed: ${error.message}`);
+    },
+  });
+
+  const handleClick = () => {
+    mutation.mutate();
+  };
 
   return (
     <Card>
@@ -49,7 +74,16 @@ const JobCard = ({ jobData }) => {
         {/* <Link href={`/jobs/${id}`}>
           <a className="ml-auto text-primary">View Details</a>
         </Link> */}
-        <Button>Apply</Button>
+        <Button
+          onClick={handleClick}
+          disabled={mutation.isLoading || mutation.isSuccess}
+        >
+          {mutation.isLoading
+            ? "Applying..."
+            : mutation.isSuccess
+            ? "Applied"
+            : "Apply"}
+        </Button>
       </CardFooter>
     </Card>
   );
