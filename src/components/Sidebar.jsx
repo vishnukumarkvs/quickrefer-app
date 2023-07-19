@@ -58,7 +58,7 @@ const SideBar = () => {
           </div>
           <div className="my-12">
             <a
-              href="/homepage"
+              href="/dashboard"
               className={`${rajdhani.className} py-1 cursor-pointer`}
             >
               <span className="flex gap-x-2 items-center">

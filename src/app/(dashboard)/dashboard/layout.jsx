@@ -12,25 +12,31 @@ const { Icons } = require("@/components/chat/icons");
 const { notFound } = require("next/navigation");
 
 const sidebarOptions = [
-  {
-    id: 1,
-    name: "Add Friend",
-    href: "/dashboard/add",
-    Icon: "UserPlus",
-  },
+  // {
+  //   id: 1,
+  //   name: "Add Friend",
+  //   href: "/dashboard/add",
+  //   Icon: "UserPlus",
+  // },
 ];
 
 const Layout = async ({ children }) => {
   const session = await getServerSession(authOptions);
 
   const friends = await getFriendsByUserIds(session.user.id);
-  const unseenRequestCount = (
-    await driver.session().run(
-      `MATCH (u:User {userId: $userId})-[:SENT_FRIEND_REQUEST]->(u2:User)
-        RETURN u2`,
-      { userId: session.user.id }
-    )
-  ).length;
+  console.log(friends);
+  const result = await driver.session().run(
+    `
+  MATCH (u:User {userId: $userId})<-[:SENT_FRIEND_REQUEST]-(u2:User)
+  RETURN u2
+  `,
+    { userId: session.user.id }
+  );
+
+  const unseenRequestCount = result.records.length;
+  console.log(unseenRequestCount);
+
+  console.log(unseenRequestCount);
   if (!session) notFound(); // this wont be called if you handle it in middleware
 
   return (
@@ -52,22 +58,23 @@ const Layout = async ({ children }) => {
                 Overview
               </div>
               <ul role="list" className="-mx-2 mt-2 space-y-1">
-                {sidebarOptions.map((option) => {
-                  const Icon = Icons[option.Icon];
-                  return (
-                    <li key={option.id}>
-                      <Link
-                        href={option.href}
-                        className="text-gray-700 hover:text-indigo-600 hover-bg-gray-50 group flex gap-3 rounded-md p-2 text-sm leading-6 font-semibold"
-                      >
-                        <span className="text-gray-400 border-gray-400 group-hover:border-indigo-600 group-hover:text-indigo-600 flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border text-[0.625rem] font-medium bg-white">
-                          <Icon className="h-4 w-4" />
-                        </span>
-                        <span className="truncate">{option.name}</span>
-                      </Link>
-                    </li>
-                  );
-                })}
+                {sidebarOptions &&
+                  sidebarOptions.map((option) => {
+                    const Icon = Icons[option.Icon];
+                    return (
+                      <li key={option.id}>
+                        <a
+                          href={option.href}
+                          className="text-gray-700 hover:text-indigo-600 hover-bg-gray-50 group flex gap-3 rounded-md p-2 text-sm leading-6 font-semibold"
+                        >
+                          <span className="text-gray-400 border-gray-400 group-hover:border-indigo-600 group-hover:text-indigo-600 flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border text-[0.625rem] font-medium bg-white">
+                            <Icon className="h-4 w-4" />
+                          </span>
+                          <span className="truncate">{option.name}</span>
+                        </a>
+                      </li>
+                    );
+                  })}
               </ul>
             </li>
             <li>

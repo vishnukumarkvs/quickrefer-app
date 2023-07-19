@@ -6,6 +6,7 @@ import Select from "react-select";
 
 import ReferralSubmit from "@/components/ReferralSubmit";
 import { Button } from "@/components/ui/button";
+import AddFriendButton from "@/components/chat/AddFriendButton";
 
 const Page = () => {
   const [options, setOptions] = useState([]);
@@ -85,13 +86,16 @@ const Page = () => {
           />
           <Button type="submit">Fetch</Button>
         </form>
-        {users.map((user, index) => (
-          <div key={index} className="flex justify-around">
-            <p>{index + 1}.</p>
-            <h2>{user.username}</h2>
-            <p>{user.email}</p>
-          </div>
-        ))}
+        <div className="my-5">
+          {users.map((user, index) => (
+            <div key={index} className="flex justify-around py-2">
+              <p>{index + 1}.</p>
+              <h2>{user.username}</h2>
+              <p>{user.email}</p>
+              <AddFriendButton id={user.userId} />
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

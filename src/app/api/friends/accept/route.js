@@ -23,14 +23,16 @@ export async function POST(req) {
     // );
 
     const isAlreadyFriendsQuery = `
-      MATCH (u:User {id: $userId})-[r:FRIENDS_WITH]-(f:User {id: $friendId})
+      MATCH (u:User {userId: $userId})-[r:FRIENDS_WITH]-(f:User {userId: $friendId})
       RETURN COUNT(r) > 0 AS isAlreadyFriends
     `;
 
-    const isAlreadyFriends = await driver.session().run(isAlreadyFriendsQuery, {
+    const result0 = await driver.session().run(isAlreadyFriendsQuery, {
       userId: session.user.id,
       friendId: idToAdd,
     });
+
+    const isAlreadyFriends = result0.records[0].get("isAlreadyFriends");
 
     if (isAlreadyFriends) {
       return new Response("Already friends", { status: 400 }); // 400 = BAD REQUEST
@@ -44,13 +46,15 @@ export async function POST(req) {
     // );
 
     const hasFriendRequestQuery = `
-      MATCH (u:User {id: $userId})-[r:SENT_FRIEND_REQUEST]-(f:User {id: $friendId})
+      MATCH (u:User {userId: $userId})-[r:SENT_FRIEND_REQUEST]-(f:User {userId: $friendId})
       RETURN COUNT(r) > 0 AS hasFriendRequest
     `;
-    const hasFriendRequest = await driver.session().run(hasFriendRequestQuery, {
+    const result1 = await driver.session().run(hasFriendRequestQuery, {
       userId: session.user.id,
       friendId: idToAdd,
     });
+
+    const hasFriendRequest = result1.records[0].get("hasFriendRequest");
 
     if (!hasFriendRequest) {
       return new Response("No friend request", { status: 400 });
@@ -67,7 +71,7 @@ export async function POST(req) {
     // await redis.sadd(`user:${idToAdd}:friends`, session.user.id);
 
     const addFriendQuery = `
-      MATCH (u:User {id: $userId}), (f:User {id: $friendId})
+      MATCH (u:User {userId: $userId}), (f:User {userId: $friendId})
       CREATE (u)-[r:FRIENDS_WITH]->(f)
       CREATE (f)-[r2:FRIENDS_WITH]->(u)
       WITH r, r2

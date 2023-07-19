@@ -32,7 +32,7 @@ const FriendRequestsSidebarOption = ({
     };
   }, [sessionId]);
   return (
-    <Link
+    <a
       href="/dashboard/requests"
       className="text-gray-700 hover:text-indigo-600  group flex items-center gap-x-3 rounded-md  text-sm leading-6 font-semibold"
     >
@@ -45,7 +45,7 @@ const FriendRequestsSidebarOption = ({
           {unseenRequestsCount}
         </div>
       ) : null}
-    </Link>
+    </a>
   );
 };
 
