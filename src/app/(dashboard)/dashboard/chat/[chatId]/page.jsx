@@ -24,18 +24,27 @@ const Page = async ({ params }) => {
     .session()
     .run(
       `
-        MATCH (u:User {userId: $userId})
-        RETURN u.email as email, u.username as name
-        `,
+    MATCH (u:User {userId: $userId})
+    RETURN u.userId as userId, u.email as email, u.username as name
+    `,
       { userId: chatPartnerId }
     )
     .then((result) => {
-      return result.records.map((record) => record.get("u"));
+      const record = result.records[0];
+      if (record) {
+        return {
+          userId: record.get("userId"),
+          email: record.get("email"),
+          name: record.get("name"),
+        };
+      } else {
+        return null;
+      }
     });
 
-  console.log(chatPartner);
+  // console.log(chatPartner);
 
-  console.log(params.chatId);
+  // console.log("roberto", params.chatId);
 
   return (
     <div className="flex-1 justify-between flex flex-col h-full max-h-[calc(100vh-6rem)]">

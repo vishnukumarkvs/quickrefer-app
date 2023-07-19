@@ -1,5 +1,5 @@
 import { db } from "@/lib/firebase";
-import { get, ref, update } from "firebase/database";
+import { ref, get, update } from "firebase/database";
 
 export const updateSeenStatus = async (chatId, userId) => {
   const chatRef = ref(db, `chat/${chatId}/messages`);

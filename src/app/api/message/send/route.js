@@ -9,6 +9,7 @@ import driver from "@/lib/neo4jClient";
 export async function POST(req) {
   try {
     const { text, chatId } = await req.json();
+    console.log("message api", text, chatId);
     const session = await getServerSession(authOptions);
     if (!session) return new Response("Unauthorized", { status: 401 });
 
@@ -20,12 +21,13 @@ export async function POST(req) {
     const friendId = session.user.id === userId1 ? userId2 : userId1;
 
     const friendListQuery = `
-      MATCH (u:User {id: $userId})-[r:FRIENDS_WITH]-(f:User)
-      RETURN f.id as friendId
+      MATCH (u:User {userId: $userId})-[r:FRIENDS_WITH]-(f:User)
+      RETURN f.userId as friendId
     `;
-    const friendList = await driver.session().run(friendListQuery, {
+    const result = await driver.session().run(friendListQuery, {
       userId: session.user.id,
     });
+    const friendList = result.records.map((record) => record.get("friendId"));
     const isFriend = friendList.includes(friendId);
 
     if (!isFriend) return new Response("Unauthorized", { status: 401 });

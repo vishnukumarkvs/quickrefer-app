@@ -24,7 +24,8 @@ const Layout = async ({ children }) => {
   const session = await getServerSession(authOptions);
 
   const friends = await getFriendsByUserIds(session.user.id);
-  console.log(friends);
+  // console.log("hola fries", friends);
+  //   { userId: '-3b6b-4d8a-cee73ec2cddc', name: 'vishnukvs' }
   const result = await driver.session().run(
     `
   MATCH (u:User {userId: $userId})<-[:SENT_FRIEND_REQUEST]-(u2:User)

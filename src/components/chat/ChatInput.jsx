@@ -10,6 +10,8 @@ import axios from "axios";
 // button inside text-area
 
 const ChatInput = ({ chatPartner, chatId }) => {
+  // console.log("chatPartner in input", chatPartner);
+  // console.log("chatId in input", chatId);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const textareaRef = useRef(null);
