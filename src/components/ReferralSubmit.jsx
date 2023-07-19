@@ -8,37 +8,10 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { useSession } from "next-auth/react";
 
-const ReferralSubmit = () => {
+const ReferralSubmit = ({ options }) => {
   const { data: session, status } = useSession();
   const [url, setUrl] = useState("");
   const [company, setCompany] = useState("");
-  const [options, setOptions] = useState([]);
-
-  // TODO: Make it run once a day
-  // If using aws neptune, use lambda api gw. Check neo4j lambda example
-  useEffect(() => {
-    const fetchOptions = async () => {
-      try {
-        // Perform the scan operation
-        const data = await axios.get("/api/getCompanyList");
-        // console.log(data.data.records[0]._fields[0]);
-        const listt = data.data.records[0]._fields[0];
-
-        // // Extract the options from the response and update the state
-        const extractedOptions = listt.map((item) => ({
-          value: item,
-          label: item,
-        }));
-        // console.log(extractedOptions);
-
-        setOptions(extractedOptions);
-      } catch (error) {
-        console.error("Error fetching options from neo4j:", error);
-      }
-    };
-
-    fetchOptions();
-  }, []);
 
   const submitHandler = async (e) => {
     e.preventDefault();
