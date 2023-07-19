@@ -86,7 +86,7 @@ const Page = () => {
           <Button type="submit">Fetch</Button>
         </form>
         {users.map((user, index) => (
-          <div key={index} className="flex justify-around text-left">
+          <div key={index} className="flex justify-around">
             <p>{index + 1}.</p>
             <h2>{user.username}</h2>
             <p>{user.email}</p>

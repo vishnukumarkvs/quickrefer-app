@@ -70,6 +70,9 @@ export async function POST(req) {
       MATCH (u:User {id: $userId}), (f:User {id: $friendId})
       CREATE (u)-[r:FRIENDS_WITH]->(f)
       CREATE (f)-[r2:FRIENDS_WITH]->(u)
+      WITH r, r2
+      MATCH (u)-[sent:SENT_FRIEND_REQUEST]->(f)
+      DELETE sent
     `;
 
     await driver.session().run(addFriendQuery, {
@@ -81,16 +84,6 @@ export async function POST(req) {
     //   `user:${session.user.id}:incoming_friend_requests`,
     //   idToAdd
     // );
-
-    const removeFriendRequestQuery = `
-      MATCH (u:User {id: $userId})-[r:SENT_FRIEND_REQUEST]-(f:User {id: $friendId})
-      DELETE r
-    `;
-
-    await driver.session().run(removeFriendRequestQuery, {
-      userId: session.user.id,
-      friendId: idToAdd,
-    });
 
     return new Response("OK");
   } catch (error) {

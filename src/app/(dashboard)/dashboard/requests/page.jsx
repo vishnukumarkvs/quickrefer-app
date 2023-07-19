@@ -18,13 +18,15 @@ const Page = async () => {
     .run(
       `
         MATCH (u:User {userId: $userId})<-[:SENT_FRIEND_REQUEST]-(u2:User)
-        RETURN u2.id
+        RETURN u2.userId
         `,
       { userId: session.user.id }
     )
     .then((result) => {
-      return result.records.map((record) => record.get("u2.id"));
+      return result.records.map((record) => record.get("u2.userId"));
     });
+
+  console.log("incomingSenderIds", incomingSenderIds);
 
   // console.log(incomingSenderIds);
   const incomingFriendRequests = await Promise.all(
@@ -40,13 +42,12 @@ const Page = async () => {
           { userId: senderId }
         )
         .then((result) => {
-          return result.records.map((record) => record.get("u"));
+          return result.records.map((record) => record.get("email"));
         });
 
-      const senderParsed = JSON.parse(sender);
       return {
         senderId,
-        senderEmail: senderParsed.email,
+        senderEmail: sender[0],
       };
     })
   );

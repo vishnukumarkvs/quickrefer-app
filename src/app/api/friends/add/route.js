@@ -8,9 +8,9 @@ import driver from "@/lib/neo4jClient";
 
 export async function POST(req) {
   try {
-    const body = await req.json();
+    const { id: idToAdd } = await req.json();
+
     // const { email: emailToAdd } = addFriendValidator.parse(body.email);
-    const { id: idToAdd } = addFriendValidator.parse(body.email);
 
     const session = await getServerSession(authOptions);
     if (!session) {
@@ -23,6 +23,8 @@ export async function POST(req) {
       });
     }
 
+    console.log("idToAdd", idToAdd, "session.user.id", session.user.id);
+
     // if user already added
     // const isAlreadyAdded =
     //   (await fetchRedis(
@@ -32,13 +34,17 @@ export async function POST(req) {
     //   )) === 1;
 
     const isAlreadyAddedQuery = `
-      MATCH (u:User {id: $userId})-[r:SENT_FRIEND_REQUEST]-(f:User {id: $friendId})
+      MATCH (u:User {userId: $userId})-[r:SENT_FRIEND_REQUEST]-(f:User {userId: $friendId})
       RETURN COUNT(r) > 0 AS isAlreadyAdded
     `;
-    const isAlreadyAdded = await driver.session().run(isAlreadyAddedQuery, {
+    const result = await driver.session().run(isAlreadyAddedQuery, {
       userId: session.user.id,
       friendId: idToAdd,
     });
+
+    const isAlreadyAdded = result.records[0].get("isAlreadyAdded");
+
+    console.log("isAlreadyAdded", isAlreadyAdded);
 
     if (isAlreadyAdded) {
       return new Response("You already sent request", { status: 400 });
@@ -52,13 +58,15 @@ export async function POST(req) {
     //   )) === 1;
 
     const isAlreadyFriendsQuery = `
-      MATCH (u:User {id: $userId})-[r:FRIENDS_WITH]-(f:User {id: $friendId})
+      MATCH (u:User {userId: $userId})-[r:FRIENDS_WITH]-(f:User {userId: $friendId})
       RETURN COUNT(r) > 0 AS isAlreadyFriends
     `;
-    const isAlreadyFriends = await driver.session().run(isAlreadyFriendsQuery, {
+    const result2 = await driver.session().run(isAlreadyFriendsQuery, {
       userId: session.user.id,
       friendId: idToAdd,
     });
+
+    const isAlreadyFriends = result2.records[0].get("isAlreadyFriends");
 
     if (isAlreadyFriends) {
       return new Response("You already added this person", { status: 400 });
@@ -77,7 +85,7 @@ export async function POST(req) {
 
     // add friend request to neo4j
     const addFriendRequestQuery = `
-      MATCH (u:User {id: $userId}), (f:User {id: $friendId})
+      MATCH (u:User {userId: $userId}), (f:User {userId: $friendId})
       CREATE (u)-[:SENT_FRIEND_REQUEST]->(f)
     `;
     await driver.session().run(addFriendRequestQuery, {
