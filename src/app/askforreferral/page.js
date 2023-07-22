@@ -6,6 +6,16 @@ import Select from "react-select";
 
 import ReferralSubmit from "@/components/ReferralSubmit";
 import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+
 import AddFriendButton from "@/components/chat/AddFriendButton";
 
 const Page = () => {
@@ -87,14 +97,29 @@ const Page = () => {
           <Button type="submit">Fetch</Button>
         </form>
         <div className="my-5">
-          {users.map((user, index) => (
-            <div key={index} className="flex justify-around py-2">
-              <p>{index + 1}.</p>
-              <h2>{user.username}</h2>
-              <p>{user.email}</p>
-              <AddFriendButton id={user.userId} />
-            </div>
-          ))}
+          <Table>
+            <TableCaption>A list of potential referrers.</TableCaption>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[100px]">No</TableHead>
+                <TableHead>Name</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead className="text-right">Send</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {users.map((user, index) => (
+                <TableRow key={index}>
+                  <TableCell>{index + 1}</TableCell>
+                  <TableCell>{user.username}</TableCell>
+                  <TableCell>{user.email}</TableCell>
+                  <TableCell className="text-right">
+                    <AddFriendButton id={user.id} />
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </div>
       </div>
     </div>

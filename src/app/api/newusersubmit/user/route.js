@@ -24,6 +24,11 @@ export async function POST(req) {
   // const data = await s3Client.send(command);
   // console.log("data", data);
 
+  let userRole = "User";
+  if (isJobReferrer) {
+    userRole = "Referrer";
+  }
+
   try {
     const paramsUpdate = {
       TableName: "Users",
@@ -35,7 +40,7 @@ export async function POST(req) {
         "SET jtusername = :jtusernameVal, userRole = :userRoleVal, company = :companyVal",
       ExpressionAttributeValues: {
         ":jtusernameVal": { S: username },
-        ":userRoleVal": { S: "User" },
+        ":userRoleVal": { S: userRole },
         ":companyVal": { S: company },
       },
     };
@@ -50,7 +55,7 @@ export async function POST(req) {
     const neo4jSession = driver.session({ database: "neo4j" });
     const query = `
         MERGE (u:User {userId: $id})
-        ON CREATE SET u.username = $username, u.email = $email, u.userRole = $userRole, u.isJobReferrer = $isJobReferrer, u.jobReferralScore = 0
+        ON CREATE SET u.username = $username, u.email = $email, u.userRole = $userRole, u.ReferralScore = 0
         MERGE (c:Company {name: $company})
         MERGE (u)-[:WORKS_AT]->(c)
         WITH u
@@ -65,8 +70,7 @@ export async function POST(req) {
         id: id,
         email: email,
         company: company,
-        userRole: "User",
-        isJobReferrer: isJobReferrer,
+        userRole: userRole,
         topSkills: skills,
       })
     );

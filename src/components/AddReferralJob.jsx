@@ -17,6 +17,12 @@ import { options } from "@/assets/location-options";
 import AsyncSelect from "react-select/async";
 import { useSession } from "next-auth/react";
 import { nanoid } from "nanoid";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 const filterColors = (inputValue) => {
   return options.filter((i) =>
@@ -59,7 +65,7 @@ const defaultLocationOptions = [
   { value: "Gurgaon, India", label: "Gurgaon, India" },
 ];
 
-const AddJob = ({ company, userid, userRole }) => {
+const AddReferralJob = ({ company, userid, userRole }) => {
   const { data: session, status } = useSession();
   // console.log("hola", company);
 
@@ -146,11 +152,11 @@ const AddJob = ({ company, userid, userRole }) => {
     <div className="w-full h-full bg-transparent flex items-center justify-center py-5">
       <div className="bg-white border-2 border-[#ffc800e5] rounded-lg shadow-md max-w-lg mx-auto py-2 px-7">
         <p className="text-3xl font-bold mb-3 text-center text-gray-700">
-          Create A Job Post
+          Create A Referral Job Post
         </p>
         {/* <p>{JSON.stringify(session)}</p> */}
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center justify-between mb-4">
             <p className="font-semibold text-lg">Job Title: </p>
             <Input
               {...register("jobTitle")}
@@ -162,14 +168,26 @@ const AddJob = ({ company, userid, userRole }) => {
             />
           </div>
 
-          <div className="flex items-start justify-between mb-6">
+          {/* referral specific */}
+          <div className="flex items-center justify-between mb-4">
+            <p className="font-semibold text-lg">Job URL: </p>
+            <Input
+              {...register("jobUrl")}
+              required
+              type="url"
+              id="Job URL"
+              placeholder="https://example.com"
+              className="placeholder:text-slate-400 h-10 pl-5 pr-10 rounded text-sm focus:outline-none w-2/3"
+            />
+          </div>
+
+          <div className="flex items-start justify-between mb-4">
             <p className="font-semibold text-lg">Skills required: </p>
-            {/* <SkillAdder control={control} name="skills" className="w-2/3" /> */}
             <Controller
               name="skills"
               control={control}
               defaultValue=""
-              rules={{ required: true }} // optional validation rule
+              rules={{ required: true }}
               render={({ field }) => (
                 <CreatableSelect
                   {...field}
@@ -183,121 +201,126 @@ const AddJob = ({ company, userid, userRole }) => {
             />
           </div>
 
-          <div className="flex items-center justify-between mb-6">
-            <p className="font-semibold text-lg">Experience: </p>
-            <div className="flex items-center">
-              <Input
-                {...register("baseExp", { valueAsNumber: true })}
-                className="w-16 text-center mr-2 placeholder:text-slate-400 rounded"
-                placeholder="2"
-                required
-              />
-              <p>-</p>
-              <Input
-                {...register("highExp", { valueAsNumber: true })}
-                className="w-16 text-center ml-2 mr-2 placeholder:text-slate-400 rounded"
-                placeholder="4"
-                required
-              />
-              {/* <SelectDropdown
-                name="expUnit"
-                control={control}
-                selectItems={experienceOptions}
-                defaultValue={defaultExperienceValue}
-                className="w-24"
-              /> */}
-              <Controller
-                name="experienceUnit"
-                control={control}
-                defaultValue={defaultExperienceValue}
-                rules={{ required: true }} // optional validation rule
-                render={({ field }) => (
-                  <Select
-                    {...field}
-                    defaultValue={defaultExperienceValue}
-                    options={experienceOptions}
-                  />
-                )}
-              />
-            </div>
-          </div>
-
-          <div className="flex items-center justify-between mb-6">
-            <p className="font-semibold text-lg mr-2">Est Salary Range: </p>
-            <div className="flex items-center">
-              <Input
-                {...register("baseSalary", { valueAsNumber: true })}
-                className="w-16 text-center mr-2 placeholder:text-slate-400 rounded"
-                placeholder="10"
-                required
-              />
-              <p>-</p>
-              <Input
-                {...register("highSalary", { valueAsNumber: true })}
-                className="w-16 text-center ml-2 mr-2 placeholder:text-slate-400 rounded"
-                placeholder="12"
-                required
-              />
-              <Controller
-                name="salaryUnit"
-                control={control}
-                defaultValue={defaultSalaryValue}
-                rules={{ required: true }} // optional validation rule
-                render={({ field }) => (
-                  <Select
-                    {...field}
-                    defaultValue={defaultSalaryValue}
-                    options={salaryOptions}
-                  />
-                )}
-              />
-            </div>
-          </div>
-
-          <div className="flex justify-between items-center mb-6">
-            <p className="font-semibold text-lg mr-2">Location: </p>
-            <div className="w-[60%]">
-              <Controller
-                name="locations"
-                control={control}
-                defaultValue=""
-                rules={{ required: true }}
-                render={({ field }) => (
-                  <div className="w-full">
-                    <AsyncSelect
-                      {...field}
-                      placeholder="Search..."
-                      loadOptions={loadOptions}
-                      defaultOptions={defaultLocationOptions}
-                      isClearable
-                      isSearchable
-                      isMulti
+          {/* Advanced Settings */}
+          <Accordion className="p-2">
+            <AccordionItem>
+              <AccordionTrigger className="font-semibold text-lg">
+                Advanced Settings
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className="flex items-center justify-between mb-4">
+                  <p className="font-semibold text-lg">Experience: </p>
+                  <div className="flex items-center">
+                    <Input
+                      {...register("baseExp", { valueAsNumber: true })}
+                      className="w-16 text-center mr-2 placeholder:text-slate-400 rounded"
+                      placeholder="2"
                       required
                     />
+                    <p>-</p>
+                    <Input
+                      {...register("highExp", { valueAsNumber: true })}
+                      className="w-16 text-center ml-2 mr-2 placeholder:text-slate-400 rounded"
+                      placeholder="4"
+                      required
+                    />
+                    <Controller
+                      name="experienceUnit"
+                      control={control}
+                      defaultValue={defaultExperienceValue}
+                      rules={{ required: true }} // optional validation rule
+                      render={({ field }) => (
+                        <Select
+                          {...field}
+                          defaultValue={defaultExperienceValue}
+                          options={experienceOptions}
+                        />
+                      )}
+                    />
                   </div>
-                )}
-              />
-            </div>
-          </div>
+                </div>
 
-          <div className="flex items-center justify-between mb-6">
-            <p className="font-semibold text-lg">Expires At: </p>
-            <div className="flex items-center">
-              <DatePicker control={control} name="date" />
-            </div>
-          </div>
+                <div className="flex items-center justify-between mb-4">
+                  <p className="font-semibold text-lg mr-2">
+                    Est Salary Range:{" "}
+                  </p>
+                  <div className="flex items-center">
+                    <Input
+                      {...register("baseSalary", { valueAsNumber: true })}
+                      className="w-16 text-center mr-2 placeholder:text-slate-400 rounded"
+                      placeholder="10"
+                      required
+                    />
+                    <p>-</p>
+                    <Input
+                      {...register("highSalary", { valueAsNumber: true })}
+                      className="w-16 text-center ml-2 mr-2 placeholder:text-slate-400 rounded"
+                      placeholder="12"
+                      required
+                    />
+                    <Controller
+                      name="salaryUnit"
+                      control={control}
+                      defaultValue={defaultSalaryValue}
+                      rules={{ required: true }} // optional validation rule
+                      render={({ field }) => (
+                        <Select
+                          {...field}
+                          defaultValue={defaultSalaryValue}
+                          options={salaryOptions}
+                        />
+                      )}
+                    />
+                  </div>
+                </div>
 
-          <p className="font-semibold text-lg mb-2">Description</p>
-          <div className="mb-6 border rounded-lg overflow-hidden">
-            <TextAreaAutosize
-              {...register("description")}
-              required
-              minRows={3}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              className="p-3 w-full resize-none border-0 bg-gray-100 text-gray-700 placeholder-gray-400 focus:ring-0 focus:outline-none sm:py-1.5 sm:text-sm sm:leading-6"
-            />
-          </div>
+                <div className="flex justify-between items-center mb-4">
+                  <p className="font-semibold text-lg mr-2">Location: </p>
+                  <div className="w-[60%]">
+                    <Controller
+                      name="locations"
+                      control={control}
+                      defaultValue=""
+                      rules={{ required: true }}
+                      render={({ field }) => (
+                        <div className="w-full">
+                          <AsyncSelect
+                            {...field}
+                            placeholder="Search..."
+                            loadOptions={loadOptions}
+                            defaultOptions={defaultLocationOptions}
+                            isClearable
+                            isSearchable
+                            isMulti
+                            required
+                          />
+                        </div>
+                      )}
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between mb-4">
+                  <p className="font-semibold text-lg">Expires At: </p>
+                  <div className="flex items-center">
+                    <DatePicker control={control} name="date" />
+                  </div>
+                </div>
+
+                <p className="font-semibold text-lg mb-4">Description</p>
+                <div className="mb-4 border rounded-lg overflow-hidden">
+                  <TextAreaAutosize
+                    {...register("description")}
+                    required
+                    minRows={3}
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    className="p-3 w-full resize-none border-0 bg-gray-100 text-gray-700 placeholder-gray-400 focus:ring-0 focus:outline-none sm:py-1.5 sm:text-sm sm:leading-6"
+                  />
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
 
           <div className="flex justify-end">
             <div className="flex-grow">
@@ -308,7 +331,7 @@ const AddJob = ({ company, userid, userRole }) => {
               ))}
             </div>
             <Button
-              className="bg-[#ffc800] hover:bg-[#ffc800] text-black font-bold py-2 mb-2 px-4 rounded"
+              className="bg-[#ffc800] hover:bg-[#ffc800] text-black font-bold py-2 mb-4 px-4 rounded"
               isLoading={postJobMutation.isLoading}
               type="submit"
             >
@@ -321,37 +344,4 @@ const AddJob = ({ company, userid, userRole }) => {
   );
 };
 
-export default AddJob;
-
-// current form output
-// {
-//   "baseExp": 1,
-//   "baseSalary": 1,
-//   "date": "Thu Jun 29 2023 00:00:00 GMT+0530 (India Standard Time)",
-//   "description": "1111",
-//   "experienceUnit": {
-//     "value": "mnth",
-//     "label": "in months"
-//   },
-//   "highExp": 1,
-//   "highSalary": 1,
-//   "jobTitle": "www",
-//   "salaryUnit": {
-//     "value": "LPA",
-//     "label": "in lakhs"
-//   },
-//   "skills": [
-//     {
-//       "value": "python",
-//       "label": "python"
-//     },
-//     {
-//       "value": "hyy",
-//       "label": "hyy"
-//     },
-//     {
-//       "value": "sgak",
-//       "label": "sgak"
-//     }
-//   ]
-// }
+export default AddReferralJob;

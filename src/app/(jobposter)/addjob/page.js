@@ -8,10 +8,11 @@ const Page = async () => {
 
   console.log("get user", user);
   // console.log(user.jtusername);
-  if (user && user.userRole != "HR") {
+  if (user && user.userRole !== "HR" && user.userRole !== "Referrer") {
     return (
       <p className="font-semibold text-center p-5">
-        Only HRs can access this page
+        Only Job Posters can access this page. If you want to be a job poster,
+        select either "Referrer" or "HR" role in your profile.
       </p>
     );
   }
@@ -32,7 +33,11 @@ const Page = async () => {
   return (
     <div className="w-[90%] mx-auto">
       <div className=" flex flex-col items-center justify-center">
-        <AddJob company={"TCS"} userid={session.user.id} />
+        <AddJob
+          company={user.company}
+          userid={session.user.id}
+          userRole={user.userRole}
+        />
       </div>
     </div>
   );

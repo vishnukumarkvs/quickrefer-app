@@ -23,7 +23,7 @@ const AddFriendButton = ({ id }) => {
   };
 
   return (
-    <Button variant="outline" onClick={addFriend}>
+    <Button variant="default" onClick={addFriend}>
       {showSuccessState ? "Sent!" : "ADD"}
     </Button>
   );
