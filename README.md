@@ -93,3 +93,28 @@ const url = await getSignedUrl(client, "getObject", params);
 // https://youtu.be/RaeXdPsSvfM
 
 applied, viewed , shortlisted, result
+
+// Job status
+Live
+Closed
+On Hold
+Expired
+Withdrawn
+Reopen
+
+              <Select>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue defaultValue={job.status} placeholder="Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Status</SelectLabel>
+                    <SelectItem value="Live">Live</SelectItem>
+                    <SelectItem value="Closed">Closed</SelectItem>
+                    <SelectItem value="On Hold">On Hold</SelectItem>
+                    <SelectItem value="Expired">Expired</SelectItem>
+                    <SelectItem value="Withdrwan">Withdrwan</SelectItem>
+                    <SelectItem value="Reopen">Reopen</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
