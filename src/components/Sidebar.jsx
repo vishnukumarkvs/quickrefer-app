@@ -53,8 +53,8 @@ const SideBar = () => {
             >
               Job Create
             </p>
-            <SideBarItem title="Create Job" href="/addreferraljob" />
-            <SideBarItem title="Dashboard" />
+            <SideBarItem title="Create Job" href="/addjob" />
+            <SideBarItem title="Dashboard" href="/getpostedjobs" />
           </div>
           <div className="my-12">
             <a

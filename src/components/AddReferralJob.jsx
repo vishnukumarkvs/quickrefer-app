@@ -156,8 +156,8 @@ const AddReferralJob = ({ company, userid, userRole }) => {
         </p>
         {/* <p>{JSON.stringify(session)}</p> */}
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="flex items-center justify-between mb-4">
-            <p className="font-semibold text-lg">Job Title: </p>
+          <div className="flex items-center justify-between mb-2">
+            <p className="font-semibold text-md">Job Title: </p>
             <Input
               {...register("jobTitle")}
               required
@@ -169,8 +169,8 @@ const AddReferralJob = ({ company, userid, userRole }) => {
           </div>
 
           {/* referral specific */}
-          <div className="flex items-center justify-between mb-4">
-            <p className="font-semibold text-lg">Job URL: </p>
+          <div className="flex items-center justify-between mb-2">
+            <p className="font-semibold text-md">Job URL: </p>
             <Input
               {...register("jobUrl")}
               required
@@ -181,8 +181,8 @@ const AddReferralJob = ({ company, userid, userRole }) => {
             />
           </div>
 
-          <div className="flex items-start justify-between mb-4">
-            <p className="font-semibold text-lg">Skills required: </p>
+          <div className="flex items-start justify-between mb-2">
+            <p className="font-semibold text-md">Skills required: </p>
             <Controller
               name="skills"
               control={control}
@@ -202,33 +202,30 @@ const AddReferralJob = ({ company, userid, userRole }) => {
           </div>
 
           {/* Advanced Settings */}
-          <Accordion className="p-2">
-            <AccordionItem>
-              <AccordionTrigger className="font-semibold text-lg">
+          <Accordion type="single" collapsible className="w-full">
+            <AccordionItem value="item 1">
+              <AccordionTrigger className="font-semibold text-md">
                 Advanced Settings
               </AccordionTrigger>
               <AccordionContent>
-                <div className="flex items-center justify-between mb-4">
-                  <p className="font-semibold text-lg">Experience: </p>
+                <div className="flex items-center justify-between mb-2">
+                  <p className="font-semibold text-md">Experience: </p>
                   <div className="flex items-center">
                     <Input
                       {...register("baseExp", { valueAsNumber: true })}
                       className="w-16 text-center mr-2 placeholder:text-slate-400 rounded"
                       placeholder="2"
-                      required
                     />
                     <p>-</p>
                     <Input
                       {...register("highExp", { valueAsNumber: true })}
                       className="w-16 text-center ml-2 mr-2 placeholder:text-slate-400 rounded"
                       placeholder="4"
-                      required
                     />
                     <Controller
                       name="experienceUnit"
                       control={control}
                       defaultValue={defaultExperienceValue}
-                      rules={{ required: true }} // optional validation rule
                       render={({ field }) => (
                         <Select
                           {...field}
@@ -240,8 +237,8 @@ const AddReferralJob = ({ company, userid, userRole }) => {
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between mb-4">
-                  <p className="font-semibold text-lg mr-2">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="font-semibold text-md mr-2">
                     Est Salary Range:{" "}
                   </p>
                   <div className="flex items-center">
@@ -249,20 +246,17 @@ const AddReferralJob = ({ company, userid, userRole }) => {
                       {...register("baseSalary", { valueAsNumber: true })}
                       className="w-16 text-center mr-2 placeholder:text-slate-400 rounded"
                       placeholder="10"
-                      required
                     />
                     <p>-</p>
                     <Input
                       {...register("highSalary", { valueAsNumber: true })}
                       className="w-16 text-center ml-2 mr-2 placeholder:text-slate-400 rounded"
                       placeholder="12"
-                      required
                     />
                     <Controller
                       name="salaryUnit"
                       control={control}
                       defaultValue={defaultSalaryValue}
-                      rules={{ required: true }} // optional validation rule
                       render={({ field }) => (
                         <Select
                           {...field}
@@ -274,8 +268,8 @@ const AddReferralJob = ({ company, userid, userRole }) => {
                   </div>
                 </div>
 
-                <div className="flex justify-between items-center mb-4">
-                  <p className="font-semibold text-lg mr-2">Location: </p>
+                <div className="flex justify-between items-center mb-2">
+                  <p className="font-semibold text-md mr-2">Location: </p>
                   <div className="w-[60%]">
                     <Controller
                       name="locations"
@@ -292,7 +286,6 @@ const AddReferralJob = ({ company, userid, userRole }) => {
                             isClearable
                             isSearchable
                             isMulti
-                            required
                           />
                         </div>
                       )}
@@ -300,18 +293,10 @@ const AddReferralJob = ({ company, userid, userRole }) => {
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between mb-4">
-                  <p className="font-semibold text-lg">Expires At: </p>
-                  <div className="flex items-center">
-                    <DatePicker control={control} name="date" />
-                  </div>
-                </div>
-
-                <p className="font-semibold text-lg mb-4">Description</p>
-                <div className="mb-4 border rounded-lg overflow-hidden">
+                <p className="font-semibold text-md mb-2">Description</p>
+                <div className="mb-2 border rounded-lg overflow-hidden">
                   <TextAreaAutosize
                     {...register("description")}
-                    required
                     minRows={3}
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
@@ -331,7 +316,7 @@ const AddReferralJob = ({ company, userid, userRole }) => {
               ))}
             </div>
             <Button
-              className="bg-[#ffc800] hover:bg-[#ffc800] text-black font-bold py-2 mb-4 px-4 rounded"
+              className="bg-[#ffc800] hover:bg-[#ffc800] text-black font-bold m-2 px-4 rounded"
               isLoading={postJobMutation.isLoading}
               type="submit"
             >
