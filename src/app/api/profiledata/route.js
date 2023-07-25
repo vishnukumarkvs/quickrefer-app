@@ -29,6 +29,7 @@ export async function GET(req) {
       return new Response("User not found", { status: 404 });
     }
     const profidata = {
+      fullname: userData[0]?.properties.fullname,
       username: userData[0]?.properties.username,
       email: userData[0]?.properties.email,
       phone: userData[0]?.properties?.phone || null,

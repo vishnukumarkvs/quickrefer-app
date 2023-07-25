@@ -28,13 +28,30 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import AsyncSelect from "react-select/async";
+import CreatableSelect from "react-select/creatable";
+import { Controller, useForm } from "react-hook-form";
+import HoverToolTip from "@/components/Tooltip";
+
+const skillOptions = [
+  { value: "java", label: "java" },
+  { value: "python", label: "python" },
+  { value: "c++", label: "c++" },
+];
 
 const Page = () => {
   const fetchJobs = async () => {
     const res = await fetch("/api/getpostedjobs");
     return res.json();
   };
+
+  const {
+    register,
+    handleSubmit,
+    control,
+    setError,
+    formState: { errors },
+    setValue,
+  } = useForm();
 
   const {
     data: jobs,
@@ -59,10 +76,8 @@ const Page = () => {
     console.log(jobs);
   }
 
-  const handleDelete = async (e) => {
-    e.preventDefault();
-    const res = await axios.delete("/api/deletejob");
-    console.log(res);
+  const onUpdate = (data) => {
+    console.log("form data", data);
   };
 
   return (
@@ -83,16 +98,20 @@ const Page = () => {
                   "Closed"
                 )}`}
               >
-                Closed
+                {job._fields[0].properties.status}
               </p>
             </div>
             <div className="mt-2">
-              <h5 className="text-sm text-gray-600">
-                {job._fields[0].properties.jobType}
-              </h5>
               <p className="text-gray-800 mt-1">
                 {job._fields[0].properties.description}
               </p>
+              <div className="flex flex-wrap gap-x-2 mt-4">
+                {job._fields[1].map((skill) => (
+                  <p className="text-white bg-black p-1 text-xs rounded-sm">
+                    {skill}
+                  </p>
+                ))}
+              </div>
 
               {/* Bottom right buttons */}
               <div className="flex justify-end mt-4 space-x-2">
@@ -105,38 +124,69 @@ const Page = () => {
                       <DialogHeader>
                         <DialogTitle>Edit Job Details</DialogTitle>
                         <DialogDescription>
-                          Make changes to your profile here. Click save when
+                          Make changes to your posted Job here. Click save when
                           you're done.
                         </DialogDescription>
                       </DialogHeader>
-                      <div className="grid gap-4 py-4">
-                        <div className="grid grid-cols-4 items-center gap-4">
-                          <Label htmlFor="jobTitle" className="text-right">
-                            Job Title
-                          </Label>
-                          <Input id="jobTitle" className="col-span-3" />
+                      <form onSubmit={handleSubmit(onUpdate)}>
+                        <div className="grid gap-2 py-4">
+                          <div className="grid grid-cols-4 items-center gap-2">
+                            <Label htmlFor="jobTitle" className="text-right">
+                              Title
+                            </Label>
+                            <Input
+                              {...register("jobTitle")}
+                              id="jobTitle"
+                              className="col-span-3"
+                              defaultValue={job._fields[0].properties.jobTitle}
+                            />
+                          </div>
+                          <div className="grid grid-cols-4 items-center gap-2">
+                            <div className="flex justify-end items-center">
+                              <Label>Skills</Label>
+                              <HoverToolTip
+                                text={
+                                  "You can only add additional skills to the existing ones."
+                                }
+                              />
+                            </div>
+                            <div className="col-span-3">
+                              <Controller
+                                name="skills"
+                                control={control}
+                                defaultValue=""
+                                render={({ field }) => (
+                                  <CreatableSelect
+                                    {...field}
+                                    options={skillOptions}
+                                    isClearable
+                                    isSearchable
+                                    isMulti
+                                  />
+                                )}
+                              />
+                            </div>
+                          </div>
+                          <div className="grid grid-cols-4 items-center gap-2">
+                            <div className="flex justify-end items-center">
+                              <Label>Description</Label>
+                              <HoverToolTip
+                                text={
+                                  "After update, the new Job Description will entirely replace the old one"
+                                }
+                              />
+                            </div>
+                            <Textarea
+                              {...register("jobdescription")}
+                              placeholder="Update your job description here."
+                              className="w-[280px] h-[60px]"
+                            />
+                          </div>
                         </div>
-                        <div className="grid grid-cols-4 items-center gap-4">
-                          <Label htmlFor="phone" className="text-right">
-                            Phone
-                          </Label>
-                          <Input id="phone" className="col-span-3" />
-                        </div>
-                        <div className="grid grid-cols-4 items-center gap-4">
-                          <Label htmlFor="address" className="text-right">
-                            Address
-                          </Label>
-                          <Textarea
-                            placeholder="Type your address here."
-                            className="w-[280px] h-[60px]"
-                          />
-                        </div>
-                      </div>
-                      <DialogFooter>
-                        <DialogClose asChild>
+                        <DialogFooter>
                           <Button type="submit">Save changes</Button>
-                        </DialogClose>
-                      </DialogFooter>
+                        </DialogFooter>
+                      </form>
                     </DialogContent>
                   </Dialog>
                 </div>

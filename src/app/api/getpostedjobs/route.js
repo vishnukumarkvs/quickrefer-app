@@ -5,8 +5,8 @@ import { getServerSession } from "next-auth";
 export async function GET(req) {
   const usession = await getServerSession(authOptions);
   const getAllCompaniesQuery = `
-  MATCH (u:User {userId: $userId})-[:POSTED_JOB]->(j:Job)
-  RETURN j
+  MATCH (u:User {userId: $userId})-[:POSTED_JOB]->(j:Job)-[:REQUIRES_SKILL]->(s:Skill)
+  RETURN j, COLLECT(s.name) AS required_skills
 `;
 
   const session = driver.session({ database: "neo4j" });

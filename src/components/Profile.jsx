@@ -19,6 +19,9 @@ import { Edit } from "lucide-react";
 import { Textarea } from "./ui/textarea";
 import AsyncSelect from "react-select/async";
 import { Controller, useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { set } from "date-fns";
 
 const filterColors = (inputValue) => {
   return options.filter((i) =>
@@ -46,11 +49,28 @@ const defaultLocationOptions = [
 ];
 
 const Profile = ({ username }) => {
-  const [data, setData] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [address, setAddress] = useState("");
+  const [openPersonal, setOpenPersonal] = useState(false);
+  const [openJob, setOpenJob] = useState(false);
+  const queryClient = useQueryClient();
+
+  // const router = useRouter();
+
+  // const [data, setData] = useState(null);
   const [linkFields, setLinkFields] = useState([{ name: "", url: "" }]);
+
+  const {
+    register: registerPersonal,
+    handleSubmit: handleSubmitPersonal,
+    control: controlPersonal,
+    formState: { errors1 },
+  } = useForm({});
+
+  const {
+    register: registerJob,
+    handleSubmit: handleSubmitJob,
+    control: controlJob,
+    formState: { errors2 },
+  } = useForm({});
 
   const {
     register,
@@ -58,14 +78,46 @@ const Profile = ({ username }) => {
     control,
     formState: { errors },
     setValue,
-  } = useForm({});
+  } = useForm();
 
-  const onSubmitJobDetails = (data) => {
-    console.log("Form 2 data:", data);
+  const onSubmitJobDetails = (data1) => {
+    console.log("Form 2 data:", data1);
+    setOpen(false);
   };
 
-  const onSubmitLinks = (data) => {
-    console.log("Form 3 data:", data);
+  const onSubmitLinks = (data2) => {
+    console.log("Form 3 data:", data2);
+  };
+
+  const { data, isLoading, error } = useQuery(
+    ["profileData", username],
+    async () => {
+      const response = await axios.get(`/api/profiledata?username=${username}`);
+      return response.data;
+    }
+  );
+  console.log("profile adta", data);
+
+  const mutation = useMutation(
+    (data0) =>
+      axios.post("/api/profiledata/update/personal", {
+        fullname: data0.fullname,
+        phone: data0.phone,
+        address: data0.address,
+      }),
+    {
+      onSuccess: () => {
+        console.log("Success");
+        // Invalidate and refetch
+        queryClient.invalidateQueries(["profileData", username]);
+        setOpenPersonal(false);
+      },
+    }
+  );
+
+  const onSubmitPersonalDetails = (data0) => {
+    console.log("Form 1 data:", data0);
+    mutation.mutate(data0);
   };
 
   const handleAddField = () => {
@@ -83,23 +135,6 @@ const Profile = ({ username }) => {
       return newFields;
     });
   };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          `/api/profiledata?username=${username}`
-        );
-        setData(response.data);
-        setIsLoading(false);
-      } catch (error) {
-        setError(error);
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [username]);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -121,7 +156,7 @@ const Profile = ({ username }) => {
           <p>Address: {data.location}</p>
         </div>
         <div>
-          <Dialog>
+          <Dialog open={openPersonal} onOpenChange={setOpenPersonal}>
             <DialogTrigger asChild>
               <Edit className="hover:bg-black hover:text-white rounded-md p-1" />
             </DialogTrigger>
@@ -133,34 +168,43 @@ const Profile = ({ username }) => {
                   done.
                 </DialogDescription>
               </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="fullname" className="text-right">
-                    Full Name
-                  </Label>
-                  <Input id="fullname" className="col-span-3" />
+              <form onSubmit={handleSubmitPersonal(onSubmitPersonalDetails)}>
+                <div className="grid gap-4 py-4">
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="fullname" className="text-right">
+                      Full Name
+                    </Label>
+                    <Input
+                      id="fullname"
+                      className="col-span-3"
+                      {...registerPersonal("fullname")}
+                    />
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="phone" className="text-right">
+                      Phone
+                    </Label>
+                    <Input
+                      id="phone"
+                      className="col-span-3"
+                      {...registerPersonal("phone")}
+                    />
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="address" className="text-right">
+                      Address
+                    </Label>
+                    <Textarea
+                      {...registerPersonal("address")}
+                      placeholder="Type your address here."
+                      className="w-[280px] h-[60px]"
+                    />
+                  </div>
                 </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="phone" className="text-right">
-                    Phone
-                  </Label>
-                  <Input id="phone" className="col-span-3" />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="address" className="text-right">
-                    Address
-                  </Label>
-                  <Textarea
-                    placeholder="Type your address here."
-                    className="w-[280px] h-[60px]"
-                  />
-                </div>
-              </div>
-              <DialogFooter>
-                <DialogClose asChild>
+                <DialogFooter>
                   <Button type="submit">Save changes</Button>
-                </DialogClose>
-              </DialogFooter>
+                </DialogFooter>
+              </form>
             </DialogContent>
           </Dialog>
         </div>
@@ -176,7 +220,7 @@ const Profile = ({ username }) => {
           <p>Experience: {data.experience}</p>
         </div>
         <div>
-          <Dialog>
+          <Dialog open={openJob} onOpenChange={setOpenJob}>
             <DialogTrigger asChild>
               <Edit className="hover:bg-black hover:text-white rounded-md p-1" />
             </DialogTrigger>
@@ -188,7 +232,7 @@ const Profile = ({ username }) => {
                   done.
                 </DialogDescription>
               </DialogHeader>
-              <form onSubmit={handleSubmit(onSubmitJobDetails)}>
+              <form onSubmit={handleSubmitJob(onSubmitJobDetails)}>
                 <div className="grid gap-4 py-4">
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="jobtitle" className="text-right">
@@ -198,7 +242,7 @@ const Profile = ({ username }) => {
                       id="jobtitle"
                       className="col-span-3"
                       defaultValue={data.jobtitle}
-                      {...register("jobtitle")}
+                      {...registerJob("jobtitle")}
                     />
                   </div>
                   <div className="grid grid-cols-4 items-center gap-4">
@@ -209,7 +253,7 @@ const Profile = ({ username }) => {
                       id="company"
                       className="col-span-3"
                       defaultValue={data.company}
-                      {...register("company")}
+                      {...registerJob("company")}
                     />
                   </div>
                   <div className="grid grid-cols-4 items-center gap-4">
@@ -219,9 +263,8 @@ const Profile = ({ username }) => {
                     <div className="w-[280px]">
                       <Controller
                         name="location"
-                        control={control}
+                        control={controlJob}
                         defaultValue=""
-                        rules={{ required: true }}
                         render={({ field }) => (
                           <div className="w-full">
                             <AsyncSelect
@@ -230,7 +273,6 @@ const Profile = ({ username }) => {
                               loadOptions={loadOptions}
                               defaultOptions={defaultLocationOptions}
                               isSearchable
-                              required
                             />
                           </div>
                         )}
@@ -246,8 +288,7 @@ const Profile = ({ username }) => {
                       type="number"
                       defaultValue={data.salary}
                       className="col-span-3"
-                      required
-                      {...register("salary")}
+                      {...registerJob("salary")}
                     />
                   </div>
                   <div className="grid grid-cols-4 items-center gap-4">
@@ -260,7 +301,7 @@ const Profile = ({ username }) => {
                       defaultValue={data.experience}
                       className="col-span-3"
                       required
-                      {...register("experience")}
+                      {...registerJob("experience")}
                     />
                   </div>
                 </div>
