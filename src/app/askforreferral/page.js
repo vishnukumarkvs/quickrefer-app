@@ -29,7 +29,7 @@ const Page = () => {
 
   const fetchOptions = async () => {
     try {
-      const response = await axios.get("/api/getCompanyList");
+      const response = await axios.get("/api/getCompanyList"); // Corrected API endpoint
       const list = response.data.records[0]._fields[0];
 
       const extractedOptions = list.map((item) => ({
@@ -46,24 +46,24 @@ const Page = () => {
   const getUsersOfCompany = async (selectedCompany) => {
     if (selectedCompany) {
       try {
-        const response = await axios.post("/api/getusersofcompany", {
-          company: selectedCompany.value,
-        });
+        const response = await axios.get(
+          `/api/getusersofcompany?company=${selectedCompany.value}`
+        );
         const usersData = response.data.records.map(
           (record) => record._fields[0].properties
         );
 
         setUsers(usersData);
-        console.log(users);
       } catch (error) {
         console.error("Error fetching users from company:", error);
       }
     }
   };
 
-  const handleFetch = (event) => {
+  const handleFetch = async (event) => {
     event.preventDefault();
-    getUsersOfCompany(company);
+    await getUsersOfCompany(company); // Wait for the data to be fetched
+    console.log(users); // Now the console.log will show the updated state
   };
 
   return (
@@ -96,31 +96,33 @@ const Page = () => {
           />
           <Button type="submit">Fetch</Button>
         </form>
-        <div className="my-5">
-          <Table>
-            <TableCaption>A list of potential referrers.</TableCaption>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[100px]">No</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead className="text-right">Send</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {users.map((user, index) => (
-                <TableRow key={index}>
-                  <TableCell>{index + 1}</TableCell>
-                  <TableCell>{user.username}</TableCell>
-                  <TableCell>{user.email}</TableCell>
-                  <TableCell className="text-right">
-                    <AddFriendButton id={user.id} />
-                  </TableCell>
+        {users.length > 0 && ( // Check if users is not empty
+          <div className="my-5">
+            <Table>
+              <TableCaption>A list of potential referrers.</TableCaption>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[100px]">No</TableHead>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead className="text-right">Send</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
+              </TableHeader>
+              <TableBody>
+                {users.map((user, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{index + 1}</TableCell>
+                    <TableCell>{user.username}</TableCell>
+                    <TableCell>{user.email}</TableCell>
+                    <TableCell className="text-right">
+                      <AddFriendButton id={user.id} />
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        )}
       </div>
     </div>
   );

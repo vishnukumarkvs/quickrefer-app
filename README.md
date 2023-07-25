@@ -118,3 +118,12 @@ Reopen
                   </SelectGroup>
                 </SelectContent>
               </Select>
+
+Name
+Email
+Top 5 Skills
+Experiennce
+Linkedin
+JT profile
+
+Shortlist

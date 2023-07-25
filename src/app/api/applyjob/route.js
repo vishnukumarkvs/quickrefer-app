@@ -4,11 +4,11 @@ import { getServerSession } from "next-auth";
 
 export async function POST(req) {
   const usession = await getServerSession(authOptions);
-  const { userId, jobId } = await req.json();
+  const { jobId } = await req.json();
   const applyjob = `
     MATCH (u:User {userId: $userId})
     MATCH (j:Job {jobId: $jobId})
-    CREATE (u)-[:APPLIED_TO {applied_on: date()}]->(j)
+    MERGE (u)-[:APPLIED_TO {applied_on: date()}]->(j)
   `;
 
   const session = driver.session({ database: "neo4j" });

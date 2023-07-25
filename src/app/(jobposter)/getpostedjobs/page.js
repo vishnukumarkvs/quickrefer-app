@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import {
   Select,
   SelectContent,
@@ -39,6 +40,12 @@ const skillOptions = [
 ];
 
 const Page = () => {
+  const router = useRouter();
+
+  const onViewApplied = (jobId) => {
+    router.push(`/applied/${jobId}`);
+  };
+
   const fetchJobs = async () => {
     const res = await fetch("/api/getpostedjobs");
     return res.json();
@@ -190,7 +197,12 @@ const Page = () => {
                     </DialogContent>
                   </Dialog>
                 </div>
-                <Button className="bg-green-500">View Applied</Button>
+                <Button
+                  className="bg-green-500"
+                  onClick={() => onViewApplied(job._fields[0].properties.jobId)}
+                >
+                  View Applied
+                </Button>
               </div>
             </div>
           </div>
