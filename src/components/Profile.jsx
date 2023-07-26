@@ -53,6 +53,16 @@ const Profile = ({ username }) => {
   const [openJob, setOpenJob] = useState(false);
   const queryClient = useQueryClient();
 
+  const [experiences, setExperiences] = useState([
+    {
+      id: 1,
+      jobtitle: "Software Engineer",
+      company: "OpenAI",
+      description: "Working on AI",
+    },
+    // add more experiences here
+  ]);
+
   // const router = useRouter();
 
   // const [data, setData] = useState(null);
@@ -153,7 +163,12 @@ const Profile = ({ username }) => {
           <p>Full Name: {data.fullname}</p>
           <p>Email: {data.email}</p>
           <p>Phone: {data.phone}</p>
-          <p>Address: {data.location}</p>
+          <p>Location: {data.location}</p>
+          <p>Current Job Role: </p>
+          <p>Experience(in years): </p>
+          <p>Salary:</p>
+          <p>Expected Salary:</p>
+          <p>Notice Period: </p>
         </div>
         <div>
           <Dialog open={openPersonal} onOpenChange={setOpenPersonal}>
@@ -188,72 +203,6 @@ const Profile = ({ username }) => {
                       id="phone"
                       className="col-span-3"
                       {...registerPersonal("phone")}
-                    />
-                  </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="address" className="text-right">
-                      Address
-                    </Label>
-                    <Textarea
-                      {...registerPersonal("address")}
-                      placeholder="Type your address here."
-                      className="w-[280px] h-[60px]"
-                    />
-                  </div>
-                </div>
-                <DialogFooter>
-                  <Button type="submit">Save changes</Button>
-                </DialogFooter>
-              </form>
-            </DialogContent>
-          </Dialog>
-        </div>
-      </div>
-      {/* Job Details */}
-      <div className="text-xl font-bold mt-10 mb-5">Job Details</div>
-      <div className="flex">
-        <div>
-          <p>Job Title: {data.jobtitle}</p>
-          <p>Company: {data.company}</p>
-          <p>Location: {data.location}</p>
-          <p>Salary: {data.salary}</p>
-          <p>Experience: {data.experience}</p>
-        </div>
-        <div>
-          <Dialog open={openJob} onOpenChange={setOpenJob}>
-            <DialogTrigger asChild>
-              <Edit className="hover:bg-black hover:text-white rounded-md p-1" />
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>Edit Job Details</DialogTitle>
-                <DialogDescription>
-                  Make changes to your profile here. Click save when you're
-                  done.
-                </DialogDescription>
-              </DialogHeader>
-              <form onSubmit={handleSubmitJob(onSubmitJobDetails)}>
-                <div className="grid gap-4 py-4">
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="jobtitle" className="text-right">
-                      Job Title
-                    </Label>
-                    <Input
-                      id="jobtitle"
-                      className="col-span-3"
-                      defaultValue={data.jobtitle}
-                      {...registerJob("jobtitle")}
-                    />
-                  </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="company" className="text-right">
-                      Company
-                    </Label>
-                    <Input
-                      id="company"
-                      className="col-span-3"
-                      defaultValue={data.company}
-                      {...registerJob("company")}
                     />
                   </div>
                   <div className="grid grid-cols-4 items-center gap-4">
@@ -302,6 +251,96 @@ const Profile = ({ username }) => {
                       className="col-span-3"
                       required
                       {...registerJob("experience")}
+                    />
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button type="submit">Save changes</Button>
+                </DialogFooter>
+              </form>
+            </DialogContent>
+          </Dialog>
+        </div>
+      </div>
+      {/* Job Details */}
+      <div className="text-xl font-bold mt-10 mb-5">Work Experience</div>
+      <div className="flex">
+        {experiences.map((exp, index) => (
+          <div
+            key={index}
+            className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 flex flex-col my-2"
+          >
+            <div className="mb-2">
+              <p className="font-bold text-xl">{exp.jobtitle}</p>
+            </div>
+            <div className="mb-2">
+              <Label>{exp.company}</Label>
+            </div>
+            <div className="mb-2">
+              <p
+                id={`description-${exp.id}`}
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker"
+              >
+                {exp.description}
+              </p>
+            </div>
+            <div className="flex items-center justify-between">
+              <button
+                onClick={() => handleEdit(index)}
+                className="bg-blue-500 hover:bg-blue-dark text-white font-bold py-2 px-4 rounded"
+              >
+                Edit
+              </button>
+            </div>
+          </div>
+        ))}
+
+        <div>
+          <Dialog open={openJob} onOpenChange={setOpenJob}>
+            <DialogTrigger asChild>
+              <Edit className="hover:bg-black hover:text-white rounded-md p-1" />
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>Edit Job Details</DialogTitle>
+                <DialogDescription>
+                  Make changes to your profile here. Click save when you're
+                  done.
+                </DialogDescription>
+              </DialogHeader>
+              <form onSubmit={handleSubmitJob(onSubmitJobDetails)}>
+                <div className="grid gap-4 py-4">
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="jobtitle" className="text-right">
+                      Job Title
+                    </Label>
+                    <Input
+                      id="jobtitle"
+                      className="col-span-3"
+                      defaultValue={data.jobtitle}
+                      {...registerJob("jobtitle")}
+                    />
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="company" className="text-right">
+                      Company
+                    </Label>
+                    <Input
+                      id="company"
+                      className="col-span-3"
+                      defaultValue={data.company}
+                      {...registerJob("company")}
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="address" className="text-right">
+                      Description
+                    </Label>
+                    <Textarea
+                      {...registerPersonal("address")}
+                      placeholder="Type your address here."
+                      className="w-[280px] h-[60px]"
                     />
                   </div>
                 </div>
