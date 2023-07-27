@@ -5,6 +5,7 @@ import axios from "axios";
 import { Button } from "@/components/ui/button";
 import dynamic from "next/dynamic";
 import * as DOMPurify from "dompurify";
+import useRenderCounter from "@/helperClient/useRenderCount";
 
 import {
   Dialog,
@@ -18,12 +19,14 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Edit, Loader2 } from "lucide-react";
+import { Edit, Loader2, Pencil, Trash2 } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { set } from "date-fns";
 import { QuillWrapper, modules } from "./ui/QuillWrapper";
 import { AsyncLocationSelect } from "./ui/AsyncLocationSelect";
+import { useRouter } from "next/navigation";
+import ResumeUpload from "./ResumeUpload";
 
 const useProfileData = (username) => {
   const { data, isLoading, error } = useQuery(["profileData"], async () => {
@@ -73,24 +76,58 @@ const PersonalDetails = ({ data, openPersonal, setOpenPersonal }) => {
   }, [mutationPersonal.isSuccess]);
 
   return (
-    <div>
+    <div className="mt-10">
       {/* Profile Section */}
-      <div className="text-xl font-bold mt-10 mb-5">Personal Details</div>
-      <div className="flex">
-        <div>
-          <p>Full Name: {data.fullname}</p>
-          <p>Email: {data.email}</p>
-          <p>Phone: {data.phone}</p>
-          <p>Location: {data.location}</p>
-          <p>Current Job Role: {data.currentJobRole} </p>
-          <p>Experience(in years): {data.experience} </p>
-          <p>Salary: {data.salary}</p>
-          <p>Notice Period: {data.noticePeriod}</p>
+      <div className="w-full text-xl font-bold mb-5">Personal Details</div>
+      <div className="flex flex-col">
+        <div class="w-full bg-white shadow-lg rounded-lg p-4 mx-auto">
+          <div class="grid grid-cols-2 items-center">
+            <p class="text-md font-bold mr-2">Full Name:</p>
+            <p class="text-md p-2">{data.fullname}</p>
+          </div>
+
+          <div class="grid grid-cols-2 items-center">
+            <p class="text-md font-bold mr-2">Email:</p>
+            <p class="text-md p-2">{data.email}</p>
+          </div>
+
+          <div class="grid grid-cols-2 items-center">
+            <p class="text-md font-bold mr-2">Phone:</p>
+            <p class="text-md p-2">{data.phone}</p>
+          </div>
+
+          <div class="grid grid-cols-2 items-center">
+            <p class="text-md font-bold mr-2">Location:</p>
+            <p class="text-md p-2">{data.location}</p>
+          </div>
+
+          <div class="grid grid-cols-2 items-center">
+            <p class="text-md font-bold mr-2">Current Job Role:</p>
+            <p class="text-md p-2">{data.currentJobRole}</p>
+          </div>
+
+          <div class="grid grid-cols-2 items-center">
+            <p class="text-md font-bold mr-2">Experience (in years):</p>
+            <p class="text-md p-2">{data.experience}</p>
+          </div>
+
+          <div class="grid grid-cols-2 items-center">
+            <p class="text-md font-bold mr-2">Salary:</p>
+            <p class="text-md p-2">{data.salary}</p>
+          </div>
+
+          <div class="grid grid-cols-2 items-center">
+            <p class="text-md font-bold mr-2">Notice Period:</p>
+            <p class="text-md p-2">{data.noticePeriod}</p>
+          </div>
         </div>
+
         <div>
           <Dialog open={openPersonal} onOpenChange={setOpenPersonal}>
             <DialogTrigger asChild>
-              <Edit className="hover:bg-black hover:text-white rounded-md p-1" />
+              <Button variant="outline" className="my-4">
+                Edit Profile
+              </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
               <DialogHeader>
@@ -195,6 +232,7 @@ const PersonalDetails = ({ data, openPersonal, setOpenPersonal }) => {
 };
 
 const WorkDetails = ({ data, openWork, setOpenWork }) => {
+  // const router = useRouter();
   const queryClient = useQueryClient();
 
   const mutationCreate = useMutation(
@@ -226,6 +264,10 @@ const WorkDetails = ({ data, openWork, setOpenWork }) => {
   let experiences = data.workExperiences;
   console.log("experiences", experiences);
 
+  const deleteWorkExperience = async (workId) => {
+    await axios.post("/api/profiledata/update/workdelete", { workId });
+  };
+
   return (
     <div>
       {/* Work Experience */}
@@ -236,8 +278,19 @@ const WorkDetails = ({ data, openWork, setOpenWork }) => {
             key={index}
             className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 flex flex-col my-2"
           >
-            <div className="mb-2">
+            <div className="mb-2 flex justify-between">
               <p className="font-bold text-xl">{exp.properties.workTitle}</p>
+              <div>
+                <Button
+                  variant="ghost"
+                  onClick={() => deleteWorkExperience(exp.properties.workId)}
+                >
+                  <Trash2 size={16} />
+                </Button>
+                <Button variant="ghost">
+                  <Pencil size={16} />
+                </Button>
+              </div>
             </div>
             <div className="mb-2">
               <Label>{exp.properties.workCompany}</Label>
@@ -256,7 +309,7 @@ const WorkDetails = ({ data, openWork, setOpenWork }) => {
         {/* TODO: Add lazy loading maybe by using suspense*/}
         <Dialog open={openWork} onOpenChange={setOpenWork}>
           <DialogTrigger asChild>
-            <Button>Add Work Experience</Button>
+            <Button variant="outline">Add Work Experience</Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
@@ -324,6 +377,8 @@ const WorkDetails = ({ data, openWork, setOpenWork }) => {
 };
 
 const Profile = ({ username }) => {
+  const renderCount = useRenderCounter();
+
   const [content, setContent] = useState("");
   const [selectedId, setSelectedId] = useState(null);
 
@@ -344,12 +399,23 @@ const Profile = ({ username }) => {
 
   return (
     <div className="w-[80%] h-full mx-auto">
-      <PersonalDetails
-        data={data}
-        openPersonal={openPersonal}
-        setOpenPersonal={setOpenPersonal}
-      />
-      <WorkDetails data={data} openWork={openWork} setOpenWork={setOpenWork} />
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <PersonalDetails
+            data={data}
+            openPersonal={openPersonal}
+            setOpenPersonal={setOpenPersonal}
+          />
+          <WorkDetails
+            data={data}
+            openWork={openWork}
+            setOpenWork={setOpenWork}
+          />
+        </div>
+        <div>
+          <ResumeUpload />
+        </div>
+      </div>
     </div>
   );
 };
