@@ -3,6 +3,8 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useSession } from "next-auth/react";
+import { Upload } from "lucide-react";
+import { Button } from "./ui/button";
 
 const ResumeUpload = () => {
   const { data: session } = useSession();
@@ -48,10 +50,16 @@ const ResumeUpload = () => {
   };
 
   return (
-    <div className="w-full m-7 bg-white">
-      <div className="flex flex-col gp-2">
-        <input type="file" onChange={onFileChange} />
-        <button onClick={onFileUpload}>Upload</button>
+    <div className="w-full m-7 bg-white rounded-lg shadow-md">
+      <div className="flex gap-2 justify-center items-center">
+        <input
+          type="file"
+          onChange={onFileChange}
+          className="flex-1 px-4 py-2 border rounded-lg shadow-md focus:outline-none focus:ring focus:border-blue-300"
+        />
+        <Button onClick={onFileUpload} variant="ghost">
+          <Upload size={24} />
+        </Button>
       </div>
     </div>
   );

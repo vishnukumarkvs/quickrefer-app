@@ -17,6 +17,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Edit, Loader2, Pencil, Trash2 } from "lucide-react";
@@ -83,42 +91,42 @@ const PersonalDetails = ({ data, openPersonal, setOpenPersonal }) => {
         <div class="w-full bg-white shadow-lg rounded-lg p-4 mx-auto">
           <div class="grid grid-cols-2 items-center">
             <p class="text-md font-bold mr-2">Full Name:</p>
-            <p class="text-md p-2">{data.fullname}</p>
+            <p class="text-md">{data.fullname}</p>
           </div>
 
           <div class="grid grid-cols-2 items-center">
             <p class="text-md font-bold mr-2">Email:</p>
-            <p class="text-md p-2">{data.email}</p>
+            <p class="text-md ">{data.email}</p>
           </div>
 
           <div class="grid grid-cols-2 items-center">
             <p class="text-md font-bold mr-2">Phone:</p>
-            <p class="text-md p-2">{data.phone}</p>
+            <p class="text-md ">{data.phone}</p>
           </div>
 
           <div class="grid grid-cols-2 items-center">
             <p class="text-md font-bold mr-2">Location:</p>
-            <p class="text-md p-2">{data.location}</p>
+            <p class="text-md ">{data.location}</p>
           </div>
 
           <div class="grid grid-cols-2 items-center">
             <p class="text-md font-bold mr-2">Current Job Role:</p>
-            <p class="text-md p-2">{data.currentJobRole}</p>
+            <p class="text-md">{data.currentJobRole}</p>
           </div>
 
           <div class="grid grid-cols-2 items-center">
             <p class="text-md font-bold mr-2">Experience (in years):</p>
-            <p class="text-md p-2">{data.experience}</p>
+            <p class="text-md ">{data.experience}</p>
           </div>
 
           <div class="grid grid-cols-2 items-center">
             <p class="text-md font-bold mr-2">Salary:</p>
-            <p class="text-md p-2">{data.salary}</p>
+            <p class="text-md ">{data.salary}</p>
           </div>
 
           <div class="grid grid-cols-2 items-center">
             <p class="text-md font-bold mr-2">Notice Period:</p>
-            <p class="text-md p-2">{data.noticePeriod}</p>
+            <p class="text-md ">{data.noticePeriod}</p>
           </div>
         </div>
 
@@ -398,22 +406,43 @@ const Profile = ({ username }) => {
   }
 
   return (
-    <div className="w-[80%] h-full mx-auto">
+    <div className="w-[95%] h-full mx-auto">
+      <p className="font-bold text-2xl text-center m-4 p-2 border-2">Profile</p>
       <div className="grid grid-cols-2 gap-4">
-        <div>
-          <PersonalDetails
-            data={data}
-            openPersonal={openPersonal}
-            setOpenPersonal={setOpenPersonal}
-          />
-          <WorkDetails
-            data={data}
-            openWork={openWork}
-            setOpenWork={setOpenWork}
-          />
+        <div className="mt-10">
+          <Accordion type="single" collapsible className="w-full">
+            <AccordionItem value="Personal Details">
+              <AccordionTrigger>Personal Details</AccordionTrigger>
+              <AccordionContent>
+                <PersonalDetails
+                  data={data}
+                  openPersonal={openPersonal}
+                  setOpenPersonal={setOpenPersonal}
+                />
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="Work Experience">
+              <AccordionTrigger>Work Experience</AccordionTrigger>
+              <AccordionContent>
+                <WorkDetails
+                  data={data}
+                  openWork={openWork}
+                  setOpenWork={setOpenWork}
+                />
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
         </div>
-        <div>
+        <div className="flex flex-col justify-start items-center">
           <ResumeUpload />
+          <iframe
+            src="https://pizzads.s3.amazonaws.com/KvsVishnuKumar_Resume.pdf"
+            width="100%"
+            height="600px"
+            frameBorder="0"
+            title="PDF Viewer"
+            allowFullScreen
+          />
         </div>
       </div>
     </div>
