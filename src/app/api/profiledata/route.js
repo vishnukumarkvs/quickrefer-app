@@ -15,7 +15,8 @@ export async function GET(req) {
         OPTIONAL MATCH (u)-[:HAS_SKILL]->(s:Skill)
         OPTIONAL MATCH (u)-[:IN_CITY]->(ci:City)-[:IN_COUNTRY]->(co:Country)
         OPTIONAL MATCH (u)-[:HAS_CERTIFICATION]->(ce:Certification)
-        RETURN u, c, collect(s) AS skills, ci.name, co.name, collect(ce) AS certifications; 
+        OPTIONAL MATCH (u)-[:HAS_WORK_EXPERIENCE]->(w:WorkExperience)
+        RETURN u, c, collect(s) AS skills, ci.name, co.name, collect(ce) AS certifications, collect(w) AS workExperiences; 
         `;
     const readResult = await neo4jSession.executeRead((tx) =>
       tx.run(query, {
@@ -46,6 +47,7 @@ export async function GET(req) {
       experience: userData[0]?.properties?.experience || 0,
       languages: userData[0]?.properties?.languages || [],
       resume: userData[0]?.properties?.resume || null,
+      workExperiences: userData[6] || [],
     };
 
     return new Response(JSON.stringify(profidata), { status: 200 });

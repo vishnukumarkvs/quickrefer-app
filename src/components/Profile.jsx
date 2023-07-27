@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import dynamic from "next/dynamic";
+import * as DOMPurify from "dompurify";
 
 import {
   Dialog,
@@ -33,22 +34,7 @@ const useProfileData = (username) => {
   return { data, isLoading, error };
 };
 
-const useUpdateWorkData = () => {
-  const queryClient = useQueryClient();
-
-  const mutation = useMutation(
-    (data) => axios.post("/api/profiledata/update/work", data),
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries("profileData");
-      },
-    }
-  );
-
-  return mutation;
-};
-
-const ProfileDetails = ({ data, openPersonal, setOpenPersonal }) => {
+const PersonalDetails = ({ data, openPersonal, setOpenPersonal }) => {
   const queryClient = useQueryClient();
   const mutationPersonal = useMutation(
     (data) => axios.post("/api/profiledata/update/personal", data),
@@ -208,6 +194,135 @@ const ProfileDetails = ({ data, openPersonal, setOpenPersonal }) => {
   );
 };
 
+const WorkDetails = ({ data, openWork, setOpenWork }) => {
+  const queryClient = useQueryClient();
+
+  const mutationCreate = useMutation(
+    (data) => axios.post("/api/profiledata/update/workcreate", data),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("profileData");
+      },
+    }
+  );
+
+  const {
+    handleSubmit: handleSubmitWork,
+    control: controlWork,
+    register: registerWork,
+  } = useForm({});
+
+  const onSubmitWorkDetails = (data1) => {
+    console.log("data1", data1);
+    mutationCreate.mutate(data1);
+  };
+
+  useEffect(() => {
+    if (mutationCreate.isSuccess) {
+      setOpenWork(false);
+    }
+  }, [mutationCreate.isSuccess]);
+
+  let experiences = data.workExperiences;
+  console.log("experiences", experiences);
+
+  return (
+    <div>
+      {/* Work Experience */}
+      <div className="text-xl font-bold mt-10 mb-5">Work Experience</div>
+      <div className="flex flex-col">
+        {experiences.map((exp, index) => (
+          <div
+            key={index}
+            className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 flex flex-col my-2"
+          >
+            <div className="mb-2">
+              <p className="font-bold text-xl">{exp.properties.workTitle}</p>
+            </div>
+            <div className="mb-2">
+              <Label>{exp.properties.workCompany}</Label>
+            </div>
+            <div
+              id={`description-${exp.workId}`}
+              className="mb-2"
+              dangerouslySetInnerHTML={{
+                __html: DOMPurify.sanitize(exp.properties.workDescription),
+              }}
+            />
+          </div>
+        ))}
+      </div>
+      <div>
+        {/* TODO: Add lazy loading maybe by using suspense*/}
+        <Dialog open={openWork} onOpenChange={setOpenWork}>
+          <DialogTrigger asChild>
+            <Button>Add Work Experience</Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Edit Job Details</DialogTitle>
+              <DialogDescription>
+                Make changes to your profile here. Click save when you're done.
+              </DialogDescription>
+            </DialogHeader>
+            <form onSubmit={handleSubmitWork(onSubmitWorkDetails)}>
+              <div className="grid gap-4 py-4">
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="workTitle" className="text-right">
+                    Job Title
+                  </Label>
+                  <Input
+                    id="workTitle"
+                    className="col-span-3"
+                    {...registerWork("workTitle")}
+                  />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="company" className="text-right">
+                    Company
+                  </Label>
+                  <Input
+                    id="workCompany"
+                    className="col-span-3"
+                    {...registerWork("workCompany")}
+                  />
+                </div>
+
+                <div className="w-full flex flex-col">
+                  <Label htmlFor="workDescription" className="text-left p-4">
+                    Description
+                  </Label>
+                  <div className="">
+                    <Controller
+                      name="workDescription"
+                      control={controlWork} // make sure you pass your form's control object
+                      render={({ field }) => (
+                        <QuillWrapper
+                          modules={modules}
+                          theme="snow"
+                          value={field.value}
+                          onChange={(value) => {
+                            field.onChange(value);
+                          }}
+                        />
+                      )}
+                    />
+                  </div>
+                </div>
+              </div>
+              <DialogFooter>
+                <Button type="submit" isLoading={mutationCreate.isLoading}>
+                  Save changes
+                </Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
+      </div>
+    </div>
+  );
+};
+
 const Profile = ({ username }) => {
   const [content, setContent] = useState("");
   const [selectedId, setSelectedId] = useState(null);
@@ -229,11 +344,12 @@ const Profile = ({ username }) => {
 
   return (
     <div className="w-[80%] h-full mx-auto">
-      <ProfileDetails
+      <PersonalDetails
         data={data}
         openPersonal={openPersonal}
         setOpenPersonal={setOpenPersonal}
       />
+      <WorkDetails data={data} openWork={openWork} setOpenWork={setOpenWork} />
     </div>
   );
 };
