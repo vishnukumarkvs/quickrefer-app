@@ -1,21 +1,27 @@
+import { authOptions } from "@/lib/auth";
 import driver from "@/lib/neo4jClient";
+import { getServerSession } from "next-auth";
 
 export async function GET(req) {
+  const usesseion = await getServerSession(authOptions);
   // const { company } = await req.json();
   const url = new URL(req.url);
   const company = url.searchParams.get("company");
-  // TODO: add conditions to check if user is referrer
   const getUsersOfCompany = `
-  MATCH (n:User)-[:WORKS_AT]->(c:Company {name: $company})
+    MATCH (n:User {userRole: "Referrer"})-[:WORKS_AT]->(c:Company {name: $company})
+    WHERE NOT EXISTS((n)-[:FRIENDS_WITH]->(:User {userId: $requester}))
     RETURN n
     ORDER BY RAND() 
     LIMIT 4;
-`;
+    `;
 
   const session = driver.session({ database: "neo4j" });
   try {
     const getResult = await session.executeRead((tx) => {
-      const result = tx.run(getUsersOfCompany, { company: company });
+      const result = tx.run(getUsersOfCompany, {
+        company: company,
+        requester: usesseion.user.id,
+      });
       return result;
     });
 

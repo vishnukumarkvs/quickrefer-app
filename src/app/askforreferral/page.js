@@ -17,11 +17,18 @@ import {
 } from "@/components/ui/table";
 
 import AddFriendButton from "@/components/chat/AddFriendButton";
+import { Input } from "@/components/ui/input";
+import { useSession } from "next-auth/react";
+import toast from "react-hot-toast";
 
 const Page = () => {
+  const { data: session, status } = useSession();
+
   const [options, setOptions] = useState([]);
   const [company, setCompany] = useState(null);
   const [users, setUsers] = useState([]);
+  const [url, setUrl] = useState("");
+  const [fetchUsersLoading, setFetchUsersLoading] = useState(false);
 
   useEffect(() => {
     fetchOptions();
@@ -47,23 +54,60 @@ const Page = () => {
     if (selectedCompany) {
       try {
         const response = await axios.get(
-          `/api/getusersofcompany?company=${selectedCompany.value}`
+          `/api/getnewreferrers?company=${selectedCompany.value}`
         );
         const usersData = response.data.records.map(
           (record) => record._fields[0].properties
         );
-
+        console.log(usersData);
+        if (usersData.length === 0) {
+          toast(
+            "No referrers found at this moment for the particular company.\n\n Try again later or select other company",
+            { position: "bottom-right", duration: 6000 }
+          );
+        }
         setUsers(usersData);
       } catch (error) {
         console.error("Error fetching users from company:", error);
+      } finally {
+        setFetchUsersLoading(false);
       }
+    }
+  };
+
+  const submitReferral = async (url, company, userId) => {
+    try {
+      console.log(url, company);
+      const response = await axios.post(
+        "https://e80yu93nsk.execute-api.us-east-1.amazonaws.com/dev/referralSubmit",
+        { url: url, company: company.value, targetUserId: userId }
+      );
+      toast.success("Referral submitted successfully");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to submit referral");
     }
   };
 
   const handleFetch = async (event) => {
     event.preventDefault();
-    await getUsersOfCompany(company); // Wait for the data to be fetched
-    console.log(users); // Now the console.log will show the updated state
+    if (company) {
+      setFetchUsersLoading(true);
+      await getUsersOfCompany(company);
+    } else {
+      toast.error("Please select a company", { position: "top-right" });
+    }
+    console.log(users);
+  };
+
+  const handleReferralSubmit = async () => {
+    if (!company || !url) {
+      toast.error("Please enter Job URL and also select company", {
+        position: "top-right",
+      });
+      return;
+    }
+    await submitReferral(url, company, session.user.id);
   };
 
   return (
@@ -77,25 +121,35 @@ const Page = () => {
           the job link and select the company of the posted job. We have many
           people on the platform who are willing to give referrals. Once a
           referrer wishes to give you a referral, they will contact you through
-          our chat for further details.
+          the chat for further details.
         </p>
-        <ReferralSubmit options={options} />
-        <p className="p-5 text-center">Or find people here</p>
-        <form
-          className="w-[50%] mx-auto flex justify-center items-center gap-x-4"
-          onSubmit={handleFetch}
-        >
-          <Select
-            options={options}
-            value={company}
-            placeholder="Select Company"
-            onChange={setCompany}
-            isClearable
-            isSearchable
+        {/* <ReferralSubmit options={options} /> */}
+        <div className="flex flex-col max-w-xl mx-auto gap-y-4">
+          <Input
+            type="text"
+            onChange={(e) => setUrl(e.target.value)}
+            className="bg-white"
+            placeholder="Enter URL"
             required
           />
-          <Button type="submit">Fetch</Button>
-        </form>
+          <div className="w-full">
+            <Select
+              options={options}
+              placeholder="Select Company"
+              onChange={setCompany}
+              isSearchable
+              isClearable
+              required
+            />
+          </div>
+          <div className="flex flex-col items-center">
+            <Button onClick={handleReferralSubmit}>Direct Submit</Button>
+            <p className="p-5 text-center">Or find people here</p>
+            <Button onClick={handleFetch} isLoading={fetchUsersLoading}>
+              Fetch
+            </Button>
+          </div>
+        </div>
         {users.length > 0 && ( // Check if users is not empty
           <div className="my-5">
             <Table>
