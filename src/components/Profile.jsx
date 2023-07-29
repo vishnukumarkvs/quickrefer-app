@@ -578,7 +578,11 @@ const Profile = ({ username }) => {
   console.log("profile adta", data);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="w-full h-screen flex justify-center items-center">
+        <Loader2 className="animate-spin" />
+      </div>
+    );
   }
 
   if (error) {
