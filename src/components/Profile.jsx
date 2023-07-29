@@ -25,6 +25,16 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Edit, Loader2, Pencil, Trash2 } from "lucide-react";
@@ -35,6 +45,8 @@ import { QuillWrapper, modules } from "./ui/QuillWrapper";
 import { AsyncLocationSelect } from "./ui/AsyncLocationSelect";
 import { useRouter } from "next/navigation";
 import ResumeUpload from "./ResumeUpload";
+
+// import Select from "react-select";
 
 const useProfileData = (username) => {
   const { data, isLoading, error } = useQuery(["profileData"], async () => {
@@ -50,8 +62,14 @@ const PersonalDetails = ({ data, openPersonal, setOpenPersonal }) => {
   const mutationPersonal = useMutation(
     (data) => axios.post("/api/profiledata/update/personal", data),
     {
+      // onSuccess: (updatedData) => {
+      //   console.log("updatedData", updatedData);
+      //   queryClient.setQueryData("profileData", updatedData);
+      //   setOpenPersonal(false);
+      // },
       onSuccess: () => {
-        queryClient.refetchQueries("profileData");
+        queryClient.invalidateQueries("profileData");
+        setOpenPersonal(false);
       },
     }
   );
@@ -77,18 +95,12 @@ const PersonalDetails = ({ data, openPersonal, setOpenPersonal }) => {
     mutationPersonal.mutate(updatedData);
   };
 
-  useEffect(() => {
-    if (mutationPersonal.isSuccess) {
-      setOpenPersonal(false);
-    }
-  }, [mutationPersonal.isSuccess]);
-
   return (
-    <div className="mt-10">
+    <div className="">
       {/* Profile Section */}
-      <div className="w-full text-xl font-bold mb-5">Personal Details</div>
+      {/* <div className="w-full text-xl font-bold mb-5">Personal Details</div> */}
       <div className="flex flex-col">
-        <div class="w-full bg-white shadow-lg rounded-lg p-4 mx-auto">
+        <div class="w-full bg-white shadow-lg rounded-lg px-4 py-2 mx-auto">
           <div class="grid grid-cols-2 items-center">
             <p class="text-md font-bold mr-2">Full Name:</p>
             <p class="text-md">{data.fullname}</p>
@@ -120,12 +132,12 @@ const PersonalDetails = ({ data, openPersonal, setOpenPersonal }) => {
           </div>
 
           <div class="grid grid-cols-2 items-center">
-            <p class="text-md font-bold mr-2">Salary:</p>
+            <p class="text-md font-bold mr-2">Salary (in LPA):</p>
             <p class="text-md ">{data.salary}</p>
           </div>
 
           <div class="grid grid-cols-2 items-center">
-            <p class="text-md font-bold mr-2">Notice Period:</p>
+            <p class="text-md font-bold mr-2">Notice Period (in days):</p>
             <p class="text-md ">{data.noticePeriod}</p>
           </div>
         </div>
@@ -248,6 +260,7 @@ const WorkDetails = ({ data, openWork, setOpenWork }) => {
     {
       onSuccess: () => {
         queryClient.invalidateQueries("profileData");
+        setOpenWork(false);
       },
     }
   );
@@ -263,12 +276,6 @@ const WorkDetails = ({ data, openWork, setOpenWork }) => {
     mutationCreate.mutate(data1);
   };
 
-  useEffect(() => {
-    if (mutationCreate.isSuccess) {
-      setOpenWork(false);
-    }
-  }, [mutationCreate.isSuccess]);
-
   let experiences = data.workExperiences;
   console.log("experiences", experiences);
 
@@ -279,13 +286,10 @@ const WorkDetails = ({ data, openWork, setOpenWork }) => {
   return (
     <div>
       {/* Work Experience */}
-      <div className="text-xl font-bold mt-10 mb-5">Work Experience</div>
-      <div className="flex flex-col">
+      {/* <div className="text-xl font-bold mt-10 mb-5">Work Experience</div> */}
+      <div className="flex flex-col bg-white shadow-md rounded divide-y-2">
         {experiences.map((exp, index) => (
-          <div
-            key={index}
-            className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 flex flex-col my-2"
-          >
+          <div key={index} className="p-3 flex flex-col my-2">
             <div className="mb-2 flex justify-between">
               <p className="font-bold text-xl">{exp.properties.workTitle}</p>
               <div>
@@ -384,6 +388,130 @@ const WorkDetails = ({ data, openWork, setOpenWork }) => {
   );
 };
 
+const LinkTree = ({ data, openLinkTree, setOpenLinkTree }) => {
+  const queryClient = useQueryClient();
+  const mutationLinkTree = useMutation(
+    (data) => axios.post("/api/profiledata/update/linktree", data),
+    {
+      onSuccess: () => {
+        // TODO: Invalidate or refetch?
+        queryClient.refetchQueries("profileData");
+        setOpenLinkTree(false);
+      },
+    }
+  );
+  const { handleSubmit: handleSubmitLinkTree, register: registerLinkTree } =
+    useForm({});
+
+  let links = Object.entries(data.linktree.properties);
+  console.log("links", links);
+
+  const onSubmit = (data0) => {
+    console.log("data0", data0);
+    mutationLinkTree.mutate(data0);
+  };
+
+  return (
+    <div className="">
+      <div className="flex flex-col">
+        <div className="w-full bg-white shadow-lg rounded-lg px-4 py-2 mx-auto">
+          {links.length > 0 ? (
+            <ul>
+              {links.map(([name, value]) => {
+                // Check if the value is not empty before rendering
+                if (value.trim() !== "") {
+                  return (
+                    <li key={name}>
+                      <strong>{name}:</strong>{" "}
+                      <a href={value} target="_blank" rel="noopener noreferrer">
+                        {value}
+                      </a>
+                    </li>
+                  );
+                }
+                return null; // Don't render the list item if the value is empty
+              })}
+            </ul>
+          ) : (
+            <p>No links available.</p>
+          )}
+        </div>
+
+        <div>
+          <Dialog open={openLinkTree} onOpenChange={setOpenLinkTree}>
+            <DialogTrigger asChild>
+              <Button variant="outline" className="my-4">
+                Add or Edit Links
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>Add links</DialogTitle>
+                <DialogDescription>
+                  Fill the links that you have, leave the rest empty.
+                </DialogDescription>
+              </DialogHeader>
+              <form onSubmit={handleSubmitLinkTree(onSubmit)}>
+                <div className="">
+                  <div className="grid grid-cols-4 items-center gap-4 my-2">
+                    <Label htmlFor="linkedin" className="text-right">
+                      Linkedin
+                    </Label>
+                    <Input
+                      id="linkedin"
+                      className="col-span-3"
+                      defaultValue={data.linktree.properties.linkedin}
+                      {...registerLinkTree("linkedin")}
+                    />
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4 my-2">
+                    <Label htmlFor="github" className="text-right">
+                      Github
+                    </Label>
+                    <Input
+                      id="github"
+                      className="col-span-3"
+                      defaultValue={data.linktree.properties.github}
+                      {...registerLinkTree("github")}
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4 my-2">
+                  <Label htmlFor="blog" className="text-right">
+                    Blog
+                  </Label>
+                  <Input
+                    id="blog"
+                    className="col-span-3"
+                    defaultValue={data.linktree.properties.blog}
+                    {...registerLinkTree("blog")}
+                  />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4 my-2">
+                  <Label htmlFor="portfolio" className="text-right">
+                    Portfolio
+                  </Label>
+                  <Input
+                    id="portfolio"
+                    className="col-span-3"
+                    defaultValue={data.linktree.properties.portfolio}
+                    {...registerLinkTree("portfolio")}
+                  />
+                </div>
+                <DialogFooter>
+                  <Button type="submit" isLoading={mutationLinkTree.isLoading}>
+                    Save changes
+                  </Button>
+                </DialogFooter>
+              </form>
+            </DialogContent>
+          </Dialog>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const Profile = ({ username }) => {
   const renderCount = useRenderCounter();
 
@@ -393,6 +521,7 @@ const Profile = ({ username }) => {
   const [openPersonal, setOpenPersonal] = useState(false);
   const [openWork, setOpenWork] = useState(false);
   const [openWorkUpdate, setOpenWorkUpdate] = useState(false);
+  const [openLinkTree, setOpenLinkTree] = useState(false);
 
   const { data, isLoading, error } = useProfileData(username);
   console.log("profile adta", data);
@@ -428,6 +557,16 @@ const Profile = ({ username }) => {
                   data={data}
                   openWork={openWork}
                   setOpenWork={setOpenWork}
+                />
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="Link Tree">
+              <AccordionTrigger>Link Tree</AccordionTrigger>
+              <AccordionContent>
+                <LinkTree
+                  data={data}
+                  openLinkTree={openLinkTree}
+                  setOpenLinkTree={setOpenLinkTree}
                 />
               </AccordionContent>
             </AccordionItem>
