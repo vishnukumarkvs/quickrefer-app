@@ -252,7 +252,10 @@ const PersonalDetails = ({ data, openPersonal, setOpenPersonal }) => {
 };
 
 const WorkDetails = ({ data, openWork, setOpenWork }) => {
-  // const router = useRouter();
+  const [editingExperience, setEditingExperience] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [deletingWorkId, setDeletingWorkId] = useState(null); // This will keep track of which item is being deleted
+
   const queryClient = useQueryClient();
 
   const mutationCreate = useMutation(
@@ -261,6 +264,35 @@ const WorkDetails = ({ data, openWork, setOpenWork }) => {
       onSuccess: () => {
         queryClient.invalidateQueries("profileData");
         setOpenWork(false);
+        setLoading(false);
+      },
+    }
+  );
+
+  const mutationEdit = useMutation(
+    (data) => axios.post("/api/profiledata/update/workupdate", data),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("profileData");
+        setOpenWork(false);
+        setEditingExperience(null);
+        setLoading(false);
+      },
+    }
+  );
+
+  const mutationDelete = useMutation(
+    (workId) => axios.post("/api/profiledata/update/workdelete", { workId }),
+    {
+      onMutate: (workId) => {
+        setDeletingWorkId(workId);
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries("profileData");
+        setDeletingWorkId(null);
+      },
+      onError: () => {
+        setDeletingWorkId(null);
       },
     }
   );
@@ -269,24 +301,42 @@ const WorkDetails = ({ data, openWork, setOpenWork }) => {
     handleSubmit: handleSubmitWork,
     control: controlWork,
     register: registerWork,
+    reset: resetWork,
   } = useForm({});
 
   const onSubmitWorkDetails = (data1) => {
+    setLoading(true);
     console.log("data1", data1);
-    mutationCreate.mutate(data1);
+    if (editingExperience) {
+      mutationEdit.mutate({
+        ...data1,
+        workId: editingExperience.properties.workId,
+      });
+    } else {
+      mutationCreate.mutate(data1);
+    }
   };
 
   let experiences = data.workExperiences;
   console.log("experiences", experiences);
 
-  const deleteWorkExperience = async (workId) => {
-    await axios.post("/api/profiledata/update/workdelete", { workId });
+  const deleteWorkExperience = (workId) => {
+    mutationDelete.mutate(workId);
+  };
+
+  const editWorkExperience = (exp) => {
+    setOpenWork(true);
+    setEditingExperience(exp);
+    resetWork({
+      workTitle: exp.properties.workTitle,
+      workCompany: exp.properties.workCompany,
+      workDescription: exp.properties.workDescription,
+    });
   };
 
   return (
     <div>
       {/* Work Experience */}
-      {/* <div className="text-xl font-bold mt-10 mb-5">Work Experience</div> */}
       <div className="flex flex-col bg-white shadow-md rounded divide-y-2">
         {experiences.map((exp, index) => (
           <div key={index} className="p-3 flex flex-col my-2">
@@ -296,10 +346,11 @@ const WorkDetails = ({ data, openWork, setOpenWork }) => {
                 <Button
                   variant="ghost"
                   onClick={() => deleteWorkExperience(exp.properties.workId)}
+                  isLoading={deletingWorkId === exp.properties.workId}
                 >
                   <Trash2 size={16} />
                 </Button>
-                <Button variant="ghost">
+                <Button variant="ghost" onClick={() => editWorkExperience(exp)}>
                   <Pencil size={16} />
                 </Button>
               </div>
@@ -339,6 +390,7 @@ const WorkDetails = ({ data, openWork, setOpenWork }) => {
                   <Input
                     id="workTitle"
                     className="col-span-3"
+                    required
                     {...registerWork("workTitle")}
                   />
                 </div>
@@ -349,6 +401,7 @@ const WorkDetails = ({ data, openWork, setOpenWork }) => {
                   <Input
                     id="workCompany"
                     className="col-span-3"
+                    required
                     {...registerWork("workCompany")}
                   />
                 </div>
@@ -360,7 +413,8 @@ const WorkDetails = ({ data, openWork, setOpenWork }) => {
                   <div className="">
                     <Controller
                       name="workDescription"
-                      control={controlWork} // make sure you pass your form's control object
+                      control={controlWork}
+                      rules={{ required: true }}
                       render={({ field }) => (
                         <QuillWrapper
                           modules={modules}
@@ -376,7 +430,7 @@ const WorkDetails = ({ data, openWork, setOpenWork }) => {
                 </div>
               </div>
               <DialogFooter>
-                <Button type="submit" isLoading={mutationCreate.isLoading}>
+                <Button type="submit" isLoading={loading}>
                   Save changes
                 </Button>
               </DialogFooter>
@@ -515,9 +569,6 @@ const LinkTree = ({ data, openLinkTree, setOpenLinkTree }) => {
 const Profile = ({ username }) => {
   const renderCount = useRenderCounter();
 
-  const [content, setContent] = useState("");
-  const [selectedId, setSelectedId] = useState(null);
-
   const [openPersonal, setOpenPersonal] = useState(false);
   const [openWork, setOpenWork] = useState(false);
   const [openWorkUpdate, setOpenWorkUpdate] = useState(false);
@@ -557,6 +608,8 @@ const Profile = ({ username }) => {
                   data={data}
                   openWork={openWork}
                   setOpenWork={setOpenWork}
+                  openWorkUpdate={openWorkUpdate}
+                  setOpenWorkUpdate={setOpenWorkUpdate}
                 />
               </AccordionContent>
             </AccordionItem>
