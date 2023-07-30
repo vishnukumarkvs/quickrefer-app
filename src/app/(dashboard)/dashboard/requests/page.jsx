@@ -8,50 +8,30 @@ const Page = async () => {
   const session = await getServerSession(authOptions);
   if (!session) notFound();
 
-  // ids of people who sent requests to the current logged in  user
-  //   const incomingSenderIds = await fetchRedis(
-  //     "smembers",
-  //     `user:${session.user.id}:incoming_friend_requests`
-  //   );
-  const incomingSenderIds = await driver
+  const incomingFriendRequests = await driver
     .session()
     .run(
       `
-        MATCH (u:User {userId: $userId})<-[:SENT_FRIEND_REQUEST]-(u2:User)
-        RETURN u2.userId
-        `,
+        MATCH (u:User {userId: $userId})<-[:SENT_FRIEND_REQUEST]-(u2:User)-[:WORKS_AT]->(company:Company)
+        RETURN u2.userId as senderId, u2.fullname as fullname, u2.experience as experience, u2.email as email, u2.username as username,company.name as companyName
+      `,
       { userId: session.user.id }
     )
     .then((result) => {
-      return result.records.map((record) => record.get("u2.userId"));
+      return result.records.map((record) => {
+        return {
+          senderId: record.get("senderId"),
+          fullname: record.get("fullname"),
+          experience: record.get("experience"),
+          email: record.get("email"),
+          username: record.get("username"),
+          companyName: record.get("companyName"),
+        };
+      });
     });
 
-  console.log("incomingSenderIds", incomingSenderIds);
+  console.log("incomingFriendRequests", incomingFriendRequests);
 
-  // console.log(incomingSenderIds);
-  const incomingFriendRequests = await Promise.all(
-    incomingSenderIds.map(async (senderId) => {
-      //   const sender = await fetchRedis("get", `user:${senderId}`);
-      const sender = await driver
-        .session()
-        .run(
-          `
-        MATCH (u:User {userId: $userId})
-        RETURN u.email as email
-        `,
-          { userId: senderId }
-        )
-        .then((result) => {
-          return result.records.map((record) => record.get("email"));
-        });
-
-      return {
-        senderId,
-        senderEmail: sender[0],
-      };
-    })
-  );
-  // console.log("incomingfrs", incomingFriendRequests);
   return (
     <main className="pt-8">
       <h1 className="font-bold text-5xl mb-8">Add a friend</h1>

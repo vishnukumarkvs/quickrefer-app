@@ -40,13 +40,6 @@ export async function POST(req) {
       return new Response("You already sent request", { status: 400 });
     }
 
-    // const isAlreadyFriends =
-    //   (await fetchRedis(
-    //     "sismember",
-    //     `user:${session.user.id}:friends`,
-    //     idToAdd
-    //   )) === 1;
-
     const isAlreadyFriendsQuery = `
       MATCH (u:User {userId: $userId})-[r:FRIENDS_WITH]-(f:User {userId: $friendId})
       RETURN COUNT(r) > 0 AS isAlreadyFriends
@@ -62,18 +55,34 @@ export async function POST(req) {
       return new Response("You already added this person", { status: 400 });
     }
 
-    // send friend request
+    // Fetch friend's data for Pusher
+    const friendDataQuery = `
+      MATCH (f:User {userId: $friendId})-[:WORKS_AT]-(c:Company)
+      RETURN f.userId as senderId, f.fullname as fullname, f.experience as experience, f.email as email, f.username as username, c.name as companyName
+    `;
+    const friendDataResult = await driver.session().run(friendDataQuery, {
+      friendId: idToAdd,
+    });
+
+    const friendData = friendDataResult.records[0].toObject();
+    const { senderId, fullname, experience, email, username, companyName } =
+      friendData;
+
+    // Send friend request data via Pusher
     pusherServer.trigger(
       toPusherKey(`user:${idToAdd}:incoming_friend_requests`),
       "incoming_friend_requests",
       {
-        senderId: session.user.id,
-        senderEmail: session.user.email,
+        senderId: senderId,
+        fullname,
+        experience,
+        email,
+        username,
+        companyName,
       }
     );
-    // redis.sadd(`user:${idToAdd}:incoming_friend_requests`, session.user.id);
 
-    // add friend request to neo4j
+    // Add friend request to neo4j
     const addFriendRequestQuery = `
       MATCH (u:User {userId: $userId}), (f:User {userId: $friendId})
       CREATE (u)-[:SENT_FRIEND_REQUEST]->(f)

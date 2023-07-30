@@ -14,10 +14,15 @@ const FriendRequests = ({ incomingFriendRequests, sessionId }) => {
     pusherClient.subscribe(
       toPusherKey(`user:${sessionId}:incoming_friend_requests`)
     );
-    const friendRequestHandler = ({ senderId, senderEmail }) => {
-      setFriendRequests((prev) => [...prev, { senderId, senderEmail }]);
+    const friendRequestHandler = async ({ senderId, senderEmail }) => {
+      try {
+        const { data } = await axios.get(`/api/user/${senderId}`);
+        setFriendRequests((prev) => [...prev, { senderId, ...data }]);
+      } catch (error) {
+        console.error(error);
+      }
     };
-    pusherClient.bind("incoming_friend_requests", friendRequestHandler); // function name, handler
+    pusherClient.bind("incoming_friend_requests", friendRequestHandler);
 
     return () => {
       pusherClient.unsubscribe(
@@ -30,7 +35,6 @@ const FriendRequests = ({ incomingFriendRequests, sessionId }) => {
   const acceptFriend = async (senderId) => {
     await axios.post("/api/friends/accept", { id: senderId });
 
-    // filtering out and removing the accepted one from state
     setFriendRequests((prev) => {
       return prev.filter((fr) => fr.senderId !== senderId);
     });
@@ -41,7 +45,6 @@ const FriendRequests = ({ incomingFriendRequests, sessionId }) => {
   const denyFriend = async (senderId) => {
     await axios.post("/api/friends/deny", { id: senderId });
 
-    // filtering out and removing the accepted one from state
     setFriendRequests((prev) => {
       return prev.filter((fr) => fr.senderId !== senderId);
     });
@@ -52,12 +55,18 @@ const FriendRequests = ({ incomingFriendRequests, sessionId }) => {
   return (
     <>
       {friendRequests.length === 0 ? (
-        <p className="text-sm text-zinc-500 ">Nothing to show here...</p>
+        <p className="text-sm text-zinc-500">Nothing to show here...</p>
       ) : (
         friendRequests.map((friendRequest) => (
           <div key={friendRequest.senderId} className="flex items-center gap-4">
             <UserPlus className="text-black" />
-            <p className="font-medium text-lg">{friendRequest.senderEmail}</p>
+            <p className="font-medium text-lg">{friendRequest.companyName}</p>
+            {/* Display the additional details */}
+            <p>Fullname: {friendRequest.fullname}</p>
+            <p>Experience: {friendRequest.experience}</p>
+            <p>Email: {friendRequest.email}</p>
+            <p>Username: {friendRequest.username}</p>
+
             <button
               onClick={() => acceptFriend(friendRequest.senderId)}
               aria-label="accept friend"

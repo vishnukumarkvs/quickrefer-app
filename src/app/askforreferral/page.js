@@ -75,20 +75,6 @@ const Page = () => {
     }
   };
 
-  const submitReferral = async (url, company, userId) => {
-    try {
-      console.log(url, company);
-      const response = await axios.post(
-        "https://e80yu93nsk.execute-api.us-east-1.amazonaws.com/dev/referralSubmit",
-        { url: url, company: company.value, targetUserId: userId }
-      );
-      toast.success("Referral submitted successfully");
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to submit referral");
-    }
-  };
-
   const handleFetch = async (event) => {
     event.preventDefault();
     if (company) {
@@ -98,16 +84,6 @@ const Page = () => {
       toast.error("Please select a company", { position: "top-right" });
     }
     console.log(users);
-  };
-
-  const handleReferralSubmit = async () => {
-    if (!company || !url) {
-      toast.error("Please enter Job URL and also select company", {
-        position: "top-right",
-      });
-      return;
-    }
-    await submitReferral(url, company, session.user.id);
   };
 
   return (
@@ -143,8 +119,8 @@ const Page = () => {
             />
           </div>
           <div className="flex flex-col items-center">
-            <Button onClick={handleReferralSubmit}>Direct Submit</Button>
-            <p className="p-5 text-center">Or find people here</p>
+            {/* <Button onClick={handleReferralSubmit}>Direct Submit</Button> */}
+            <p className="p-5 text-center">Find people here</p>
             <Button onClick={handleFetch} isLoading={fetchUsersLoading}>
               Fetch
             </Button>
