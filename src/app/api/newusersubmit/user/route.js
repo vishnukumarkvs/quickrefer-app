@@ -2,32 +2,17 @@ import { authOptions } from "@/lib/auth";
 import driver from "@/lib/neo4jClient";
 import { getServerSession } from "next-auth";
 import ddbClient from "@/lib/ddbclient";
-import s3Client from "@/lib/s3Client";
-import { AbortMultipartUploadCommand } from "@aws-sdk/client-s3";
 import { UpdateItemCommand } from "@aws-sdk/client-dynamodb";
 
 export async function POST(req) {
   const session = await getServerSession(authOptions);
 
-  const { username, company, isJobReferrer, skills } = await req.json();
-  // console.log("resume", resume);
+  const { username, company, skills, exp, fullname } = await req.json();
 
   const id = session.user.id;
   const email = session.user.email;
 
-  // const params = {
-  //   Bucket: "JtResumes",
-  //   Key: id,
-  //   Body: resume.data, // Set the file data
-  // };
-  // const command = new AbortMultipartUploadCommand(params);
-  // const data = await s3Client.send(command);
-  // console.log("data", data);
-
-  let userRole = "User";
-  if (isJobReferrer) {
-    userRole = "Referrer";
-  }
+  let userRole = "Referrer";
 
   try {
     const paramsUpdate = {
@@ -55,7 +40,7 @@ export async function POST(req) {
     const neo4jSession = driver.session({ database: "neo4j" });
     const query = `
         MERGE (u:User {userId: $id})
-        ON CREATE SET u.username = $username, u.email = $email, u.userRole = $userRole, u.ReferralScore = 0
+        ON CREATE SET u.username = $username, u.email = $email, u.userRole = $userRole, u.ReferralScore = 0, u.experience = $experience, u.fullname = $fullname
         MERGE (c:Company {name: $company})
         MERGE (u)-[:WORKS_AT]->(c)
         WITH u
@@ -72,6 +57,8 @@ export async function POST(req) {
         company: company,
         userRole: userRole,
         topSkills: skills,
+        experience: exp,
+        fullname: fullname,
       })
     );
 

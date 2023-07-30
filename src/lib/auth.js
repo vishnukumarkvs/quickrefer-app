@@ -258,6 +258,6 @@ export const authOptions = {
     redirect: () => "/",
   },
   pages: {
-    newUser: "/profile",
+    newUser: "/new/user",
   },
 };
