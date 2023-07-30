@@ -94,7 +94,7 @@ const Page = () => {
               )}
             />
           </div>
-          <div className="flex flex-row gap-x-2 items-center m-2">
+          {/* <div className="flex flex-row gap-x-2 items-center m-2">
             <p className="font-semibold text-lg">Resume: </p>
             <div>
               <Input
@@ -104,7 +104,7 @@ const Page = () => {
                 className="cursor-pointer"
               />
             </div>
-          </div>
+          </div> */}
           <div className="flex flex-row gap-x-2 items-center m-2">
             <p className="font-semibold text-lg">Want to be a Referrer: </p>
             <div>

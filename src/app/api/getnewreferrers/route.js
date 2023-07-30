@@ -10,6 +10,7 @@ export async function GET(req) {
   const getUsersOfCompany = `
     MATCH (n:User {userRole: "Referrer"})-[:WORKS_AT]->(c:Company {name: $company})
     WHERE NOT EXISTS((n)-[:FRIENDS_WITH]->(:User {userId: $requester}))
+    AND n.userId <> $requester
     RETURN n
     ORDER BY RAND() 
     LIMIT 4;

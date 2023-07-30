@@ -157,7 +157,7 @@ const Page = () => {
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-[100px]">No</TableHead>
-                  <TableHead>Name</TableHead>
+                  <TableHead>Username</TableHead>
                   <TableHead>Email</TableHead>
                   <TableHead className="text-right">Send</TableHead>
                 </TableRow>
@@ -169,7 +169,7 @@ const Page = () => {
                     <TableCell>{user.username}</TableCell>
                     <TableCell>{user.email}</TableCell>
                     <TableCell className="text-right">
-                      <AddFriendButton id={user.id} />
+                      <AddFriendButton id={user.userId} />
                     </TableCell>
                   </TableRow>
                 ))}

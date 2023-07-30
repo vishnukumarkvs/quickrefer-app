@@ -7,9 +7,11 @@ import { toast } from "react-hot-toast";
 
 const AddFriendButton = ({ id }) => {
   const [showSuccessState, setShowSuccessState] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const addFriend = async () => {
     try {
+      setIsLoading(true);
       await axios.post("/api/friends/add", { id });
       setShowSuccessState(true);
     } catch (error) {
@@ -19,11 +21,13 @@ const AddFriendButton = ({ id }) => {
       } else {
         toast.error("Something went wrong!");
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <Button variant="default" onClick={addFriend}>
+    <Button variant="default" onClick={addFriend} isLoading={isLoading}>
       {showSuccessState ? "Sent!" : "ADD"}
     </Button>
   );

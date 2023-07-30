@@ -10,8 +10,6 @@ export async function POST(req) {
   try {
     const { id: idToAdd } = await req.json();
 
-    // const { email: emailToAdd } = addFriendValidator.parse(body.email);
-
     const session = await getServerSession(authOptions);
     if (!session) {
       return new Response("Unauthorized", { status: 401 });
@@ -24,14 +22,6 @@ export async function POST(req) {
     }
 
     console.log("idToAdd", idToAdd, "session.user.id", session.user.id);
-
-    // if user already added
-    // const isAlreadyAdded =
-    //   (await fetchRedis(
-    //     "sismember",
-    //     `user:${idToAdd}:incoming_friend_requests`,
-    //     session.user.id
-    //   )) === 1;
 
     const isAlreadyAddedQuery = `
       MATCH (u:User {userId: $userId})-[r:SENT_FRIEND_REQUEST]-(f:User {userId: $friendId})
