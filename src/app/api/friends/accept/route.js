@@ -1,3 +1,4 @@
+import { z } from "zod";
 import { authOptions } from "@/lib/auth";
 import { pusherServer } from "@/lib/pusher";
 import { chatHrefConstructor, toPusherKey } from "@/lib/utils";
@@ -8,46 +9,22 @@ import { nanoid } from "nanoid";
 import { db } from "@/lib/firebase";
 import { messageValidator } from "@/lib/validations/message";
 
+const addFriendSchema = z.object({
+  id: z.string(),
+  url: z.string(),
+});
+
 export async function POST(req) {
+  const session = driver.session();
   try {
-    const { id: idToAdd, url } = await req.json();
-    console.log(idToAdd, url);
+    const input = await req.json();
+    addFriendSchema.parse(input);
 
-    const session = await getServerSession(authOptions);
+    const { id: idToAdd, url } = input;
 
-    if (!session) {
+    const sessionAuth = await getServerSession(authOptions);
+    if (!sessionAuth) {
       return new Response("Unauthorized", { status: 401 });
-    }
-
-    const isAlreadyFriendsQuery = `
-      MATCH (u:User {userId: $userId})-[r:FRIENDS_WITH]-(f:User {userId: $friendId})
-      RETURN COUNT(r) > 0 AS isAlreadyFriends
-    `;
-
-    const result0 = await driver.session().run(isAlreadyFriendsQuery, {
-      userId: session.user.id,
-      friendId: idToAdd,
-    });
-
-    const isAlreadyFriends = result0.records[0].get("isAlreadyFriends");
-
-    if (isAlreadyFriends) {
-      return new Response("Already friends", { status: 400 }); // 400 = BAD REQUEST
-    }
-
-    const hasFriendRequestQuery = `
-      MATCH (u:User {userId: $userId})-[r:SENT_FRIEND_REQUEST]-(f:User {userId: $friendId})
-      RETURN COUNT(r) > 0 AS hasFriendRequest
-    `;
-    const result1 = await driver.session().run(hasFriendRequestQuery, {
-      userId: session.user.id,
-      friendId: idToAdd,
-    });
-
-    const hasFriendRequest = result1.records[0].get("hasFriendRequest");
-
-    if (!hasFriendRequest) {
-      return new Response("No friend request", { status: 400 });
     }
 
     pusherServer.trigger(
@@ -58,17 +35,21 @@ export async function POST(req) {
 
     const addFriendQuery = `
       MATCH (u:User {userId: $userId}), (f:User {userId: $friendId})
-      CREATE (u)-[r:FRIENDS_WITH]->(f)
-      CREATE (f)-[r2:FRIENDS_WITH]->(u)
-      WITH r, r2
+      MERGE (u)-[r:FRIENDS_WITH]->(f)
+      MERGE (f)-[r2:FRIENDS_WITH]->(u)
+      WITH u, f
       MATCH (u)-[sent:SENT_FRIEND_REQUEST]->(f)
       DELETE sent
     `;
 
-    await driver.session().run(addFriendQuery, {
-      userId: session.user.id,
+    const addFriendResult = await session.run(addFriendQuery, {
+      userId: sessionAuth.user.id,
       friendId: idToAdd,
     });
+
+    if (addFriendResult.summary.counters.updates().relationshipsDeleted === 0) {
+      return new Response("Friend request does not exist", { status: 404 });
+    }
 
     const timestamp = Date.now();
     const messageData = {
@@ -80,7 +61,7 @@ export async function POST(req) {
     };
     const message = messageValidator.parse(messageData);
 
-    const chatId = chatHrefConstructor(session.user.id, idToAdd);
+    const chatId = chatHrefConstructor(sessionAuth.user.id, idToAdd);
 
     await set(ref(db, `chat/${chatId}/messages/${timestamp}`), message)
       .then(() => {
@@ -88,11 +69,14 @@ export async function POST(req) {
       })
       .catch((error) => {
         console.error("Error sending message:", error);
+        throw error; // Propagate the error to the catch block
       });
 
     return new Response("OK");
   } catch (error) {
     console.error("Failed to accept friend request:", error);
     return new Response("Failed to accept friend request", { status: 500 });
+  } finally {
+    await session.close(); // Always close your session when you're done!
   }
 }
