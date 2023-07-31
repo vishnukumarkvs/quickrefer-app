@@ -145,7 +145,7 @@ const Page = () => {
                     <TableCell>{user.username}</TableCell>
                     <TableCell>{user.email}</TableCell>
                     <TableCell className="text-right">
-                      <AddFriendButton id={user.userId} />
+                      <AddFriendButton id={user.userId} url={url} />
                     </TableCell>
                   </TableRow>
                 ))}

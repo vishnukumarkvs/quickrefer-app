@@ -1,26 +1,23 @@
 import { authOptions } from "@/lib/auth";
 import { pusherServer } from "@/lib/pusher";
-import { toPusherKey } from "@/lib/utils";
+import { chatHrefConstructor, toPusherKey } from "@/lib/utils";
 import { getServerSession } from "next-auth";
 import driver from "@/lib/neo4jClient";
+import { ref, set } from "firebase/database";
+import { nanoid } from "nanoid";
+import { db } from "@/lib/firebase";
+import { messageValidator } from "@/lib/validations/message";
 
 export async function POST(req) {
   try {
-    const { id: idToAdd } = await req.json();
-    console.log(idToAdd);
+    const { id: idToAdd, url } = await req.json();
+    console.log(idToAdd, url);
 
     const session = await getServerSession(authOptions);
 
     if (!session) {
       return new Response("Unauthorized", { status: 401 });
     }
-
-    // verify both users are not already friends
-    // const isAlreadyFriends = await fetchRedis(
-    //   "sismember",
-    //   `user:${session.user.id}:friends`,
-    //   idToAdd
-    // );
 
     const isAlreadyFriendsQuery = `
       MATCH (u:User {userId: $userId})-[r:FRIENDS_WITH]-(f:User {userId: $friendId})
@@ -37,13 +34,6 @@ export async function POST(req) {
     if (isAlreadyFriends) {
       return new Response("Already friends", { status: 400 }); // 400 = BAD REQUEST
     }
-
-    // check again if the current user has this friend request or not
-    // const hasFriendRequest = await fetchRedis(
-    //   "sismember",
-    //   `user:${session.user.id}:incoming_friend_requests`,
-    //   idToAdd
-    // );
 
     const hasFriendRequestQuery = `
       MATCH (u:User {userId: $userId})-[r:SENT_FRIEND_REQUEST]-(f:User {userId: $friendId})
@@ -66,10 +56,6 @@ export async function POST(req) {
       {}
     );
 
-    // add user to friends list
-    // await redis.sadd(`user:${session.user.id}:friends`, idToAdd);
-    // await redis.sadd(`user:${idToAdd}:friends`, session.user.id);
-
     const addFriendQuery = `
       MATCH (u:User {userId: $userId}), (f:User {userId: $friendId})
       CREATE (u)-[r:FRIENDS_WITH]->(f)
@@ -84,10 +70,25 @@ export async function POST(req) {
       friendId: idToAdd,
     });
 
-    // await redis.srem(
-    //   `user:${session.user.id}:incoming_friend_requests`,
-    //   idToAdd
-    // );
+    const timestamp = Date.now();
+    const messageData = {
+      id: nanoid(),
+      senderId: idToAdd,
+      text: "I want a referral request for the joburl: " + url,
+      timestamp: timestamp,
+      seen: false,
+    };
+    const message = messageValidator.parse(messageData);
+
+    const chatId = chatHrefConstructor(session.user.id, idToAdd);
+
+    await set(ref(db, `chat/${chatId}/messages/${timestamp}`), message)
+      .then(() => {
+        console.log("Message sent successfully");
+      })
+      .catch((error) => {
+        console.error("Error sending message:", error);
+      });
 
     return new Response("OK");
   } catch (error) {

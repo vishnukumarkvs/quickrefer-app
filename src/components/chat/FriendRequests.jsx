@@ -14,7 +14,7 @@ const FriendRequests = ({ incomingFriendRequests, sessionId }) => {
     pusherClient.subscribe(
       toPusherKey(`user:${sessionId}:incoming_friend_requests`)
     );
-    const friendRequestHandler = async ({ senderId, senderEmail }) => {
+    const friendRequestHandler = async ({ senderId }) => {
       try {
         const { data } = await axios.get(`/api/user/${senderId}`);
         setFriendRequests((prev) => [...prev, { senderId, ...data }]);
@@ -32,8 +32,8 @@ const FriendRequests = ({ incomingFriendRequests, sessionId }) => {
     };
   }, [sessionId]);
 
-  const acceptFriend = async (senderId) => {
-    await axios.post("/api/friends/accept", { id: senderId });
+  const acceptFriend = async (senderId, jobURL) => {
+    await axios.post("/api/friends/accept", { id: senderId, url: jobURL });
 
     setFriendRequests((prev) => {
       return prev.filter((fr) => fr.senderId !== senderId);
@@ -42,7 +42,7 @@ const FriendRequests = ({ incomingFriendRequests, sessionId }) => {
     router.refresh();
   };
 
-  const denyFriend = async (senderId) => {
+  const denyFriend = async (senderId, jobUrl) => {
     await axios.post("/api/friends/deny", { id: senderId });
 
     setFriendRequests((prev) => {
@@ -66,9 +66,12 @@ const FriendRequests = ({ incomingFriendRequests, sessionId }) => {
             <p>Experience: {friendRequest.experience}</p>
             <p>Email: {friendRequest.email}</p>
             <p>Username: {friendRequest.username}</p>
+            <p>Job URL: {friendRequest.jobURL}</p>
 
             <button
-              onClick={() => acceptFriend(friendRequest.senderId)}
+              onClick={() =>
+                acceptFriend(friendRequest.senderId, friendRequest.jobURL)
+              }
               aria-label="accept friend"
               className="w-8 h-8 bg-indigo-600 hover:bg-indigo-700 grid place-items-center rounded-full transition hover:shadow-md "
             >

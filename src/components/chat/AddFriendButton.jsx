@@ -5,14 +5,14 @@ import axios from "axios";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 
-const AddFriendButton = ({ id }) => {
+const AddFriendButton = ({ id, url }) => {
   const [showSuccessState, setShowSuccessState] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const addFriend = async () => {
     try {
       setIsLoading(true);
-      await axios.post("/api/friends/add", { id });
+      await axios.post("/api/friends/add", { id, url });
       setShowSuccessState(true);
     } catch (error) {
       console.error(error);

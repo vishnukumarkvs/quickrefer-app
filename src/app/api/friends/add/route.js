@@ -8,7 +8,7 @@ import driver from "@/lib/neo4jClient";
 
 export async function POST(req) {
   try {
-    const { id: idToAdd } = await req.json();
+    const { id: idToAdd, url } = await req.json();
 
     const session = await getServerSession(authOptions);
     if (!session) {
@@ -79,6 +79,7 @@ export async function POST(req) {
         email,
         username,
         companyName,
+        url: url,
       }
     );
 
@@ -86,10 +87,12 @@ export async function POST(req) {
     const addFriendRequestQuery = `
       MATCH (u:User {userId: $userId}), (f:User {userId: $friendId})
       CREATE (u)-[:SENT_FRIEND_REQUEST]->(f)
+      CREATE (u)-[:FOR_JOB_URL{url: $url}]->(f)
     `;
     await driver.session().run(addFriendRequestQuery, {
       userId: session.user.id,
       friendId: idToAdd,
+      url: url,
     });
 
     return new Response("OK");

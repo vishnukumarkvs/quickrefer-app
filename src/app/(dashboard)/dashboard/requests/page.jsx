@@ -12,9 +12,10 @@ const Page = async () => {
     .session()
     .run(
       `
-        MATCH (u:User {userId: $userId})<-[:SENT_FRIEND_REQUEST]-(u2:User)-[:WORKS_AT]->(company:Company)
-        RETURN u2.userId as senderId, u2.fullname as fullname, u2.experience as experience, u2.email as email, u2.username as username,company.name as companyName
-      `,
+      MATCH (u:User {userId: $userId})<-[:SENT_FRIEND_REQUEST]-(u2:User)-[r:FOR_JOB_URL]->(u)
+      OPTIONAL MATCH (u2)-[:WORKS_AT]->(company:Company)
+      RETURN u2.userId as senderId, u2.fullname as fullname, u2.experience as experience, u2.email as email, u2.username as username, company.name as companyName, r.url as jobURL
+    `,
       { userId: session.user.id }
     )
     .then((result) => {
@@ -26,6 +27,7 @@ const Page = async () => {
           email: record.get("email"),
           username: record.get("username"),
           companyName: record.get("companyName"),
+          jobURL: record.get("jobURL"), // Include the jobURL property in the returned object
         };
       });
     });
