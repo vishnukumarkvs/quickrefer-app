@@ -6,19 +6,17 @@ export async function GET(req) {
   const usesseion = await getServerSession(authOptions);
 
   const getReferralRequestsOfUser = `
-    MATCH (n:User {userRole: "Referrer"})-[:WORKS_AT]->(c:Company {name: $company})
-    WHERE NOT EXISTS((n)-[:FRIENDS_WITH]->(:User {userId: $requester}))
-    AND n.userId <> $requester
-    RETURN n
-    ORDER BY RAND() 
-    LIMIT 4;
+  MATCH (u:User {userId: $userId})
+  OPTIONAL MATCH (u)-[:SENT_FRIEND_REQUEST]->(u1:User)-[:WORKS_AT]->(c1:Company)
+  OPTIONAL MATCH (u)-[:FRIENDS_WITH]->(u2:User)-[:WORKS_AT]->(c2:Company)
+  RETURN COLLECT({user: u1, company: c1}) AS sentFriendRequests, COLLECT({user: u2, company: c2}) AS friends
     `;
 
   const session = driver.session({ database: "neo4j" });
   try {
     const getResult = await session.executeRead((tx) => {
-      const result = tx.run(getUsersOfCompany, {
-        requester: usesseion.user.id,
+      const result = tx.run(getReferralRequestsOfUser, {
+        userId: usesseion.user.id,
       });
       return result;
     });

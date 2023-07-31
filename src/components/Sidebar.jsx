@@ -32,12 +32,13 @@ const SideBar = () => {
             >
               Job Search
             </p>
-            <SideBarItem title="Online Jobs" href="/homepage" />
-            <SideBarItem title="Referral Jobs" />
-            <SideBarItem title="HR jobs" />
+            {/* <SideBarItem title="Online Jobs" href="/homepage" /> */}
+            {/* <SideBarItem title="Referral Jobs" />
+            <SideBarItem title="HR jobs" /> */}
             <SideBarItem title="Ask for Referral" href="/askforreferral" />
+            <SideBarItem title="Kanban Board" href="/kanbanjobstatus" />
           </div>
-          <div className="my-10">
+          {/* <div className="my-10">
             <p
               className={`${rajdhani.className} py-2 text-lg text-[#7B3F00] underline decoration-2 underline-offset-8
 `}
@@ -56,6 +57,7 @@ const SideBar = () => {
             <SideBarItem title="Create Job" href="/addjob" />
             <SideBarItem title="Dashboard" href="/getpostedjobs" />
           </div>
+          */}
           <div className="my-12">
             <a
               href="/dashboard"
