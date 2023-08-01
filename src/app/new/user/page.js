@@ -169,8 +169,6 @@ const Page = () => {
           min="0"
           {...register("exp", {
             required: true,
-            maxLength: 32,
-            minLength: 3,
           })}
         />
         <Text>Your Latest Resume</Text>
