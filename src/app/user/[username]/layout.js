@@ -1,5 +1,5 @@
 import Provider from "@/components/Providers";
-import "./globals.css";
+import "../../globals.css";
 import SideBar from "@/components/Sidebar";
 import TopBar from "@/components/TopBar";
 
