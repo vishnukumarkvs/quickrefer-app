@@ -5,7 +5,6 @@ import axios from "axios";
 import { Button } from "@/components/ui/button";
 import dynamic from "next/dynamic";
 import * as DOMPurify from "dompurify";
-import useRenderCounter from "@/helperClient/useRenderCount";
 
 import {
   Dialog,
@@ -45,6 +44,7 @@ import { QuillWrapper, modules } from "./ui/QuillWrapper";
 import { AsyncLocationSelect } from "./ui/AsyncLocationSelect";
 import { useRouter } from "next/navigation";
 import ResumeUpload from "./ResumeUpload";
+import { useSession } from "next-auth/react";
 
 // import Select from "react-select";
 
@@ -457,7 +457,7 @@ const LinkTree = ({ data, openLinkTree, setOpenLinkTree }) => {
   const { handleSubmit: handleSubmitLinkTree, register: registerLinkTree } =
     useForm({});
 
-  let links = Object.entries(data.linktree.properties);
+  let links = Object.entries(data.linktree?.properties || {});
   console.log("links", links);
 
   const onSubmit = (data0) => {
@@ -514,7 +514,7 @@ const LinkTree = ({ data, openLinkTree, setOpenLinkTree }) => {
                     <Input
                       id="linkedin"
                       className="col-span-3"
-                      defaultValue={data.linktree.properties.linkedin}
+                      defaultValue={data.linktree?.properties?.linkedin || ""}
                       {...registerLinkTree("linkedin")}
                     />
                   </div>
@@ -525,7 +525,7 @@ const LinkTree = ({ data, openLinkTree, setOpenLinkTree }) => {
                     <Input
                       id="github"
                       className="col-span-3"
-                      defaultValue={data.linktree.properties.github}
+                      defaultValue={data.linktree?.properties?.github || ""}
                       {...registerLinkTree("github")}
                     />
                   </div>
@@ -537,7 +537,7 @@ const LinkTree = ({ data, openLinkTree, setOpenLinkTree }) => {
                   <Input
                     id="blog"
                     className="col-span-3"
-                    defaultValue={data.linktree.properties.blog}
+                    defaultValue={data.linktree?.properties?.blog || ""}
                     {...registerLinkTree("blog")}
                   />
                 </div>
@@ -548,7 +548,7 @@ const LinkTree = ({ data, openLinkTree, setOpenLinkTree }) => {
                   <Input
                     id="portfolio"
                     className="col-span-3"
-                    defaultValue={data.linktree.properties.portfolio}
+                    defaultValue={data.linktree?.properties?.portfolio || ""}
                     {...registerLinkTree("portfolio")}
                   />
                 </div>
@@ -567,15 +567,26 @@ const LinkTree = ({ data, openLinkTree, setOpenLinkTree }) => {
 };
 
 const Profile = ({ username }) => {
-  const renderCount = useRenderCounter();
+  // https://next-auth.js.org/getting-started/client
+  const { data: session, status } = useSession();
+  const { data, isLoading, error } = useProfileData(username);
+  console.log("profile adta", data);
 
   const [openPersonal, setOpenPersonal] = useState(false);
   const [openWork, setOpenWork] = useState(false);
   const [openWorkUpdate, setOpenWorkUpdate] = useState(false);
   const [openLinkTree, setOpenLinkTree] = useState(false);
 
-  const { data, isLoading, error } = useProfileData(username);
-  console.log("profile adta", data);
+  if (status === "loading") {
+    return (
+      <div className="w-full h-screen flex justify-center items-center">
+        <Loader2 className="animate-spin" />
+      </div>
+    );
+  }
+  console.log("session", session);
+  let resumeUrl = `https://d1b9e92isytfe8.cloudfront.net/${session.user.id}.pdf`;
+  console.log("resumeUrl", resumeUrl);
 
   if (isLoading) {
     return (
@@ -632,7 +643,7 @@ const Profile = ({ username }) => {
         <div className="flex flex-col justify-start items-center">
           <ResumeUpload />
           <iframe
-            src="https://pizzads.s3.amazonaws.com/KvsVishnuKumar_Resume.pdf"
+            src={resumeUrl}
             width="100%"
             height="600px"
             frameBorder="0"

@@ -5,6 +5,7 @@ import axios from "axios";
 import { useSession } from "next-auth/react";
 import { Upload } from "lucide-react";
 import { Button } from "./ui/button";
+import toast from "react-hot-toast";
 
 const ResumeUpload = () => {
   const { data: session } = useSession();
@@ -44,7 +45,9 @@ const ResumeUpload = () => {
       };
 
       reader.readAsDataURL(file);
+      toast.success("File uploaded successfully");
     } catch (error) {
+      toast.error("Error uploading file");
       console.error(error);
     }
   };
