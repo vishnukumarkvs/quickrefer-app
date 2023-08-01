@@ -153,7 +153,7 @@ const PersonalDetails = ({ data, openPersonal, setOpenPersonal }) => {
               <DialogHeader>
                 <DialogTitle>Edit profile</DialogTitle>
                 <DialogDescription>
-                  Make changes to your profile here. Click save when you're
+                  Make changes to your profile here. Click save when you{"'"}re
                   done.
                 </DialogDescription>
               </DialogHeader>
@@ -378,7 +378,8 @@ const WorkDetails = ({ data, openWork, setOpenWork }) => {
             <DialogHeader>
               <DialogTitle>Edit Job Details</DialogTitle>
               <DialogDescription>
-                Make changes to your profile here. Click save when you're done.
+                Make changes to your profile here. Click save when you{"'"}re
+                done.
               </DialogDescription>
             </DialogHeader>
             <form onSubmit={handleSubmitWork(onSubmitWorkDetails)}>

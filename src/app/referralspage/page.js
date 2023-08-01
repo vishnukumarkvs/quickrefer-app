@@ -40,9 +40,9 @@ export default function Home() {
     <div>
       <h1>Messages</h1>
       {messages.map((message, i) => (
-        <div>
-          <p key={i}>{message.jobUrl}</p>
-          <p key={i}>{message.message}</p>
+        <div key={i}>
+          <p>{message.jobUrl}</p>
+          <p>{message.message}</p>
         </div>
       ))}
     </div>
