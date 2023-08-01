@@ -1,5 +1,5 @@
 "use client";
-import { rajdhani } from "@/lib/fonts";
+import { poppins } from "@/lib/fonts";
 import Link from "next/link";
 import SignOutButton from "@/components/SignOutButton";
 import { MessagesSquare } from "lucide-react";
@@ -11,7 +11,7 @@ const SideBarItem = ({ title, href }) => {
   return (
     <p
       className={`${
-        rajdhani.className
+        poppins.className
       } py-1 cursor-pointer hover:text-gray-600 ${
         pathname === href ? "text-gray-600 bg-white -ml-1 p-1 rounded-md" : ""
       }`}
@@ -28,19 +28,19 @@ const SideBar = () => {
         <div className="text-left">
           <div className="my-10">
             <p
-              className={`${rajdhani.className} py-2 text-lg text-[#7B3F00] underline decoration-2 underline-offset-8`}
+              className={`${poppins.className} py-2 text-lg text-[#7B3F00] underline decoration-2 underline-offset-8`}
             >
               Job Search
             </p>
             {/* <SideBarItem title="Online Jobs" href="/homepage" /> */}
             {/* <SideBarItem title="Referral Jobs" />
             <SideBarItem title="HR jobs" /> */}
-            <SideBarItem title="Ask for Referral" href="/askforreferral" />
-            <SideBarItem title="Kanban Board" href="/kanbanjobstatus" />
+            <SideBarItem title="Ask for Referral" href="/application" />
+            <SideBarItem title="Referral Status" href="/referral-status" />
           </div>
           {/* <div className="my-10">
             <p
-              className={`${rajdhani.className} py-2 text-lg text-[#7B3F00] underline decoration-2 underline-offset-8
+              className={`${poppins.className} py-2 text-lg text-[#7B3F00] underline decoration-2 underline-offset-8
 `}
             >
               Job Status
@@ -50,7 +50,7 @@ const SideBar = () => {
           </div>
           <div className="my-10">
             <p
-              className={`${rajdhani.className} py-2 text-lg text-[#7B3F00] underline decoration-2 underline-offset-8`}
+              className={`${poppins.className} py-2 text-lg text-[#7B3F00] underline decoration-2 underline-offset-8`}
             >
               Job Create
             </p>
@@ -61,7 +61,7 @@ const SideBar = () => {
           <div className="my-12">
             <a
               href="/dashboard"
-              className={`${rajdhani.className} py-1 cursor-pointer`}
+              className={`${poppins.className} py-1 cursor-pointer`}
             >
               <span className="flex gap-x-2 items-center">
                 Chat
@@ -71,7 +71,7 @@ const SideBar = () => {
           </div>
         </div>
         <div className="flex items-center">
-          <p className={`${rajdhani.className} p-2`}>@username</p>
+          <p className={`${poppins.className} p-2`}>@username</p>
           <SignOutButton />
         </div>
       </div>

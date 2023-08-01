@@ -255,7 +255,7 @@ export const authOptions = {
   callbacks: {
     jwt: jwtCallback,
     session: sessionCallback,
-    redirect: () => "/",
+    redirect: () => "/application",
   },
   pages: {
     newUser: "/new/user",

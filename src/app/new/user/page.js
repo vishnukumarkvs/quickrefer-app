@@ -1,8 +1,6 @@
 "use client";
 
 import UniqueUsernameInput from "@/components/UniqueUsernameInput";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { Switch } from "@/components/ui/switch";
 import { Controller } from "react-hook-form";
@@ -12,6 +10,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import CreatableSelect from "react-select/creatable";
 import { useSession } from "next-auth/react";
+import { Flex, Text, Input, Button } from "@chakra-ui/react";
 
 const skillOptions = [
   { value: "java", label: "java" },
@@ -96,85 +95,97 @@ const Page = () => {
         exp: data.exp,
       });
       toast.success("Profile updated successfully");
-      router.push("/");
+      router.push("/application");
     } catch (err) {
       toast.error("Error updating profile");
       console.log(err);
     }
   };
   return (
-    <div className="w-[70%] mx-auto h-screen">
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div>
-          <div className="flex flex-row gap-x-2 items-center m-2">
-            <p className="font-semibold text-lg">Full Name: </p>
-            <div>
-              <Input {...register("fullname")} />
-            </div>
-          </div>
-          <div className="flex flex-row gap-x-2 items-center m-2">
-            <p className="font-semibold text-lg">Username: </p>
-            <UniqueUsernameInput
-              onUsernameChange={handleUsernameChange}
-              onUsernameTakenChange={handleUsernameTakenChange}
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <Flex
+        direction={"column"}
+        gap="3"
+        bg="white"
+        w="40%"
+        mx="auto"
+        mt="50px"
+        px="25px"
+        py="20px"
+        borderRadius={"8px"}
+        boxShadow={"md"}
+      >
+        <Text>Full Name</Text>
+        <Input
+          {...register("fullname", {
+            required: true,
+            maxLength: 32,
+            minLength: 3,
+          })}
+        />
+        <Text>User Name</Text>
+        <UniqueUsernameInput
+          onUsernameChange={handleUsernameChange}
+          onUsernameTakenChange={handleUsernameTakenChange}
+        />
+        <Text>Current/Previous Company</Text>
+        <Input
+          {...register("company", {
+            required: true,
+            maxLength: 32,
+            minLength: 3,
+          })}
+          placeholder="ex: Google"
+        />
+        <Text>Your Top 3 Skills</Text>
+        <Controller
+          name="skills"
+          control={control}
+          defaultValue=""
+          rules={{
+            required: true,
+            validate: (value) => value && value.length <= 3,
+          }} // validation rule to check for maximum 3 selected options
+          render={({ field }) => (
+            <CreatableSelect
+              {...field}
+              options={skillOptions}
+              isClearable
+              isSearchable
+              isMulti
+              value={selectedSkills}
+              onChange={(value) => {
+                if (value && value.length <= 3) {
+                  setSelectedSkills(value);
+                  field.onChange(value);
+                }
+              }}
             />
-          </div>
-          <div className="flex flex-row gap-x-2 items-center m-2">
-            <p className="font-semibold text-lg">Current or last employer: </p>
-            <div>
-              <Input {...register("company")} placeholder="ex: TCS" />
-            </div>
-          </div>
-          <div className="flex flex-row gap-x-2 items-center m-2">
-            <p className="font-semibold text-lg">Top 3 Skills:</p>
-            <Controller
-              name="skills"
-              control={control}
-              defaultValue=""
-              rules={{
-                required: true,
-                validate: (value) => value && value.length <= 3,
-              }} // validation rule to check for maximum 3 selected options
-              render={({ field }) => (
-                <CreatableSelect
-                  {...field}
-                  options={skillOptions}
-                  isClearable
-                  isSearchable
-                  isMulti
-                  value={selectedSkills}
-                  onChange={(value) => {
-                    if (value && value.length <= 3) {
-                      setSelectedSkills(value);
-                      field.onChange(value);
-                    }
-                  }}
-                />
-              )}
-            />
-            <div className="flex flex-row gap-x-2 items-center m-2">
-              <p className="font-semibold text-lg">Experience: </p>
-              <div>
-                <Input {...register("exp")} />
-              </div>
-            </div>
-          </div>
-          <div className="flex flex-row gap-x-2 items-center m-2">
-            <p className="font-semibold text-lg">Resume:</p>
-            <div className="bg-white rounded-lg shadow-md">
-              <input
-                type="file"
-                onChange={onFileChange}
-                className="flex-1 px-4 py-2 border rounded-lg shadow-md focus:outline-none focus:ring focus:border-blue-300"
-              />
-            </div>
-          </div>
-        </div>
-        <Button type="submit" isLoading={isSubmitting}>
+          )}
+        />
+        <Text>Experience</Text>
+        <Input
+          type="number"
+          min="0"
+          {...register("exp", {
+            required: true,
+            maxLength: 32,
+            minLength: 3,
+          })}
+        />
+        <Text>Your Latest Resume</Text>
+        <input
+          type="file"
+          required
+          onChange={onFileChange}
+          accept=".pdf,.doc,.docx"
+          className="flex-1 px-4 py-2 border rounded-lg  focus:outline-none focus:ring focus:border-blue-300"
+        />
+        <Button isLoading={isSubmitting} type="submit">
           Submit
         </Button>
-      </form>
-    </div>
+      </Flex>
+    </form>
   );
 };
 export default Page;

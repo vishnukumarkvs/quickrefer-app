@@ -1,11 +1,36 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { format, parseISO, isWithinInterval } from "date-fns";
+import {
+  format,
+  parseISO,
+  isWithinInterval,
+  formatDistance,
+  subDays,
+} from "date-fns";
 import axios from "axios";
-import { Input } from "./ui/input";
 import DatePickerWithRange from "./DateRangePicker";
 import { useQuery } from "@tanstack/react-query";
+import {
+  Card,
+  CardHeader,
+  CardBody,
+  CardFooter,
+  Text,
+  Heading,
+  Tag,
+} from "@chakra-ui/react";
+import {
+  Tabs,
+  TabList,
+  TabPanels,
+  Tab,
+  TabPanel,
+  Flex,
+  Input,
+} from "@chakra-ui/react";
+import PageLoader from "./PageLoader";
+import Link from "next/link";
 
 const fetchReferralRequests = async () => {
   const response = await axios.get("/api/getreferralrequests");
@@ -79,7 +104,7 @@ const ReferralKanban = () => {
   }, [userData, filter, selectedDates]);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <PageLoader />;
   }
 
   if (isError) {
@@ -87,59 +112,119 @@ const ReferralKanban = () => {
   }
 
   return (
-    <div className="w-full">
-      <div className="flex p-5">
-        <div className="w-full">
-          <Input
-            type="text"
-            placeholder="Search here for any applied job or company ..."
-            value={filter}
-            onChange={(e) => setFilter(e.target.value)}
-            className="p-2 border border-zinc-400 rounded placeholder:italic placeholder:text-slate-500"
-            style={{ width: "50%" }}
-          />
-        </div>
-        <div className="w-full flex items-center gap-x-2">
-          <p>Filter by date:</p>
-          <DatePickerWithRange onDateChange={handleDateChange} />
-        </div>
-      </div>
-      <div className="w-full flex justify-around p-5 gap-x-4">
-        {["Requested", "Available for Chat"].map((status) => (
-          <Column
-            key={status}
-            status={status}
-            requests={requests.filter((job) => job.status === status)}
-          />
-        ))}
-      </div>
-    </div>
+    <Flex direction="column" gap="7" p="5">
+      <Flex gap="2">
+        <Input
+          type="text"
+          placeholder="Search here for any applied job or company ..."
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+          bg="white"
+          boxShadow="md"
+          borderRadius="md"
+          border="none"
+          style={{ width: "50%" }}
+        />
+        <DatePickerWithRange onDateChange={handleDateChange} />
+      </Flex>
+      <Tabs>
+        <TabList>
+          <Tab>Referrals Applied</Tab>
+          <Tab>Got Referred</Tab>
+        </TabList>
+
+        <TabPanels>
+          <TabPanel>
+            <Flex direction={"column"} gap="5">
+              {[
+                {
+                  title: "Company name",
+                  url: "https://www.google.com",
+                  referrer: "sankar kumar",
+                  date: new Date(),
+                },
+              ].map((job, idx) => (
+                <Card key={idx} variant={"elevated"} p="4">
+                  <Flex justifyContent={"space-between"}>
+                    <Flex direction={"column"} gap="2">
+                      <Text fontSize={"xl"} fontWeight={"bold"}>
+                        {job.title}
+                      </Text>
+                      <Text>
+                        Referrer:{" "}
+                        <Link
+                          href={job.referrer}
+                          target="_blank"
+                          className="text-blue-500"
+                        >
+                          {job.referrer}
+                        </Link>
+                      </Text>
+                      <Text>
+                        Job URL:{" "}
+                        <Link
+                          href={job.url}
+                          target="_blank"
+                          className="text-blue-500"
+                        >
+                          {job.url}
+                        </Link>
+                      </Text>
+                    </Flex>
+                    <Flex
+                      direction={"column"}
+                      gap="5"
+                      borderLeft={"1px solid black"}
+                      px="4"
+                    >
+                      <Text fontSize={"xl"} letterSpacing={2}>
+                        Applied on
+                      </Text>
+                      <Tag>
+                        {format(new Date(job.date), "dd MMM yyyy")} (
+                        {formatDistance(new Date(job.date), new Date(), {
+                          addSuffix: true,
+                        })}
+                        )
+                      </Tag>
+                    </Flex>
+                  </Flex>
+                </Card>
+              ))}
+            </Flex>
+          </TabPanel>
+          <TabPanel>
+            <p>two!</p>
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
+    </Flex>
   );
 };
 
-const Column = React.memo(({ status, requests }) => {
-  return (
-    <div className="w-1/3 bg-gray-200 p-2 rounded border border-gray-300">
-      <h2 className="text-lg font-bold mb-2 text-center border-b pb-1">
-        {status}
-      </h2>
-      {requests.map((job) => (
-        <Card key={job.id} job={job} />
-      ))}
-    </div>
-  );
-});
+// const Column = React.memo(({ status, requests }) => {
+//   return (
+//     <div className="w-1/3 bg-gray-200 p-2 rounded border border-gray-300">
+//       <h2 className="text-lg font-bold mb-2 text-center border-b pb-1">
+//         {status}
+//       </h2>
+//       {requests.map((job) => (
+//         <Card key={job.id} job={job} />
+//       ))}
+//     </div>
+//   );
+// });
 
-const Card = React.memo(({ job }) => {
-  return (
-    <div className="bg-white p-2 rounded mb-2 border border-gray-300">
-      <p className="font-semibold">{job.title}</p>
-      <p className="text-xs text-gray-500">Works at: {job.worksAt}</p>
-      <p className="text-xs text-gray-500">
-        Applied on: {format(parseISO(job.appliedDate), "MMM dd, yyyy")}
-      </p>
-    </div>
-  );
-});
+// const Card = React.memo(({ job }) => {
+//   return (
+//     <div className="bg-white p-2 rounded mb-2 border border-gray-300">
+//       <p className="font-semibold">{job.title}</p>
+//       <p className="text-xs text-gray-500">Works at: {job.worksAt}</p>
+//       <p className="text-xs text-gray-500">
+//         Applied on: {format(parseISO(job.appliedDate), "MMM dd, yyyy")}
+//       </p>
+//     </div>
+//   );
+// });
 
 export default ReferralKanban;
