@@ -108,13 +108,6 @@ const Layout = async ({ children }) => {
                     <li className="-mx-6 mt-auto flex items-center">
                       <div className="flex flex-1 items-center gap-x-y px-6 py-3 text-sm font-semi-bold leading-6 text-gray-900">
                         <div className="relative h-8 w-8  m-2">
-                          {/* <Image
-                    fill
-                    referrerPolicy="no-referrer"
-                    className="rounded-full"
-                    src={session.user.image || ""}
-                    alt="your profile picture"
-                  /> */}
                           <UserAvatar name={session.user.name} />
                         </div>
                         <span className="sr-only">Your profile</span>

@@ -2,7 +2,6 @@
 import { poppins } from "@/lib/fonts";
 import Link from "next/link";
 import SignOutButton from "@/components/SignOutButton";
-import { MessagesSquare } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 const SideBarItem = ({ title, href }) => {
@@ -32,42 +31,11 @@ const SideBar = () => {
             >
               Job Search
             </p>
-            {/* <SideBarItem title="Online Jobs" href="/homepage" /> */}
-            {/* <SideBarItem title="Referral Jobs" />
-            <SideBarItem title="HR jobs" /> */}
             <SideBarItem title="Ask for Referral" href="/application" />
             <SideBarItem title="Referral Status" href="/referral-status" />
           </div>
-          {/* <div className="my-10">
-            <p
-              className={`${poppins.className} py-2 text-lg text-[#7B3F00] underline decoration-2 underline-offset-8
-`}
-            >
-              Job Status
-            </p>
-            <SideBarItem title="Kanban Board" href="/kanbanjobstatus" />
-            <SideBarItem title="Saved Jobs" />
-          </div>
-          <div className="my-10">
-            <p
-              className={`${poppins.className} py-2 text-lg text-[#7B3F00] underline decoration-2 underline-offset-8`}
-            >
-              Job Create
-            </p>
-            <SideBarItem title="Create Job" href="/addjob" />
-            <SideBarItem title="Dashboard" href="/getpostedjobs" />
-          </div>
-          */}
           <div className="my-12">
-            <a
-              href="/dashboard"
-              className={`${poppins.className} py-1 cursor-pointer`}
-            >
-              <span className="flex gap-x-2 items-center">
-                Chat
-                <MessagesSquare size={20} />
-              </span>
-            </a>
+            <SideBarItem title="Chat" href="/dashboard" />
           </div>
         </div>
         <div className="flex items-center">

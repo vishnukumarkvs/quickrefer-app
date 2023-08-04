@@ -19,7 +19,7 @@ const skillOptions = [
 ];
 
 const Page = () => {
-  const { data: session } = useSession();
+  const { data: session, update } = useSession();
   const router = useRouter();
   const {
     handleSubmit,
@@ -94,6 +94,7 @@ const Page = () => {
         skills: data.skills.map((skill) => skill.value),
         exp: data.exp,
       });
+      update({ ...session, user: { ...session.user, username: username } });
       toast.success("Profile updated successfully");
       router.push("/application");
     } catch (err) {
