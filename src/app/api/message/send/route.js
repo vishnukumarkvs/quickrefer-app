@@ -6,10 +6,18 @@ import { nanoid } from "nanoid";
 import { getServerSession } from "next-auth";
 import driver from "@/lib/neo4jClient";
 
+// function linkify(text) {
+//   const urlRegex = /(https?:\/\/[^\s]+)/g;
+//   return text.replace(
+//     urlRegex,
+//     (url) => `<a href="${url}" target="_blank">${url}</a>`
+//   );
+// }
+
 export async function POST(req) {
   try {
     const { text, chatId } = await req.json();
-    console.log("message api", text, chatId);
+    // console.log("message api", text, chatId);
     const session = await getServerSession(authOptions);
     if (!session) return new Response("Unauthorized", { status: 401 });
 
@@ -40,16 +48,12 @@ export async function POST(req) {
       timestamp: timestamp,
       seen: false,
     };
+
     const message = messageValidator.parse(messageData);
 
-    // await set(ref(db, `chat/${chatId}/messages/${timestamp}`), {
-    //   message: message,
-    // });
-
-    // remove encapsulation
     await set(ref(db, `chat/${chatId}/messages/${timestamp}`), message)
       .then(() => {
-        console.log("Message sent successfully");
+        // console.log("Message sent successfully");
       })
       .catch((error) => {
         console.error("Error sending message:", error);

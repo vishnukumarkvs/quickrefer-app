@@ -42,23 +42,23 @@ export async function POST(req) {
       DELETE sent
     `;
 
-    const addFriendResult = await session.run(addFriendQuery, {
+    // console.log("Start1");
+
+    await session.run(addFriendQuery, {
       userId: sessionAuth.user.id,
       friendId: idToAdd,
     });
-
-    if (addFriendResult.summary.counters.updates().relationshipsDeleted === 0) {
-      return new Response("Friend request does not exist", { status: 404 });
-    }
+    // console.log("Start2");
 
     const timestamp = Date.now();
     const messageData = {
       id: nanoid(),
       senderId: idToAdd,
-      text: `Hi, could you kindly consider providing a referral for the job: <a href="${url}" target="_blank">${url}</a> . Thank you.`,
+      text: `Hi, could you kindly consider providing a referral for the job: ${url}. Thank you.`,
       timestamp: timestamp,
       seen: false,
     };
+
     const message = messageValidator.parse(messageData);
 
     const chatId = chatHrefConstructor(sessionAuth.user.id, idToAdd);
@@ -71,6 +71,8 @@ export async function POST(req) {
         console.error("Error sending message:", error);
         throw error; // Propagate the error to the catch block
       });
+
+    // console.log("Start3");
 
     return new Response("OK");
   } catch (error) {

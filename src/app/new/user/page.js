@@ -177,7 +177,8 @@ const Page = () => {
           type="file"
           required
           onChange={onFileChange}
-          accept=".pdf,.doc,.docx"
+          // accept=".pdf,.doc,.docx"
+          accept=".pdf"
           className="flex-1 px-4 py-2 border rounded-lg  focus:outline-none focus:ring focus:border-blue-300"
         />
         <Button isLoading={isSubmitting} type="submit">

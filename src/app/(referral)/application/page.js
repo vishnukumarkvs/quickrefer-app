@@ -70,7 +70,7 @@ const Page = () => {
         );
         if (usersData.length === 0) {
           toast(
-            "No referrers found at this moment for the particular company.\n\n Try again later or select other company",
+            "No referrers found at this moment for the particular company.\n\n Try again later or please select other company",
             { position: "bottom-right", duration: 6000 }
           );
         }
@@ -89,7 +89,7 @@ const Page = () => {
       setFetchUsersLoading(true);
       await getUsersOfCompany(company);
     } else {
-      toast.error("Please fill both Job Linkand Company fields", {
+      toast.error("Please fill both Job Link and Company fields", {
         position: "bottom-right",
       });
     }

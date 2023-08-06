@@ -8,6 +8,13 @@ import { useEffect, useRef, useState } from "react";
 
 // Ref for scrolldown to latest message
 
+function linkify(inputText) {
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  return inputText.replace(urlRegex, (url) => {
+    return `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`;
+  });
+}
+
 const Messages = ({ sessionId, chatId }) => {
   // direct show to users rather than refresh
   const [messages, setMessages] = useState([]);
@@ -58,17 +65,21 @@ const Messages = ({ sessionId, chatId }) => {
                   }
                 )}
               >
-                <span
+                {/* <span
                   className={cn("px-4 py-2 rounded-lg inline-block", {
                     "bg-indigo-600 text-white": isCurrentUser,
                     "bg-gray-200 text-gray-900": !isCurrentUser,
                   })}
                 >
                   {message.text}{" "}
-                  {/* <span className="ml-2 text-xs text-gray-400">
-                    {formatTimestamp(message.timestamp)}
-                  </span> */}
-                </span>
+                </span> */}
+                <span
+                  className={cn("px-4 py-2 rounded-lg inline-block", {
+                    "bg-indigo-600 text-white": isCurrentUser,
+                    "bg-gray-200 text-gray-900": !isCurrentUser,
+                  })}
+                  dangerouslySetInnerHTML={{ __html: linkify(message.text) }}
+                />
               </div>
             </div>
           </div>
