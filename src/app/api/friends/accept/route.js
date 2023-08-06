@@ -65,7 +65,7 @@ export async function POST(req) {
 
     await set(ref(db, `chat/${chatId}/messages/${timestamp}`), message)
       .then(() => {
-        console.log("Message sent successfully");
+        // console.log("Message sent successfully");
       })
       .catch((error) => {
         console.error("Error sending message:", error);

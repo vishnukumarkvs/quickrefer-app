@@ -77,11 +77,13 @@ const Page = () => {
 
   const handleFetch = async (event) => {
     event.preventDefault();
-    if (company) {
+    if (company && url) {
       setFetchUsersLoading(true);
       await getUsersOfCompany(company);
     } else {
-      toast.error("Please select a company", { position: "top-right" });
+      toast.error("Please fill both JobURL and Company fields", {
+        position: "bottom-right",
+      });
     }
     console.log(users);
   };
@@ -105,7 +107,7 @@ const Page = () => {
             type="text"
             onChange={(e) => setUrl(e.target.value)}
             className="bg-white"
-            placeholder="Enter URL"
+            placeholder="Enter Job Link"
             required
           />
           <div className="w-full">

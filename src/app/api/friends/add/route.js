@@ -62,7 +62,7 @@ export async function POST(req) {
 
     const addFriendRequestQuery = `
       MATCH (u:User {userId: $userId}), (f:User {userId: $friendId})
-      CREATE (u)-[:SENT_FRIEND_REQUEST]->(f)
+      CREATE (u)-[:SENT_FRIEND_REQUEST {applied_on: datetime()}]->(f)
       CREATE (u)-[:FOR_JOB_URL{url: $url}]->(f)
     `;
     await session.run(addFriendRequestQuery, {
