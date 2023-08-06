@@ -13,7 +13,6 @@ export async function GET(req) {
       return result;
     });
 
-    console.log(`Write result:`, getResult);
     return new Response(JSON.stringify(getResult), { status: 200 });
   } catch (error) {
     console.error("Error querying DynamoDB:", error);

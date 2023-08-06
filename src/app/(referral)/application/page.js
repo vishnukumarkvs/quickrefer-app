@@ -20,6 +20,8 @@ import AddFriendButton from "@/components/chat/AddFriendButton";
 import { Input } from "@/components/ui/input";
 import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
+import { BeatLoader } from "react-spinners";
+import { Flex } from "@chakra-ui/react";
 
 const Page = () => {
   const { data: session, status } = useSession();
@@ -29,14 +31,18 @@ const Page = () => {
   const [users, setUsers] = useState([]);
   const [url, setUrl] = useState("");
   const [fetchUsersLoading, setFetchUsersLoading] = useState(false);
+  const [fetchOptionsLoading, setFetchOptionsLoading] = useState(true);
+  const [fetchOptionsError, setFetchOptionsError] = useState(false);
 
   useEffect(() => {
     fetchOptions();
   }, []);
 
   const fetchOptions = async () => {
+    setFetchOptionsLoading(true);
+    setFetchOptionsError(false);
     try {
-      const response = await axios.get("/api/getCompanyList"); // Corrected API endpoint
+      const response = await axios.get("/api/getCompanyList");
       const list = response.data.records[0]._fields[0];
 
       const extractedOptions = list.map((item) => ({
@@ -46,7 +52,10 @@ const Page = () => {
 
       setOptions(extractedOptions);
     } catch (error) {
+      setFetchOptionsError(true);
       console.error("Error fetching options from neo4j:", error);
+    } finally {
+      setFetchOptionsLoading(false);
     }
   };
 
@@ -59,7 +68,6 @@ const Page = () => {
         const usersData = response.data.records.map(
           (record) => record._fields[0].properties
         );
-        console.log(usersData);
         if (usersData.length === 0) {
           toast(
             "No referrers found at this moment for the particular company.\n\n Try again later or select other company",
@@ -81,12 +89,28 @@ const Page = () => {
       setFetchUsersLoading(true);
       await getUsersOfCompany(company);
     } else {
-      toast.error("Please fill both JobURL and Company fields", {
+      toast.error("Please fill both Job Linkand Company fields", {
         position: "bottom-right",
       });
     }
-    console.log(users);
   };
+
+  if (fetchOptionsLoading) {
+    return (
+      <Flex
+        height={"100vh"}
+        width={"full"}
+        alignItems={"center"}
+        justifyContent={"center"}
+      >
+        <BeatLoader color="#ffc800e5" />
+      </Flex>
+    );
+  }
+
+  if (fetchOptionsError) {
+    return <p>Error loading options. Please refresh the page.</p>;
+  }
 
   return (
     <div className="w-full max-w-screen-lg mx-auto">
