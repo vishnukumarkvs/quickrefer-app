@@ -55,7 +55,7 @@ export async function POST(req) {
     const messageData = {
       id: nanoid(),
       senderId: idToAdd,
-      text: "I want a referral request for the joburl: " + url,
+      text: `Hi, could you kindly consider providing a referral for the job: <a href="${url}" target="_blank">${url}</a> . Thank you.`,
       timestamp: timestamp,
       seen: false,
     };

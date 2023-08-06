@@ -69,7 +69,7 @@ const FriendRequests = ({ incomingFriendRequests, sessionId }) => {
         <TableHeader>
           <TableRow>
             <TableHead className="w-[100px]">No</TableHead>
-            <TableHead>Company Name</TableHead>
+            <TableHead>Company</TableHead>
             <TableHead>Fullname</TableHead>
             <TableHead>Experience</TableHead>
             <TableHead>Profile</TableHead>
