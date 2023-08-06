@@ -7,10 +7,11 @@ export async function GET(req) {
 
   const getReferralRequestsOfUser = `
   MATCH (u:User {userId: $userId})
-  OPTIONAL MATCH (u)-[r:SENT_FRIEND_REQUEST]->(u1:User)-[:WORKS_AT]->(c1:Company)
+  OPTIONAL MATCH (u)-[r1:SENT_FRIEND_REQUEST]->(u1:User)-[:WORKS_AT]->(c1:Company)
+  OPTIONAL MATCH (u)-[r2:FOR_JOB_URL]->(u1)
   OPTIONAL MATCH (u)-[:FRIENDS_WITH]->(u2:User)-[:WORKS_AT]->(c2:Company)
-  RETURN COLLECT({user: u1, company: c1, applied_on: r.applied_on}) AS sentFriendRequests, COLLECT({user: u2, company: c2}) AS friends
-    `;
+  RETURN COLLECT({user: u1, company: c1, applied_on: r2.applied_on, job_url: r2.url}) AS sentFriendRequests, COLLECT({user: u2, company: c2}) AS friends
+`;
 
   const session = driver.session({ database: "neo4j" });
   try {

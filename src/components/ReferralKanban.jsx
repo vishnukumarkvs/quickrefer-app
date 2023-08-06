@@ -34,15 +34,30 @@ import Link from "next/link";
 
 const fetchReferralRequests = async () => {
   const response = await axios.get("/api/getreferralrequests");
+  console.log(response.data.records[0]._fields);
   return processData(response.data.records[0]._fields);
 };
 
 const processData = (records) => {
   const transformRecord = (record, status) => ({
     id: record.user.properties.userId,
-    title: `${record.user.properties.fullname} (${record.user.properties.userRole})`,
+    fullname: record.user.properties.fullname,
+    username: record.user.properties.username,
+    job_url: record.job_url || null,
     status,
-    appliedDate: new Date().toISOString().substring(0, 10),
+    appliedDate: record.applied_on
+      ? new Date(
+          record.applied_on.year.low,
+          record.applied_on.month.low - 1,
+          record.applied_on.day.low,
+          record.applied_on.hour.low,
+          record.applied_on.minute.low,
+          record.applied_on.second.low,
+          record.applied_on.nanosecond.low / 1000000 // Convert nanoseconds to milliseconds
+        )
+          .toISOString()
+          .substring(0, 10)
+      : null, // Return null if applied_on property is not available
     worksAt: record.company
       ? record.company.properties.name
       : "Unknown Company",
@@ -69,7 +84,7 @@ const ReferralKanban = () => {
     data: userData,
     error,
   } = useQuery({
-    queryKey: "referralRequests",
+    queryKey: ["referralRequests"],
     queryFn: fetchReferralRequests,
   });
 
@@ -102,6 +117,8 @@ const ReferralKanban = () => {
       return [];
     }
   }, [userData, filter, selectedDates]);
+
+  console.log(requests, "rrr");
 
   if (isLoading) {
     return <PageLoader />;
@@ -136,38 +153,31 @@ const ReferralKanban = () => {
         <TabPanels>
           <TabPanel>
             <Flex direction={"column"} gap="5">
-              {[
-                {
-                  title: "Company name",
-                  url: "https://www.google.com",
-                  referrer: "sankar kumar",
-                  date: new Date(),
-                },
-              ].map((job, idx) => (
+              {requests.map((job, idx) => (
                 <Card key={idx} variant={"elevated"} p="4">
                   <Flex justifyContent={"space-between"}>
                     <Flex direction={"column"} gap="2">
                       <Text fontSize={"xl"} fontWeight={"bold"}>
-                        {job.title}
+                        {job.worksAt}
                       </Text>
                       <Text>
                         Referrer:{" "}
                         <Link
-                          href={job.referrer}
+                          href={`http://localhost:3000/user/${job.username}`}
                           target="_blank"
                           className="text-blue-500"
                         >
-                          {job.referrer}
+                          {job.fullname}
                         </Link>
                       </Text>
                       <Text>
                         Job URL:{" "}
                         <Link
-                          href={job.url}
+                          href={job.job_url}
                           target="_blank"
                           className="text-blue-500"
                         >
-                          {job.url}
+                          {job.job_url}
                         </Link>
                       </Text>
                     </Flex>
@@ -181,8 +191,8 @@ const ReferralKanban = () => {
                         Applied on
                       </Text>
                       <Tag>
-                        {format(new Date(job.date), "dd MMM yyyy")} (
-                        {formatDistance(new Date(job.date), new Date(), {
+                        {format(new Date(job.appliedDate), "dd MMM yyyy")} (
+                        {formatDistance(new Date(job.appliedDate), new Date(), {
                           addSuffix: true,
                         })}
                         )
@@ -201,30 +211,5 @@ const ReferralKanban = () => {
     </Flex>
   );
 };
-
-// const Column = React.memo(({ status, requests }) => {
-//   return (
-//     <div className="w-1/3 bg-gray-200 p-2 rounded border border-gray-300">
-//       <h2 className="text-lg font-bold mb-2 text-center border-b pb-1">
-//         {status}
-//       </h2>
-//       {requests.map((job) => (
-//         <Card key={job.id} job={job} />
-//       ))}
-//     </div>
-//   );
-// });
-
-// const Card = React.memo(({ job }) => {
-//   return (
-//     <div className="bg-white p-2 rounded mb-2 border border-gray-300">
-//       <p className="font-semibold">{job.title}</p>
-//       <p className="text-xs text-gray-500">Works at: {job.worksAt}</p>
-//       <p className="text-xs text-gray-500">
-//         Applied on: {format(parseISO(job.appliedDate), "MMM dd, yyyy")}
-//       </p>
-//     </div>
-//   );
-// });
 
 export default ReferralKanban;
