@@ -16,21 +16,24 @@ import SideBar from "@/components/Sidebar";
 const { Icons } = require("@/components/chat/icons");
 const { notFound } = require("next/navigation");
 
-const sidebarOptions = [
-  // {
-  //   id: 1,
-  //   name: "Add Friend",
-  //   href: "/dashboard/add",
-  //   Icon: "UserPlus",
-  // },
-];
+// const sidebarOptions = [
+//   {
+//     id: 1,
+//     name: "Add Friend",
+//     href: "/dashboard/add",
+//     Icon: "UserPlus",
+//   },
+// ];
 
 const Layout = async ({ children }) => {
   const session = await getServerSession(authOptions);
 
   const friends = await getFriendsByUserIds(session.user.id);
-  // console.log("hola fries", friends);
-  //   { userId: '-3b6b-4d8a-cee73ec2cddc', name: 'vishnukvs' }
+  const acceptedFriends = friends.filter(
+    (friend) => friend.status === "accepted"
+  );
+  const sentFriends = friends.filter((friend) => friend.status === "sent");
+
   const result = await driver.session().run(
     `
   MATCH (u:User {userId: $userId})<-[:SENT_FRIEND_REQUEST]-(u2:User)
@@ -59,21 +62,29 @@ const Layout = async ({ children }) => {
                 >
                   <Icons.Logo className="h-8 w-auto text-indigo-600" />
                 </Link>
-                <div className="text-xs font-semibold text-gray-500 leading-6">
+                {/* <div className="text-xs font-semibold text-gray-500 leading-6">
                   Your chats
-                </div>
+                </div> */}
                 <nav className="flex flex-1 flex-col">
                   <ul
                     role="list"
                     className="list-none flex flex-1 flex-col gp-y-7"
                   >
                     <li>
+                      <p>Accepted Requests:</p>
                       <SidebarChatList
                         sessionId={session.user.id}
-                        friends={friends}
+                        friends={acceptedFriends}
                       />
                     </li>
                     <li>
+                      <p>Sent Requests:</p>
+                      <SidebarChatList
+                        sessionId={session.user.id}
+                        friends={sentFriends}
+                      />
+                    </li>
+                    {/* <li>
                       <div className="text-xs font-semibold leading-6 text-gray-400">
                         Overview
                       </div>
@@ -98,7 +109,7 @@ const Layout = async ({ children }) => {
                             );
                           })}
                       </ul>
-                    </li>
+                    </li> */}
                     <li>
                       <FriendRequestsSidebarOption
                         sessionId={session.user.id}

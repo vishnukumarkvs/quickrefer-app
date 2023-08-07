@@ -35,8 +35,8 @@ export async function POST(req) {
 
     const addFriendQuery = `
       MATCH (u:User {userId: $userId}), (f:User {userId: $friendId})
-      MERGE (u)-[r:FRIENDS_WITH]->(f)
-      MERGE (f)-[r2:FRIENDS_WITH]->(u)
+      MERGE (u)-[r:FRIENDS_WITH {initiator: $friendId}]->(f)
+      MERGE (f)-[r2:FRIENDS_WITH {initiator: $friendId}]->(u)
       WITH u, f
       MATCH (u)-[sent:SENT_FRIEND_REQUEST]->(f)
       DELETE sent
