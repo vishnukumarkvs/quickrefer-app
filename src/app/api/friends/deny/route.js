@@ -12,7 +12,7 @@ export async function POST(req) {
     }
 
     const denyFriendRequestQuery = `
-      MATCH (u:User {userId: $userId})-[r:SENT_FRIEND_REQUEST]-(f:User {userId: $friendId})
+      MATCH (u:User {userId: $userId})<-[r:SENT_FRIEND_REQUEST]-(f:User {userId: $friendId})
       DELETE r
     `;
     await session.run(denyFriendRequestQuery, {

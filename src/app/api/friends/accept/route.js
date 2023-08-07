@@ -38,7 +38,7 @@ export async function POST(req) {
       MERGE (u)-[r:FRIENDS_WITH {initiator: $friendId}]->(f)
       MERGE (f)-[r2:FRIENDS_WITH {initiator: $friendId}]->(u)
       WITH u, f
-      MATCH (u)-[sent:SENT_FRIEND_REQUEST]->(f)
+      MATCH (f)-[sent:SENT_FRIEND_REQUEST]->(u)
       DELETE sent
     `;
 
