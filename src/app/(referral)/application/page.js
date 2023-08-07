@@ -105,15 +105,17 @@ const Page = () => {
           <Input
             type="text"
             onChange={(e) => setUrl(e.target.value)}
-            className="bg-white"
+            className="bg-white placeholder:text-lg placeholder:text-zinc-400"
             placeholder="Enter Job Link"
             required
           />
           <div className="w-full">
             <AsyncSelect
               loadOptions={loadOptions} // Use the loadOptions function to fetch options asynchronously
-              placeholder="Select Company"
+              placeholder="Type Company Name"
+              cacheOptions
               onChange={setCompany}
+              noOptionsMessage={() => "No companies found"}
               isSearchable
               isClearable
               required
@@ -123,7 +125,7 @@ const Page = () => {
             {/* <Button onClick={handleReferralSubmit}>Direct Submit</Button> */}
             <p className="p-5 text-center">Find people here</p>
             <Button onClick={handleFetch} isLoading={fetchUsersLoading}>
-              Fetch
+              Find
             </Button>
           </div>
         </div>
