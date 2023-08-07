@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Select from "react-select";
 
-import ReferralSubmit from "@/components/ReferralSubmit";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -18,29 +17,19 @@ import {
 
 import AddFriendButton from "@/components/chat/AddFriendButton";
 import { Input } from "@/components/ui/input";
-import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 import { BeatLoader } from "react-spinners";
 import { Flex } from "@chakra-ui/react";
+import AsyncSelect from "react-select/async";
 
 const Page = () => {
-  const { data: session, status } = useSession();
-
   const [options, setOptions] = useState([]);
   const [company, setCompany] = useState(null);
   const [users, setUsers] = useState([]);
   const [url, setUrl] = useState("");
   const [fetchUsersLoading, setFetchUsersLoading] = useState(false);
-  const [fetchOptionsLoading, setFetchOptionsLoading] = useState(true);
-  const [fetchOptionsError, setFetchOptionsError] = useState(false);
 
-  useEffect(() => {
-    fetchOptions();
-  }, []);
-
-  const fetchOptions = async () => {
-    setFetchOptionsLoading(true);
-    setFetchOptionsError(false);
+  const loadOptions = async (inputValue, callback) => {
     try {
       const response = await axios.get("/api/getCompanyList");
       const list = response.data.records[0]._fields[0];
@@ -50,12 +39,15 @@ const Page = () => {
         label: item,
       }));
 
-      setOptions(extractedOptions);
+      // Filter the options based on the user's input value
+      const filteredOptions = extractedOptions.filter((option) =>
+        option.label.toLowerCase().includes(inputValue.toLowerCase())
+      );
+
+      callback(filteredOptions);
     } catch (error) {
-      setFetchOptionsError(true);
       console.error("Error fetching options from neo4j:", error);
-    } finally {
-      setFetchOptionsLoading(false);
+      callback([]); // In case of an error, provide an empty array of options
     }
   };
 
@@ -95,23 +87,6 @@ const Page = () => {
     }
   };
 
-  if (fetchOptionsLoading) {
-    return (
-      <Flex
-        height={"100vh"}
-        width={"full"}
-        alignItems={"center"}
-        justifyContent={"center"}
-      >
-        <BeatLoader color="#ffc800e5" />
-      </Flex>
-    );
-  }
-
-  if (fetchOptionsError) {
-    return <p>Error loading options. Please refresh the page.</p>;
-  }
-
   return (
     <div className="w-full max-w-screen-lg mx-auto">
       <div className="p-4">
@@ -135,8 +110,8 @@ const Page = () => {
             required
           />
           <div className="w-full">
-            <Select
-              options={options}
+            <AsyncSelect
+              loadOptions={loadOptions} // Use the loadOptions function to fetch options asynchronously
               placeholder="Select Company"
               onChange={setCompany}
               isSearchable
