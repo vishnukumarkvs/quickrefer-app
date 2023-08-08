@@ -96,7 +96,7 @@ const Page = () => {
       });
       update({ ...session, user: { ...session.user, username: username } });
       toast.success("Profile updated successfully");
-      router.push("/application");
+      router.push("/ask-referral");
     } catch (err) {
       toast.error("Error updating profile");
       console.log(err);

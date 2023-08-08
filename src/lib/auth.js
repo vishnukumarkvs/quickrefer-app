@@ -204,7 +204,7 @@ export const authOptions = {
     strategy: "jwt",
   },
   pages: {
-    signIn: "/login",
+    signIn: "/",
   },
   providers: [
     GoogleProvider(getGoogleCredentials()),
@@ -239,7 +239,7 @@ export const authOptions = {
   callbacks: {
     jwt: jwtCallback,
     session: sessionCallback,
-    redirect: () => "/application",
+    // redirect: () => "/ask-referral",
   },
   pages: {
     newUser: "/new/user",

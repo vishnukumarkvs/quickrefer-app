@@ -1,3 +1,5 @@
+"use client";
+
 import FriendRequestsSidebarOption from "@/components/chat/FriendRequestsSidebarOption";
 import SidebarChatList from "@/components/chat/SidebarChatList";
 import SignOutButton from "@/components/SignOutButton";
@@ -11,7 +13,6 @@ import Provider from "@/components/Providers";
 import "../../globals.css";
 //poppins import
 import { poppins } from "@/lib/fonts";
-import SideBar from "@/components/Sidebar";
 
 const { Icons } = require("@/components/chat/icons");
 const { notFound } = require("next/navigation");
@@ -52,7 +53,6 @@ const Layout = async ({ children }) => {
     <html lang="en">
       <body className={`bg-[#fbf9f0] ${poppins.className}`}>
         <div className="flex">
-          <SideBar className="w-1/4" />
           <main className="flex-grow">
             <div className="w-full flex h-screen">
               <div className="flex h-full w-full max-w-xs grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6">

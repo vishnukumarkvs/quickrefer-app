@@ -5,6 +5,7 @@ import SignOutButton from "@/components/SignOutButton";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Spinner } from "@chakra-ui/react";
 
 const SideBarItem = ({ title, href }) => {
   const pathname = usePathname();
@@ -25,7 +26,17 @@ const SideBarItem = ({ title, href }) => {
 const SideBar = () => {
   const { data: session, status } = useSession();
   if (status === "loading") {
-    return <p>Loading...</p>;
+    return (
+      <div className="flex items-center justify-center">
+        <Spinner
+          thickness="4px"
+          speed="0.65s"
+          emptyColor="gray.200"
+          color="blue.500"
+          size="xl"
+        />
+      </div>
+    );
   }
   console.log(session);
   return (
@@ -38,7 +49,7 @@ const SideBar = () => {
             >
               MENU
             </p>
-            <SideBarItem title="Ask for Referral" href="/application" />
+            <SideBarItem title="Ask for Referral" href="/ask-referral" />
             <SideBarItem title="Referral Status" href="/referral-status" />
             <SideBarItem title="Chat" href="/dashboard" />
           </div>
