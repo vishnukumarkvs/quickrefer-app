@@ -1,8 +1,7 @@
-const { default: FriendRequests } = require("@/components/chat/FriendRequests");
-const { authOptions } = require("@/lib/auth");
-const { getServerSession } = require("next-auth");
-const { notFound } = require("next/navigation");
+import FriendRequests from "@/components/chat/FriendRequests";
+import { authOptions } from "@/lib/auth";
 import driver from "@/lib/neo4jClient";
+import { getServerSession } from "next-auth";
 
 const Page = async () => {
   const session = await getServerSession(authOptions);
