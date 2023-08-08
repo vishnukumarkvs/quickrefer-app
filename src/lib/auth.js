@@ -134,7 +134,6 @@ const authorizeCredentials = async (credentials) => {
 };
 
 const jwtCallback = async ({ token, user, session, trigger, isNewUser }) => {
-  // console.log("JWT callback:", { token, user, session, trigger, isNewUser });
   const params = {
     TableName: "Users",
     Key: {
@@ -149,37 +148,20 @@ const jwtCallback = async ({ token, user, session, trigger, isNewUser }) => {
     if (user) {
       token.id = user.id;
     }
-
     return token;
   }
 
   let dbUser = unmarshall(dbUserResult.Item);
 
-  if (!dbUser.name) {
+  if (!dbUser.jtusername && dbUser.email) {
     const email = dbUser.email;
     const atIndex = email.indexOf("@");
     const username = email.substring(0, atIndex);
-    const name = username.replace(/\./g, " ");
+    const jtusername = username.replace(/\./g, "");
 
-    dbUser.name = name;
-
-    const putParams = {
-      TableName: "Users",
-      Item: marshall(dbUser),
-    };
-
-    await ddbClient.send(new PutItemCommand(putParams));
-  }
-
-  if (!dbUser.jtusername) {
-    const uid = nanoid(5);
-    const jtusername =
-      dbUser.name.replace(/\s+/g, "").toLowerCase() + "#" + uid;
-    dbUser.jtusername = jtusername;
-
-    let dbUsernamesResult = {};
-    dbUsernamesResult.jtusername = jtusername;
-    dbUsernamesResult.id = dbUser.id;
+    // Generate a NanoID and add it to the jtusername
+    const nanoId = nanoid();
+    dbUser.jtusername = `${jtusername}_${nanoId}`;
 
     const putParams = {
       TableName: "Users",
@@ -195,9 +177,10 @@ const jwtCallback = async ({ token, user, session, trigger, isNewUser }) => {
 
   return {
     id: dbUser.id,
-    name: dbUser.name || user.name, // Use dbUser.name if available, otherwise fallback to user.name
+    name: dbUser.name || user.name,
     email: dbUser.email,
     image: dbUser?.image,
+    jtusername: dbUser.jtusername,
   };
 };
 
@@ -207,6 +190,7 @@ const sessionCallback = ({ session, token }) => {
     session.user.name = token?.name;
     session.user.email = token.email;
     session.user.image = token?.image;
+    session.user.jtusername = token?.jtusername;
   }
 
   return session;

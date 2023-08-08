@@ -22,11 +22,12 @@ export async function POST(req) {
         sk: { S: `USER#${id}` },
       },
       UpdateExpression:
-        "SET jtusername = :jtusernameVal, userRole = :userRoleVal, company = :companyVal",
+        "SET jtusername = :jtusernameVal, userRole = :userRoleVal, company = :companyVal, fullname = :fullnameVal",
       ExpressionAttributeValues: {
         ":jtusernameVal": { S: username },
         ":userRoleVal": { S: userRole },
         ":companyVal": { S: company },
+        ":fullnameVal": { S: fullname },
       },
     };
 
