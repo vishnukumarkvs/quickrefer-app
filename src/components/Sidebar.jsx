@@ -44,11 +44,11 @@ const SideBar = () => {
           </div>
           <div className="flex">
             <Avatar>
-              <AvatarImage src="https://github.com/shadcn.png" />
+              <AvatarImage src={session.user.image} />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
             <div>
-              <p>{session.user.email}</p>
+              <p>{session.user.jtusername}</p>
             </div>
             <SignOutButton />
           </div>
