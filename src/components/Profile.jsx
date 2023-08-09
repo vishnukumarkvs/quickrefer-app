@@ -62,11 +62,6 @@ const PersonalDetails = ({ data, openPersonal, setOpenPersonal }) => {
   const mutationPersonal = useMutation(
     (data) => axios.post("/api/profiledata/update/personal", data),
     {
-      // onSuccess: (updatedData) => {
-      //   console.log("updatedData", updatedData);
-      //   queryClient.setQueryData("profileData", updatedData);
-      //   setOpenPersonal(false);
-      // },
       onSuccess: () => {
         queryClient.invalidateQueries("profileData");
         setOpenPersonal(false);
@@ -102,42 +97,42 @@ const PersonalDetails = ({ data, openPersonal, setOpenPersonal }) => {
       <div className="flex flex-col">
         <div class="w-full bg-white shadow-lg rounded-lg px-4 py-2 mx-auto">
           <div class="grid grid-cols-2 items-center">
-            <p class="text-md font-bold mr-2">Full Name:</p>
+            <p class="text-md font-medium mr-2">Full Name</p>
             <p class="text-md">{data.fullname}</p>
           </div>
 
           <div class="grid grid-cols-2 items-center">
-            <p class="text-md font-bold mr-2">Email:</p>
+            <p class="text-md font-medium mr-2">Email</p>
             <p class="text-md ">{data.email}</p>
           </div>
 
           <div class="grid grid-cols-2 items-center">
-            <p class="text-md font-bold mr-2">Phone:</p>
+            <p class="text-md font-medium mr-2">Phone</p>
             <p class="text-md ">{data.phone}</p>
           </div>
 
           <div class="grid grid-cols-2 items-center">
-            <p class="text-md font-bold mr-2">Location:</p>
+            <p class="text-md font-medium mr-2">Location</p>
             <p class="text-md ">{data.location}</p>
           </div>
 
           <div class="grid grid-cols-2 items-center">
-            <p class="text-md font-bold mr-2">Current Job Role:</p>
+            <p class="text-md font-medium mr-2">Current Job Role</p>
             <p class="text-md">{data.currentJobRole}</p>
           </div>
 
           <div class="grid grid-cols-2 items-center">
-            <p class="text-md font-bold mr-2">Experience (in years):</p>
+            <p class="text-md font-medium mr-2">Experience (in years)</p>
             <p class="text-md ">{data.experience}</p>
           </div>
 
           <div class="grid grid-cols-2 items-center">
-            <p class="text-md font-bold mr-2">Salary (in LPA):</p>
+            <p class="text-md font-medium mr-2">Salary (in LPA)</p>
             <p class="text-md ">{data.salary}</p>
           </div>
 
           <div class="grid grid-cols-2 items-center">
-            <p class="text-md font-bold mr-2">Notice Period (in days):</p>
+            <p class="text-md font-medium mr-2">Notice Period (in days)</p>
             <p class="text-md ">{data.noticePeriod}</p>
           </div>
         </div>

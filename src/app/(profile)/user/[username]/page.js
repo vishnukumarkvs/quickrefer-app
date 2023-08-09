@@ -1,4 +1,5 @@
 import Profile from "@/components/Profile";
+import ProfilePlane from "@/components/ProfilePlain";
 import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
 // import { useSession } from "next-auth/react";
@@ -9,7 +10,7 @@ const Page = async ({ params }) => {
   let realUser;
   try {
     const user = await authOptions.adapter.getUser(session.user.id);
-    // console.log("User:", user);
+    console.log("User:", user);
     realUser = user;
 
     if (params.username === realUser.jtusername) {
@@ -19,7 +20,11 @@ const Page = async ({ params }) => {
         </div>
       );
     } else {
-      return <div>High fakey</div>;
+      return (
+        <div>
+          <ProfilePlane username={realUser.jtusername} userId={realUser.id} />
+        </div>
+      );
     }
   } catch (error) {
     console.error("Error:", error);

@@ -1,3 +1,9 @@
+import PageLoader from "@/components/PageLoader";
+
 export default function Nothing() {
-  return <div>Please wait</div>;
+  return (
+    <>
+      <PageLoader />
+    </>
+  );
 }

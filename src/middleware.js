@@ -28,6 +28,10 @@ export default withAuth(
       return NextResponse.next();
     }
 
+    if (pathname === "/") {
+      return NextResponse.redirect(new URL("/ask-referral", req.url));
+    }
+
     if (!isAuth && isAccessingSensitiveRoute) {
       return NextResponse.redirect(new URL("/login", req.url));
     }
