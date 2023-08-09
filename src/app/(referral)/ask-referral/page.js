@@ -136,8 +136,9 @@ const Page = () => {
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-[100px]">No</TableHead>
-                  <TableHead>Username</TableHead>
-                  <TableHead>Email</TableHead>
+                  <TableHead>Fullname</TableHead>
+                  <TableHead>Profile</TableHead>
+                  <TableHead>Experience</TableHead>
                   <TableHead className="text-right">Send</TableHead>
                 </TableRow>
               </TableHeader>
@@ -145,8 +146,18 @@ const Page = () => {
                 {users.map((user, index) => (
                   <TableRow key={index}>
                     <TableCell>{index + 1}</TableCell>
-                    <TableCell>{user.username}</TableCell>
-                    <TableCell>{user.email}</TableCell>
+                    <TableCell>{user.fullname}</TableCell>
+                    <TableCell>
+                      <a
+                        href={`/user/${user.username}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-500"
+                      >
+                        {user.username}
+                      </a>
+                    </TableCell>
+                    <TableCell>{user.experience} yrs</TableCell>
                     <TableCell className="text-right">
                       <AddFriendButton id={user.userId} url={url} />
                     </TableCell>

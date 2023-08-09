@@ -61,7 +61,9 @@ const SideBar = () => {
         <div className="flex items-center mb-5">
           <Avatar>
             <AvatarImage src={session.user.image} />
-            <AvatarFallback>CN</AvatarFallback>
+            <AvatarFallback>
+              {session.user.jtusername.substring(0, 2)}
+            </AvatarFallback>
           </Avatar>
           <div className="p-1">
             <p>{session.user.jtusername}</p>
