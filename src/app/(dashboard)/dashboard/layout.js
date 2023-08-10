@@ -42,17 +42,21 @@ const Layout = async ({ children }) => {
             <Link href="/dashboard" className="flex h-16 shrink-0 items-center">
               <Icons.Logo className="h-8 w-auto text-indigo-600" />
             </Link>
-            <nav className="flex flex-1 flex-col">
+            <nav className="flex flex-1 flex-col" id="chat-dashboard-sidebar">
               <ul role="list" className="list-none flex flex-1 flex-col gp-y-7">
                 <li>
-                  <p>Accepted Requests:</p>
+                  <p className="text-sm font-semibold text-amber-950 p-1 underline underline-offset-4">
+                    Accepted Requests
+                  </p>
                   <SidebarChatList
                     sessionId={session.user.id}
                     friends={acceptedFriends}
                   />
                 </li>
                 <li>
-                  <p>Sent Requests:</p>
+                  <p className="text-sm font-semibold text-amber-950 p-1 underline underline-offset-4">
+                    Sent Requests
+                  </p>
                   <SidebarChatList
                     sessionId={session.user.id}
                     friends={sentFriends}

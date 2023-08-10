@@ -19,26 +19,23 @@ import Link from "next/link";
 const FriendRequests = ({ incomingFriendRequests, sessionId }) => {
   const router = useRouter();
   const [friendRequests, setFriendRequests] = useState(incomingFriendRequests);
+  console.log("fffffff", friendRequests);
 
   useEffect(() => {
     pusherClient.subscribe(
       toPusherKey(`user:${sessionId}:incoming_friend_requests`)
     );
-    const friendRequestHandler = async ({ senderId }) => {
-      try {
-        const { data } = await axios.get(`/api/user/${senderId}`);
-        setFriendRequests((prev) => [...prev, { senderId, ...data }]);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    pusherClient.bind("incoming_friend_requests", friendRequestHandler);
+    pusherClient.bind("incoming_friend_requests", (data) => {
+      setFriendRequests((prevRequests) => [...prevRequests, data]);
+    });
 
     return () => {
       pusherClient.unsubscribe(
         toPusherKey(`user:${sessionId}:incoming_friend_requests`)
       );
-      pusherClient.unbind("incoming_friend_requests", friendRequestHandler);
+      pusherClient.unbind("incoming_friend_requests", (data) => {
+        setFriendRequests((prevRequests) => [...prevRequests, data]);
+      });
     };
   }, [sessionId]);
 
@@ -65,7 +62,7 @@ const FriendRequests = ({ incomingFriendRequests, sessionId }) => {
   return (
     <div className="my-5">
       <Table>
-        <TableCaption>A list of friend requests.</TableCaption>
+        <TableCaption>A list of referral requests.</TableCaption>
         <TableHeader>
           <TableRow>
             <TableHead className="w-[100px]">No</TableHead>

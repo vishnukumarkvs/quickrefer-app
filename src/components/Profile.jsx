@@ -574,11 +574,7 @@ const Profile = ({ username }) => {
   const [openLinkTree, setOpenLinkTree] = useState(false);
 
   if (status === "loading") {
-    return (
-      <div className="w-full h-screen flex justify-center items-center">
-        <Loader2 className="animate-spin" />
-      </div>
-    );
+    return <PageLoader />;
   }
   console.log("session", session);
   let resumeUrl = `https://d1b9e92isytfe8.cloudfront.net/${session.user.id}.pdf`;

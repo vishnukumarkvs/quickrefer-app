@@ -14,47 +14,47 @@ const SidebarChatList = ({ friends, sessionId }) => {
   const pathname = usePathname();
   const [unseenMessages, setUnseenMessages] = useState([]);
 
-  useEffect(() => {
-    pusherClient.subscribe(toPusherKey(`user:${sessionId}:chats`));
+  // useEffect(() => {
+  //   pusherClient.subscribe(toPusherKey(`user:${sessionId}:chats`));
 
-    pusherClient.subscribe(toPusherKey(`user:${sessionId}:friends`));
+  //   pusherClient.subscribe(toPusherKey(`user:${sessionId}:friends`));
 
-    const friendHandler = () => {
-      router.refresh();
-    };
+  //   const friendHandler = () => {
+  //     router.refresh();
+  //   };
 
-    const chatHandler = (message) => {
-      console.log("new message", message);
-      const shouldNotify =
-        pathname !==
-        `/dashboard/chat/${chatHrefConstructor(sessionId, message.senderId)}`;
+  //   const chatHandler = (message) => {
+  //     console.log("new message", message);
+  //     const shouldNotify =
+  //       pathname !==
+  //       `/dashboard/chat/${chatHrefConstructor(sessionId, message.senderId)}`;
 
-      if (!shouldNotify) return;
+  //     if (!shouldNotify) return;
 
-      toast.custom((t) => (
-        // custom componenet
-        <UnseenChatToast
-          t={t}
-          sessionId={sessionId}
-          senderId={message.senderId}
-          senderMessage={message.text}
-          senderName={message.senderName}
-        />
-      ));
-      setUnseenMessages((prev) => [...prev, message]);
-    };
+  //     toast.custom((t) => (
+  //       // custom componenet
+  //       <UnseenChatToast
+  //         t={t}
+  //         sessionId={sessionId}
+  //         senderId={message.senderId}
+  //         senderMessage={message.text}
+  //         senderName={message.senderName}
+  //       />
+  //     ));
+  //     setUnseenMessages((prev) => [...prev, message]);
+  //   };
 
-    pusherClient.bind("new_message", chatHandler);
-    pusherClient.bind("new_friend", friendHandler);
+  //   pusherClient.bind("new_message", chatHandler);
+  //   pusherClient.bind("new_friend", friendHandler);
 
-    return () => {
-      pusherClient.unsubscribe(toPusherKey(`user:${sessionId}:chats`));
-      pusherClient.unsubscribe(toPusherKey(`user:${sessionId}:friends`));
+  //   return () => {
+  //     pusherClient.unsubscribe(toPusherKey(`user:${sessionId}:chats`));
+  //     pusherClient.unsubscribe(toPusherKey(`user:${sessionId}:friends`));
 
-      pusherClient.unbind("new_message", chatHandler);
-      pusherClient.unbind("new_friend", friendHandler);
-    };
-  }, [pathname, sessionId, router]);
+  //     pusherClient.unbind("new_message", chatHandler);
+  //     pusherClient.unbind("new_friend", friendHandler);
+  //   };
+  // }, [pathname, sessionId, router]);
 
   // useEffect(() => {
   //   if (pathname?.includes("chat")) {
@@ -80,6 +80,7 @@ const SidebarChatList = ({ friends, sessionId }) => {
     <ul
       role="list"
       className="list-none max-h-[25rem] overflow-y-auto mx-2 space-y-1"
+      id="sidebar-chat-list"
     >
       {friends.sort().map((friend) => {
         //unseen messages

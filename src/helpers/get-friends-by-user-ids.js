@@ -33,7 +33,7 @@ export const getFriendsByUserIds = async (userId) => {
       const userId = record.get("userId");
       const name = record.get("name");
       const initiator = record.get("initiator");
-      const status = initiator === userId ? "sent" : "accepted";
+      const status = initiator !== userId ? "sent" : "accepted";
       return { userId, name, status };
     });
 

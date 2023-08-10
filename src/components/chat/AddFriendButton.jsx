@@ -16,8 +16,18 @@ const AddFriendButton = ({ id, url }) => {
       setShowSuccessState(true);
     } catch (error) {
       console.error(error);
-      if (axios.isAxiosError(error)) {
-        toast.error("Something went wrong! Axios issue");
+
+      if (error.response) {
+        switch (error.response.status) {
+          case 400:
+            toast.error("You cannot send yourself to yourself");
+            break;
+          case 409:
+            toast.error(error.response.data);
+            break;
+          default:
+            toast.error("Something went wrong!");
+        }
       } else {
         toast.error("Something went wrong!");
       }
