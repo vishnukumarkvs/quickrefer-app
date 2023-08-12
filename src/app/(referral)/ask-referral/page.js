@@ -23,32 +23,38 @@ import { Flex } from "@chakra-ui/react";
 import AsyncSelect from "react-select/async";
 
 const Page = () => {
-  const [options, setOptions] = useState([]);
   const [company, setCompany] = useState(null);
   const [users, setUsers] = useState([]);
   const [url, setUrl] = useState("");
   const [fetchUsersLoading, setFetchUsersLoading] = useState(false);
+  const [allCompanies, setAllCompanies] = useState([]);
 
-  const loadOptions = async (inputValue, callback) => {
-    try {
-      const response = await axios.get("/api/getCompanyList");
-      const list = response.data.records[0]._fields[0];
+  useEffect(() => {
+    const fetchCompanies = async () => {
+      try {
+        const response = await axios.get("/api/getCompanyList");
+        const list = response.data.records[0]._fields[0];
+        setAllCompanies(list);
+      } catch (error) {
+        console.error("Error fetching companies from neo4j:", error);
+      }
+    };
 
-      const extractedOptions = list.map((item) => ({
-        value: item,
-        label: item,
-      }));
+    fetchCompanies();
+  }, []);
 
-      // Filter the options based on the user's input value
-      const filteredOptions = extractedOptions.filter((option) =>
-        option.label.toLowerCase().includes(inputValue.toLowerCase())
-      );
+  const loadOptions = (inputValue, callback) => {
+    const extractedOptions = allCompanies.map((item) => ({
+      value: item,
+      label: item,
+    }));
 
-      callback(filteredOptions);
-    } catch (error) {
-      console.error("Error fetching options from neo4j:", error);
-      callback([]); // In case of an error, provide an empty array of options
-    }
+    // Filter the options based on the user's input value
+    const filteredOptions = extractedOptions.filter((option) =>
+      option.label.toLowerCase().includes(inputValue.toLowerCase())
+    );
+
+    callback(filteredOptions);
   };
 
   const getUsersOfCompany = async (selectedCompany) => {

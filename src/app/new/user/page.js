@@ -95,7 +95,7 @@ const Page = () => {
         exp: data.exp,
       });
       // update({ jtusername: username });
-      await update();
+      // await update();
       toast.success("Profile updated successfully");
       router.push("/ask-referral");
       // router.replace("/ask-referral");
