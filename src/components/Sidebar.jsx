@@ -6,6 +6,8 @@ import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Spinner } from "@chakra-ui/react";
+import { useEffect } from "react";
+import { Skeleton } from "./ui/skeleton";
 
 const SideBarItem = ({ title, href }) => {
   const pathname = usePathname();
@@ -25,19 +27,50 @@ const SideBarItem = ({ title, href }) => {
 
 const SideBar = () => {
   const { data: session, status } = useSession();
+  // Use useEffect to perform actions when session changes
+  // useEffect(() => {
+  //   if (status === "authenticated") {
+  //     // Perform any actions you need after authentication
+  //     console.log("Session authenticated:", session);
+  //   }
+  // }, [status, session]);
   if (status === "loading") {
     return (
-      <div className="flex items-center justify-center">
-        <Spinner
-          thickness="4px"
-          speed="0.65s"
-          emptyColor="gray.200"
-          color="blue.500"
-          size="xl"
-        />
+      <div className="w-[15%] md:w-[20%] lg:w-[25%] min-w-[200px] max-w-[300px] h-screen p-4 bg-yellow-200">
+        <div className="mt-5 h-full flex flex-col justify-between items-center">
+          {/* Skeleton for the menu title and menu items */}
+          <div className="text-left flex flex-col">
+            <div className="py-10">
+              <div className="p-1">
+                <Skeleton className="h-6 w-14" />
+              </div>
+              <div className="p-1">
+                <Skeleton className="h-6 w-24" />
+              </div>
+              <div className="p-1">
+                <Skeleton className="h-6 w-24" />
+              </div>
+              <div className="p-1">
+                <Skeleton className="h-6 w-24" />
+              </div>
+              <div className="p-1">
+                <Skeleton className="h-6 w-24" />
+              </div>
+            </div>
+          </div>
+          {/* Skeleton for the user details and sign-out button */}
+          <div className="flex items-center mb-5 space-x-4">
+            <Skeleton className="h-12 w-12 rounded-full" /> {/* Avatar */}
+            <div className="p-1">
+              <Skeleton className="h-4 w-20" /> {/* Username */}
+            </div>
+            <Skeleton className="h-6 w-6" /> {/* SignOutButton */}
+          </div>
+        </div>
       </div>
     );
   }
+
   // console.log(session);
   return (
     <div className="w-[15%] md:w-[20%] lg:w-[25%] min-w-[200px] max-w-[300px] h-screen bg-[#ffc800] border p-4">
@@ -62,7 +95,7 @@ const SideBar = () => {
           <Avatar>
             <AvatarImage src={session.user.image} />
             <AvatarFallback>
-              {session.user.jtusername.substring(0, 2)}
+              {session.user?.jtusername?.substring(0, 2) || "##"}
             </AvatarFallback>
           </Avatar>
           <div className="p-1">

@@ -94,7 +94,8 @@ const Page = () => {
         skills: data.skills.map((skill) => skill.value),
         exp: data.exp,
       });
-      update({ ...session, user: { ...session.user, username: username } });
+      update({ jtusername: username });
+      // await update({ jtusername: username });
       toast.success("Profile updated successfully");
       router.push("/ask-referral");
     } catch (err) {
