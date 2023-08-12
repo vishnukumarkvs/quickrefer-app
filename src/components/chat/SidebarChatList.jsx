@@ -12,25 +12,26 @@ const SidebarChatList = ({ friends: initialFriends, sessionId }) => {
   const pathname = usePathname();
   const [updatedFriends, setUpdatedFriends] = useState(initialFriends);
 
-  const fetchUnseenCounts = async () => {
-    const friendsWithUnseenCounts = await Promise.all(
-      initialFriends.map(async (friend) => {
-        const chatId = chatHrefConstructor(sessionId, friend.userId);
-        const unseenCount = await getUnseenCount(chatId, sessionId);
-        return {
-          ...friend,
-          unseenCount,
-        };
-      })
-    );
-
-    console.log("unseen", friendsWithUnseenCounts);
-    setUpdatedFriends(friendsWithUnseenCounts);
-  };
-
   useEffect(() => {
+    // function inside - only on useEffect
+    // function outside - runs every rerenders - then you have to use UseCallback
+    const fetchUnseenCounts = async () => {
+      const friendsWithUnseenCounts = await Promise.all(
+        initialFriends.map(async (friend) => {
+          const chatId = chatHrefConstructor(sessionId, friend.userId);
+          const unseenCount = await getUnseenCount(chatId, sessionId);
+          return {
+            ...friend,
+            unseenCount,
+          };
+        })
+      );
+
+      console.log("unseen", friendsWithUnseenCounts);
+      setUpdatedFriends(friendsWithUnseenCounts);
+    };
     fetchUnseenCounts();
-  }, [sessionId, fetchUnseenCounts]);
+  }, [sessionId]);
 
   useEffect(() => {
     if (pathname?.includes("chat")) {
