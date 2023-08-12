@@ -30,7 +30,7 @@ const SidebarChatList = ({ friends: initialFriends, sessionId }) => {
 
   useEffect(() => {
     fetchUnseenCounts();
-  }, [sessionId]);
+  }, [sessionId, fetchUnseenCounts]);
 
   useEffect(() => {
     if (pathname?.includes("chat")) {
