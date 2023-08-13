@@ -27,7 +27,7 @@ export async function POST(req) {
       return new Response("Unauthorized", { status: 401 });
     }
 
-    pusherServer.trigger(
+    await pusherServer.trigger(
       toPusherKey(`user:${idToAdd}:friends`),
       "new_friend",
       {}

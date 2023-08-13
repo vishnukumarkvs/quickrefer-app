@@ -41,7 +41,7 @@ const Page = () => {
     };
 
     fetchCompanies();
-  }, []);
+  });
 
   const loadOptions = (inputValue, callback) => {
     const extractedOptions = allCompanies.map((item) => ({
@@ -56,6 +56,11 @@ const Page = () => {
 
     callback(filteredOptions);
   };
+
+  const defaultAsyncOptions = allCompanies.slice(0, 10).map((item) => ({
+    value: item,
+    label: item,
+  }));
 
   const getUsersOfCompany = async (selectedCompany) => {
     if (selectedCompany) {
@@ -117,6 +122,7 @@ const Page = () => {
           />
           <div className="w-full">
             <AsyncSelect
+              defaultOptions={defaultAsyncOptions}
               loadOptions={loadOptions} // Use the loadOptions function to fetch options asynchronously
               placeholder="Type Company Name"
               cacheOptions

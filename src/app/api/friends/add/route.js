@@ -89,7 +89,7 @@ export async function POST(req) {
     const { senderId, fullname, experience, email, username, companyName } =
       myData;
 
-    pusherServer.trigger(
+    await pusherServer.trigger(
       toPusherKey(`user:${idToAdd}:incoming_friend_requests`),
       "incoming_friend_requests",
       {
