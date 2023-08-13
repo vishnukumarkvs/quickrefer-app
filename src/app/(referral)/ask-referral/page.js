@@ -125,7 +125,6 @@ const Page = () => {
               defaultOptions={defaultAsyncOptions}
               loadOptions={loadOptions} // Use the loadOptions function to fetch options asynchronously
               placeholder="Type Company Name"
-              cacheOptions
               onChange={setCompany}
               noOptionsMessage={() => "No companies found"}
               isSearchable

@@ -56,6 +56,9 @@ const SideBar = () => {
               <div className="p-1">
                 <Skeleton className="h-6 w-24" />
               </div>
+              <div className="p-1">
+                <Skeleton className="h-6 w-24" />
+              </div>
             </div>
           </div>
           {/* Skeleton for the user details and sign-out button */}
@@ -89,6 +92,7 @@ const SideBar = () => {
               title="Profile"
               href={`/user/${session.user.jtusername}`}
             />
+            <SideBarItem title="FAQ" href="/faq" />
           </div>
         </div>
         <div className="flex items-center mb-5">
