@@ -5,7 +5,6 @@ import SignOutButton from "@/components/SignOutButton";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Spinner } from "@chakra-ui/react";
 import { useEffect } from "react";
 import { Skeleton } from "./ui/skeleton";
 
@@ -87,7 +86,7 @@ const SideBar = () => {
             </p>
             <SideBarItem title="Ask for Referral" href="/ask-referral" />
             <SideBarItem title="Referral Status" href="/referral-status" />
-            <SideBarItem title="Chat" href="/dashboard" />
+            <SideBarItem title="Chat" href="/dashboard/requests" />
             <SideBarItem
               title="Profile"
               href={`/user/${session.user.jtusername}`}
@@ -103,7 +102,7 @@ const SideBar = () => {
             </AvatarFallback>
           </Avatar>
           <div className="p-1">
-            <p>{session.user.jtusername}</p>
+            <p>{session?.user?.jtusername || "###"}</p>
             {/* <p>{session.user.email}</p> */}
           </div>
           <SignOutButton />

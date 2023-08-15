@@ -27,40 +27,27 @@ const Page = () => {
   const [users, setUsers] = useState([]);
   const [url, setUrl] = useState("");
   const [fetchUsersLoading, setFetchUsersLoading] = useState(false);
-  const [allCompanies, setAllCompanies] = useState([]);
+  // const [allCompanies, setAllCompanies] = useState([]);
 
-  useEffect(() => {
-    const fetchCompanies = async () => {
-      try {
-        const response = await axios.get("/api/getCompanyList");
-        const list = response.data.records[0]._fields[0];
-        setAllCompanies(list);
-      } catch (error) {
-        console.error("Error fetching companies from neo4j:", error);
-      }
-    };
+  const loadOptions = async (inputValue, callback) => {
+    try {
+      const response = await axios.get("/api/getCompanyList");
+      const list = response.data.records[0]._fields[0];
 
-    fetchCompanies();
-  });
+      const extractedOptions = list.map((item) => ({
+        value: item,
+        label: item,
+      }));
 
-  const loadOptions = (inputValue, callback) => {
-    const extractedOptions = allCompanies.map((item) => ({
-      value: item,
-      label: item,
-    }));
+      const filteredOptions = extractedOptions.filter((option) =>
+        option.label.toLowerCase().includes(inputValue.toLowerCase())
+      );
 
-    // Filter the options based on the user's input value
-    const filteredOptions = extractedOptions.filter((option) =>
-      option.label.toLowerCase().includes(inputValue.toLowerCase())
-    );
-
-    callback(filteredOptions);
+      callback(filteredOptions);
+    } catch (error) {
+      console.error("Error fetching companies from neo4j:", error);
+    }
   };
-
-  const defaultAsyncOptions = allCompanies.slice(0, 10).map((item) => ({
-    value: item,
-    label: item,
-  }));
 
   const getUsersOfCompany = async (selectedCompany) => {
     if (selectedCompany) {
@@ -122,8 +109,9 @@ const Page = () => {
           />
           <div className="w-full">
             <AsyncSelect
-              defaultOptions={defaultAsyncOptions}
+              // defaultOptions={defaultAsyncOptions}
               loadOptions={loadOptions} // Use the loadOptions function to fetch options asynchronously
+              cacheOptions
               placeholder="Type Company Name"
               onChange={setCompany}
               noOptionsMessage={() => "No companies found"}

@@ -12,46 +12,20 @@ export async function POST(req) {
     experience,
     salary,
     noticePeriod,
+    company,
   } = await req.json();
 
   try {
     const neo4jSession = driver.session({ database: "neo4j" });
-    let query = "MATCH (u:User {userId: $userId}) SET ";
+    let query = "MATCH (u:User {userId: $userId})";
     const updateClauses = [];
 
     if (fullname != "") {
       updateClauses.push("u.fullname = $fullname");
     }
-
     if (phone != "") {
       updateClauses.push("u.phone = $phone");
     }
-
-    let params = {};
-
-    // Split location into city and country
-    if (location !== null && location !== "") {
-      const locationSplit = location.split(", ");
-      let city = locationSplit[0];
-      let country = locationSplit.length > 1 ? locationSplit[1] : "";
-
-      // Add city and country to the parameter object
-      params.city = city;
-      params.country = country;
-    }
-
-    // Build the full query string
-    let queryString = `
-      MATCH (u)
-      OPTIONAL MATCH (u)-[oldCityRel:IN_CITY]->(:City)-[oldCountryRel:IN_COUNTRY]->(:Country)
-      DELETE oldCityRel, oldCountryRel
-      WITH u
-      MERGE (c:City {name: $city})-[:IN_COUNTRY]->(co:Country {name: $country})
-      MERGE (u)-[:IN_CITY]->(c)
-      `;
-
-    console.log(queryString, params);
-
     if (currentJobRole != "") {
       updateClauses.push("u.currentJobRole = $currentJobRole");
     }
@@ -65,7 +39,34 @@ export async function POST(req) {
       updateClauses.push("u.noticePeriod = $noticePeriod");
     }
 
-    query += updateClauses.join(", ");
+    if (company) {
+      query += `
+        OPTIONAL MATCH (u)-[oldWorkRel:WORKS_AT]->()
+        DELETE oldWorkRel
+        MERGE (c:Company {name: $company})
+        MERGE (u)-[:WORKS_AT]->(c)
+      `;
+    }
+
+    let params = {};
+
+    // Split location into city and country
+    if (location) {
+      const [city, country = ""] = location.split(", ");
+      params.city = city;
+      params.country = country;
+
+      // Delete existing relationships and create new ones
+      query += `
+      WITH u
+      OPTIONAL MATCH (u)-[oldCityRel:IN_CITY]->(oldCity:City)-[oldCountryRel:IN_COUNTRY]->(oldCountry:Country)
+      DELETE oldCityRel, oldCountryRel
+      MERGE (c:City {name: $city})-[:IN_COUNTRY]->(co:Country {name: $country})
+      MERGE (u)-[:IN_CITY]->(c)
+    `;
+    }
+
+    query += "SET " + updateClauses.join(", ");
 
     console.log("query", query);
 
@@ -80,6 +81,7 @@ export async function POST(req) {
         experience: experience,
         salary: salary,
         noticePeriod: noticePeriod,
+        company: company,
       })
     );
 

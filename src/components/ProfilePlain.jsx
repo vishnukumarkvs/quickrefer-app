@@ -6,16 +6,6 @@ import { Button } from "@/components/ui/button";
 import dynamic from "next/dynamic";
 import * as DOMPurify from "dompurify";
 
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 
 import {
   Accordion,
@@ -34,17 +24,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Edit, Loader2, Pencil, Trash2 } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { set } from "date-fns";
-import { QuillWrapper, modules } from "./ui/QuillWrapper";
-import { AsyncLocationSelect } from "./ui/AsyncLocationSelect";
-import { useRouter } from "next/navigation";
 import ResumeUpload from "./ResumeUpload";
-import { useSession } from "next-auth/react";
 import PageLoader from "./PageLoader";
 
 // import Select from "react-select";
@@ -591,7 +573,7 @@ const ProfilePlane = ({ username, userId }) => {
 
   return (
     <div className="w-[95%] h-full mx-auto">
-      <p className="font-bold text-2xl text-center m-4 p-2 border-2">Profile</p>
+      <p className="font-bold text-2xl text-center m-4 p-2 border-2 rounded-sm">Profile</p>
       <div className="grid grid-cols-2 gap-4">
         <div className="mt-10">
           <Accordion type="single" collapsible className="w-full">

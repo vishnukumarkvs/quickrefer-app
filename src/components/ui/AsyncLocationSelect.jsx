@@ -3,6 +3,7 @@
 // AsyncLocationSelect
 import { Controller } from "react-hook-form";
 import AsyncSelect from "react-select/async";
+import { options } from "@/assets/location-options";
 
 const defaultLocationOptions = [
   { value: "Bangalore, India", label: "Bangalore, India" },
@@ -17,7 +18,7 @@ const defaultLocationOptions = [
   { value: "Gurgaon, India", label: "Gurgaon, India" },
 ];
 
-const filterColors = (inputValue) => {
+const filterColors = async (inputValue) => {
   return options.filter((i) =>
     i.label.toLowerCase().includes(inputValue.toLowerCase())
   );
@@ -29,7 +30,7 @@ const loadOptions = (inputValue, callback) => {
   }, 1000);
 };
 
-export const AsyncLocationSelect = ({ control, name }) => (
+const AsyncLocationSelect = ({ control, name }) => (
   <div className="w-[280px]">
     <Controller
       name={name}
@@ -49,3 +50,5 @@ export const AsyncLocationSelect = ({ control, name }) => (
     />
   </div>
 );
+
+export default AsyncLocationSelect;

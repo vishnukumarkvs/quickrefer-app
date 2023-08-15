@@ -43,7 +43,7 @@ export async function GET(req) {
       onlinelinks: userData[0]?.properties?.onlinelinks || [],
       certifications: userData[5] || [],
       company: userData[1]?.properties.name,
-      location: userData[3],
+      location: userData[3] + ", " + userData[4],
       skills: userData[2] || [],
       experience: userData[0]?.properties?.experience || 0,
       languages: userData[0]?.properties?.languages || [],

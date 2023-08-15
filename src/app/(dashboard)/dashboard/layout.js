@@ -45,6 +45,12 @@ const Layout = async ({ children }) => {
             <nav className="flex flex-1 flex-col" id="chat-dashboard-sidebar">
               <ul role="list" className="list-none flex flex-1 flex-col gp-y-7">
                 <li>
+                  <FriendRequestsSidebarOption
+                    sessionId={session.user.id}
+                    initialUnseenRequestCount={unseenRequestCount}
+                  />
+                </li>
+                <li>
                   <p className="text-sm font-semibold text-amber-950 p-1 underline underline-offset-4">
                     Accepted Requests
                   </p>
@@ -60,12 +66,6 @@ const Layout = async ({ children }) => {
                   <SidebarChatList
                     sessionId={session.user.id}
                     friends={sentFriends}
-                  />
-                </li>
-                <li>
-                  <FriendRequestsSidebarOption
-                    sessionId={session.user.id}
-                    initialUnseenRequestCount={unseenRequestCount}
                   />
                 </li>
               </ul>

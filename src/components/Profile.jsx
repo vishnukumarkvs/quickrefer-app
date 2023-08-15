@@ -41,7 +41,10 @@ import { Controller, useForm } from "react-hook-form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { set } from "date-fns";
 import { QuillWrapper, modules } from "./ui/QuillWrapper";
-import { AsyncLocationSelect } from "./ui/AsyncLocationSelect";
+// import  AsyncLocationSelect  from "./ui/AsyncLocationSelect";
+const AsyncLocationSelect = dynamic(() => import("./ui/AsyncLocationSelect"), {
+  ssr: false,
+});
 import { useRouter } from "next/navigation";
 import ResumeUpload from "./ResumeUpload";
 import { useSession } from "next-auth/react";
@@ -82,6 +85,7 @@ const PersonalDetails = ({ data, openPersonal, setOpenPersonal }) => {
       experience: data.experience,
       salary: data.salary,
       noticePeriod: data.noticePeriod,
+      company: data.company,
     },
   });
 
@@ -114,20 +118,28 @@ const PersonalDetails = ({ data, openPersonal, setOpenPersonal }) => {
 
           <div class="grid grid-cols-2 items-center">
             <p class="text-md font-medium mr-2">Location</p>
-            <p class="text-md ">{data.location}</p>
+            <p class="text-md ">
+              {data.location.includes("null") ? "" : data.location}
+            </p>
           </div>
 
           <div class="grid grid-cols-2 items-center">
             <p class="text-md font-medium mr-2">Current Job Role</p>
             <p class="text-md">{data.currentJobRole}</p>
           </div>
-
           <div class="grid grid-cols-2 items-center">
-            <p class="text-md font-medium mr-2">Experience (in years)</p>
-            <p class="text-md ">{data.experience}</p>
+            <p class="text-md font-medium mr-2">Current Company</p>
+            <p class="text-md">{data.company}</p>
           </div>
 
           <div class="grid grid-cols-2 items-center">
+            <p class="text-md font-medium mr-2">Experience</p>
+            <p class="text-md ">
+              {data.experience} <span className="pl-1">yrs</span>
+            </p>
+          </div>
+
+          {/* <div class="grid grid-cols-2 items-center">
             <p class="text-md font-medium mr-2">Salary (in LPA)</p>
             <p class="text-md ">{data.salary}</p>
           </div>
@@ -135,7 +147,7 @@ const PersonalDetails = ({ data, openPersonal, setOpenPersonal }) => {
           <div class="grid grid-cols-2 items-center">
             <p class="text-md font-medium mr-2">Notice Period (in days)</p>
             <p class="text-md ">{data.noticePeriod}</p>
-          </div>
+          </div> */}
         </div>
 
         <div>
@@ -197,6 +209,16 @@ const PersonalDetails = ({ data, openPersonal, setOpenPersonal }) => {
                     />
                   </div>
                   <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="company" className="text-right">
+                      Current Company
+                    </Label>
+                    <Input
+                      id="company"
+                      className="col-span-3"
+                      {...registerPersonal("company")}
+                    />
+                  </div>
+                  {/* <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="salary" className="text-right">
                       Salary <br /> (in LPA)
                     </Label>
@@ -205,8 +227,8 @@ const PersonalDetails = ({ data, openPersonal, setOpenPersonal }) => {
                       type="number"
                       className="col-span-3"
                       {...registerPersonal("salary")}
-                    />
-                  </div>
+                    /> 
+                  </div> */}
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="experience" className="text-right">
                       Experience <br /> (in yrs)
@@ -220,7 +242,7 @@ const PersonalDetails = ({ data, openPersonal, setOpenPersonal }) => {
                       {...registerPersonal("experience")}
                     />
                   </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
+                  {/* <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="noticePeriod" className="text-right">
                       Notice Period <br />
                       (in days)
@@ -231,7 +253,7 @@ const PersonalDetails = ({ data, openPersonal, setOpenPersonal }) => {
                       className="col-span-3"
                       {...registerPersonal("noticePeriod")}
                     />
-                  </div>
+                  </div> */}
                 </div>
                 <DialogFooter>
                   <Button type="submit" isLoading={mutationPersonal.isLoading}>
@@ -472,12 +494,14 @@ const LinkTree = ({ data, openLinkTree, setOpenLinkTree }) => {
                 // Check if the value is not empty before rendering
                 if (value.trim() !== "") {
                   return (
-                    <li key={name}>
-                      <strong>{name}:</strong>{" "}
+                    <diV className="flex space-x-2">
+                      <p className="text-md font-semibold capitalize">
+                        {name}:
+                      </p>
                       <a href={value} target="_blank" rel="noopener noreferrer">
                         {value}
                       </a>
-                    </li>
+                    </diV>
                   );
                 }
                 return null; // Don't render the list item if the value is empty
@@ -595,7 +619,9 @@ const Profile = ({ username }) => {
 
   return (
     <div className="w-[95%] h-full mx-auto">
-      <p className="font-bold text-2xl text-center m-4 p-2 border-2">Profile</p>
+      <p className="font-bold text-2xl text-center m-4 p-2 border-2 rounded-sm">
+        Profile
+      </p>
       <div className="grid grid-cols-2 gap-4">
         <div className="mt-10">
           <Accordion type="single" collapsible className="w-full">
@@ -609,7 +635,7 @@ const Profile = ({ username }) => {
                 />
               </AccordionContent>
             </AccordionItem>
-            <AccordionItem value="Work Experience">
+            {/* <AccordionItem value="Work Experience">
               <AccordionTrigger>Work Experience</AccordionTrigger>
               <AccordionContent>
                 <WorkDetails
@@ -620,7 +646,7 @@ const Profile = ({ username }) => {
                   setOpenWorkUpdate={setOpenWorkUpdate}
                 />
               </AccordionContent>
-            </AccordionItem>
+            </AccordionItem> */}
             <AccordionItem value="Link Tree">
               <AccordionTrigger>Link Tree</AccordionTrigger>
               <AccordionContent>
@@ -632,9 +658,12 @@ const Profile = ({ username }) => {
               </AccordionContent>
             </AccordionItem>
           </Accordion>
+          <div className="w-full flex md:flex-row flex-col justify-center items-center p-1 m-2">
+            <p>Upload Resume: </p>
+            <ResumeUpload />
+          </div>
         </div>
         <div className="flex flex-col justify-start items-center">
-          <ResumeUpload />
           <iframe
             src={resumeUrl}
             width="100%"
