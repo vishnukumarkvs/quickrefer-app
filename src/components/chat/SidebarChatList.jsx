@@ -39,7 +39,7 @@ const SidebarChatList = ({ friends: initialFriends, sessionId }) => {
       setUpdatedFriends(friendsWithUnseenCounts);
     };
     fetchUnseenCounts();
-  }, [sessionId]);
+  }, [sessionId, initialFriends]);
 
   useEffect(() => {
     if (pathname?.includes("chat")) {

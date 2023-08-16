@@ -490,11 +490,11 @@ const LinkTree = ({ data, openLinkTree, setOpenLinkTree }) => {
         <div className="w-full bg-white shadow-lg rounded-lg px-4 py-2 mx-auto">
           {links.length > 0 ? (
             <ul>
-              {links.map(([name, value]) => {
+              {links.map(([name, value], index) => {
                 // Check if the value is not empty before rendering
                 if (value.trim() !== "") {
                   return (
-                    <diV className="flex space-x-2">
+                    <diV key={index} className="flex space-x-2">
                       <p className="text-md font-semibold capitalize">
                         {name}:
                       </p>
