@@ -86,6 +86,7 @@ const Page = () => {
     if (file) {
       await onFileUpload(); // Upload the file before form submission
     }
+    // await update({ jtusername: username });
     try {
       await axios.post("/api/newusersubmit/user", {
         username: username,

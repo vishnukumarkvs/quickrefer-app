@@ -6,11 +6,19 @@ import { useEffect, useState } from "react";
 import UnseenChatToast from "./UnseenChatToast";
 import { toast } from "react-hot-toast";
 import { getUnseenCount, updateSeenStatus } from "@/helperClient/firebase";
+import { Building } from "lucide-react";
+import {
+  Tooltip,
+  TooltipProvider,
+  TooltipTrigger,
+  TooltipContent,
+} from "../ui/tooltip";
 
 const SidebarChatList = ({ friends: initialFriends, sessionId }) => {
   const router = useRouter();
   const pathname = usePathname();
   const [updatedFriends, setUpdatedFriends] = useState(initialFriends);
+  console.log("updatedFriends", updatedFriends);
 
   useEffect(() => {
     // function inside - only on useEffect
@@ -67,20 +75,32 @@ const SidebarChatList = ({ friends: initialFriends, sessionId }) => {
         const unseenMessageCount = friend.unseenCount || 0;
         return (
           <li key={friend.userId}>
-            <a
-              href={`/dashboard/chat/${chatHrefConstructor(
-                sessionId,
-                friend.userId
-              )}`}
-              className="text-gray-700 hover:text-indigo-600 hover-bg-gray-50 group flex items-center gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
-            >
-              {friend.name}
-              {unseenMessageCount > 0 && (
-                <div className="bg-indigo-600 font-medium text-xs text-white w-4 h-4 rounded-full flex justify-center items-center">
-                  {unseenMessageCount}
-                </div>
-              )}
-            </a>
+            <div className="flex space-x-1 items-center">
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Building className="text-gray-500 p-1" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{friend.company}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              <a
+                href={`/dashboard/chat/${chatHrefConstructor(
+                  sessionId,
+                  friend.userId
+                )}`}
+                className="text-gray-700 hover:text-indigo-600 hover-bg-gray-50 group flex items-center gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
+              >
+                {friend.name}
+                {unseenMessageCount > 0 && (
+                  <div className="bg-indigo-600 font-medium text-xs text-white w-4 h-4 rounded-full flex justify-center items-center">
+                    {unseenMessageCount}
+                  </div>
+                )}
+              </a>
+            </div>
           </li>
         );
       })}

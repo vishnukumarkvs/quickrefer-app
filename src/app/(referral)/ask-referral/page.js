@@ -29,6 +29,11 @@ const Page = () => {
   const [fetchUsersLoading, setFetchUsersLoading] = useState(false);
   // const [allCompanies, setAllCompanies] = useState([]);
 
+  // useEffect(() => {
+  //   router.query.previous = router.asPath
+  //   console.log(router.query.previous)
+  // }, [])
+
   const loadOptions = async (inputValue, callback) => {
     try {
       const response = await axios.get("/api/getCompanyList");

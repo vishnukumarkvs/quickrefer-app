@@ -60,7 +60,7 @@ const ChatInput = ({ chatPartner, chatId }) => {
         <div className="absolute right-0 bottom-0 flex justify-between py-2 pl-3 pr-2">
           <div className="flex-shrink-0">
             <Button isLoading={isLoading} onClick={sendMessage} type="submit">
-              POST
+              SEND
             </Button>
           </div>
         </div>

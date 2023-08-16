@@ -25,7 +25,8 @@ const Page = async ({ params }) => {
     .run(
       `
     MATCH (u:User {userId: $userId})
-    RETURN u.userId as userId, u.email as email, u.username as name
+    MATCH (u)-[:WORKS_AT]->(c:Company)
+    RETURN u.userId as userId, u.email as email, u.username as name, c.name as company
     `,
       { userId: chatPartnerId }
     )
@@ -36,6 +37,7 @@ const Page = async ({ params }) => {
           userId: record.get("userId"),
           email: record.get("email"),
           name: record.get("name"),
+          company: record.get("company"),
         };
       } else {
         return null;
@@ -67,7 +69,10 @@ const Page = async ({ params }) => {
                 {chatPartner.name}
               </span>
             </div>
-            <span className="text-sm text-gray-600">{chatPartner.email}</span>
+            <span className="text-sm text-gray-600">
+              Works At{" "}
+              <span className="font-semibold">{chatPartner.company}</span>
+            </span>
           </div>
         </div>
       </div>

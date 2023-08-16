@@ -21,7 +21,8 @@ import driver from "@/lib/neo4jClient";
 export const getFriendsByUserIds = async (userId) => {
   const friendsQuery = `
     MATCH (u:User {userId: $userId})-[r:FRIENDS_WITH]->(f:User)
-    RETURN f.userId as userId, f.username as name, r.initiator as initiator
+    MATCH (f)-[:WORKS_AT]->(c:Company)
+    RETURN f.userId as userId, f.username as name, r.initiator as initiator, c.name as company
   `;
 
   const session = driver.session();
@@ -34,7 +35,8 @@ export const getFriendsByUserIds = async (userId) => {
       const name = record.get("name");
       const initiator = record.get("initiator");
       const status = initiator !== userId ? "sent" : "accepted";
-      return { userId, name, status };
+      const company = record.get("company");
+      return { userId, name, status, company };
     });
 
     return friends;

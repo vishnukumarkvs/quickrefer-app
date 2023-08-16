@@ -30,8 +30,6 @@ const Layout = async ({ children }) => {
 
   const unseenRequestCount = result.records.length;
   console.log(unseenRequestCount);
-
-  console.log(unseenRequestCount);
   if (!session) notFound(); // this wont be called if you handle it in middleware
 
   return (
