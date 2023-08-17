@@ -86,7 +86,6 @@ const Page = () => {
     if (file) {
       await onFileUpload(); // Upload the file before form submission
     }
-    // await update({ jtusername: username });
     try {
       await axios.post("/api/newusersubmit/user", {
         username: username,
@@ -97,6 +96,7 @@ const Page = () => {
       });
       // update({ jtusername: username });
       // await update();
+      update({ jtusername: username });
       toast.success("Profile updated successfully");
       router.push("/ask-referral");
       // router.replace("/ask-referral");

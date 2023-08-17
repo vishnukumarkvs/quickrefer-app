@@ -171,8 +171,9 @@ const jwtCallback = async ({ token, user, session, trigger, isNewUser }) => {
     await ddbClient.send(new PutItemCommand(putParams));
   }
 
-  if (trigger === "update") {
-    return { ...token, ...session.user };
+  if (trigger === "update" && session?.jtusername) {
+    token.jtusername = session.jtusername;
+    return token;
   }
 
   return {
