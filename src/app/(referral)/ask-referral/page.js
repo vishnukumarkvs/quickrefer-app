@@ -21,6 +21,7 @@ import toast from "react-hot-toast";
 import { BeatLoader } from "react-spinners";
 import { Flex } from "@chakra-ui/react";
 import AsyncSelect from "react-select/async";
+import AutoCompleteCompanyName from "@/components/autocomplete/CompanyNameFromNeo4J";
 
 const Page = () => {
   const [company, setCompany] = useState(null);
@@ -113,7 +114,7 @@ const Page = () => {
             required
           />
           <div className="w-full">
-            <AsyncSelect
+            {/* <AsyncSelect
               // defaultOptions={defaultAsyncOptions}
               loadOptions={loadOptions} // Use the loadOptions function to fetch options asynchronously
               cacheOptions
@@ -123,7 +124,8 @@ const Page = () => {
               isSearchable
               isClearable
               required
-            />
+            /> */}
+            <AutoCompleteCompanyName onSelect={(val) => setCompany(val)} />
           </div>
           <div className="flex flex-col items-center">
             {/* <Button onClick={handleReferralSubmit}>Direct Submit</Button> */}

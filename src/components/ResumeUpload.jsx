@@ -53,7 +53,7 @@ const ResumeUpload = () => {
   };
 
   return (
-    <div className="w-full m-7 bg-white rounded-lg shadow-md">
+    <div className="w-full bg-white rounded-lg shadow-md">
       <div className="flex gap-2 justify-center items-center">
         <input
           type="file"

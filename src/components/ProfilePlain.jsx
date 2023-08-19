@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import dynamic from "next/dynamic";
 import * as DOMPurify from "dompurify";
 
-
 import {
   Accordion,
   AccordionContent,
@@ -28,6 +27,8 @@ import { Controller, useForm } from "react-hook-form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import ResumeUpload from "./ResumeUpload";
 import PageLoader from "./PageLoader";
+import { Heading } from "@chakra-ui/react";
+import SocialButtons from "./profile/SocialLinks";
 
 // import Select from "react-select";
 
@@ -573,46 +574,19 @@ const ProfilePlane = ({ username, userId }) => {
 
   return (
     <div className="w-[95%] h-full mx-auto">
-      <p className="font-bold text-2xl text-center m-4 p-2 border-2 rounded-sm">Profile</p>
+      <p className="font-bold text-2xl text-center m-4 p-2 border-2 rounded-sm">
+        Profile
+      </p>
       <div className="grid grid-cols-2 gap-4">
-        <div className="mt-10">
-          <Accordion type="single" collapsible className="w-full">
-            <AccordionItem value="Personal Details">
-              <AccordionTrigger>Personal Details</AccordionTrigger>
-              <AccordionContent>
-                <PersonalDetails
-                  data={data}
-                  openPersonal={openPersonal}
-                  setOpenPersonal={setOpenPersonal}
-                />
-              </AccordionContent>
-            </AccordionItem>
-            {/* <AccordionItem value="Work Experience">
-              <AccordionTrigger>Work Experience</AccordionTrigger>
-              <AccordionContent>
-                <WorkDetails
-                  data={data}
-                  openWork={openWork}
-                  setOpenWork={setOpenWork}
-                  openWorkUpdate={openWorkUpdate}
-                  setOpenWorkUpdate={setOpenWorkUpdate}
-                />
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="Link Tree">
-              <AccordionTrigger>Link Tree</AccordionTrigger>
-              <AccordionContent>
-                <LinkTree
-                  data={data}
-                  openLinkTree={openLinkTree}
-                  setOpenLinkTree={setOpenLinkTree}
-                />
-              </AccordionContent>
-            </AccordionItem> */}
-          </Accordion>
+        <div className="flex flex-col gap-2">
+          <PersonalDetails
+            data={data}
+            openPersonal={openPersonal}
+            setOpenPersonal={setOpenPersonal}
+          />
+          <SocialButtons data={data} />
         </div>
         <div className="flex flex-col justify-start items-center">
-          <ResumeUpload />
           <iframe
             src={resumeUrl}
             width="100%"

@@ -49,6 +49,8 @@ import { useRouter } from "next/navigation";
 import ResumeUpload from "./ResumeUpload";
 import { useSession } from "next-auth/react";
 import PageLoader from "./PageLoader";
+import { Flex, Heading, Text } from "@chakra-ui/react";
+import SocialButtons from "./profile/SocialLinks";
 
 // import Select from "react-select";
 
@@ -62,6 +64,7 @@ const useProfileData = (username) => {
 };
 
 const PersonalDetails = ({ data, openPersonal, setOpenPersonal }) => {
+  const [openLinkTree, setOpenLinkTree] = useState(false);
   const queryClient = useQueryClient();
   const mutationPersonal = useMutation(
     (data) => axios.post("/api/profiledata/update/personal", data),
@@ -99,7 +102,129 @@ const PersonalDetails = ({ data, openPersonal, setOpenPersonal }) => {
     <div className="">
       {/* Profile Section */}
       {/* <div className="w-full text-xl font-bold mb-5">Personal Details</div> */}
-      <div className="flex flex-col">
+      <div className="flex flex-col gap-5">
+        <Flex gap="2" justifyContent={"flex-end"}>
+          <div>
+            <Dialog open={openPersonal} onOpenChange={setOpenPersonal}>
+              <DialogTrigger asChild>
+                <Button size="sm">Edit Profile</Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                  <DialogTitle>Edit profile</DialogTitle>
+                  <DialogDescription>
+                    Make changes to your profile here. Click save when you{"'"}
+                    re done.
+                  </DialogDescription>
+                </DialogHeader>
+                <form onSubmit={handleSubmitPersonal(onSubmit)}>
+                  <div className="grid gap-4 py-4">
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="fullname" className="text-right">
+                        Full Name
+                      </Label>
+                      <Input
+                        id="fullname"
+                        className="col-span-3"
+                        {...registerPersonal("fullname")}
+                      />
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="phone" className="text-right">
+                        Phone
+                      </Label>
+                      <Input
+                        id="phone"
+                        className="col-span-3"
+                        {...registerPersonal("phone")}
+                      />
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="location" className="text-right">
+                        Location
+                      </Label>
+                      <div className="w-[280px]">
+                        <AsyncLocationSelect
+                          control={controlPersonal}
+                          name="location"
+                        />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="currentJobRole" className="text-right">
+                        Current Job Role
+                      </Label>
+                      <Input
+                        id="currentJobRole"
+                        className="col-span-3"
+                        {...registerPersonal("currentJobRole")}
+                      />
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="company" className="text-right">
+                        Current Company
+                      </Label>
+                      <Input
+                        id="company"
+                        className="col-span-3"
+                        {...registerPersonal("company")}
+                      />
+                    </div>
+                    {/* <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="salary" className="text-right">
+                      Salary <br /> (in LPA)
+                    </Label>
+                    <Input
+                      id="salary"
+                      type="number"
+                      className="col-span-3"
+                      {...registerPersonal("salary")}
+                    /> 
+                  </div> */}
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="experience" className="text-right">
+                        Experience <br /> (in yrs)
+                      </Label>
+                      <Input
+                        id="experience"
+                        type="number"
+                        defaultValue={data.experience}
+                        className="col-span-3"
+                        required
+                        {...registerPersonal("experience")}
+                      />
+                    </div>
+                    {/* <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="noticePeriod" className="text-right">
+                      Notice Period <br />
+                      (in days)
+                    </Label>
+                    <Input
+                      id="noticePeriod"
+                      type="number"
+                      className="col-span-3"
+                      {...registerPersonal("noticePeriod")}
+                    />
+                  </div> */}
+                  </div>
+                  <DialogFooter>
+                    <Button
+                      type="submit"
+                      isLoading={mutationPersonal.isLoading}
+                    >
+                      Save changes
+                    </Button>
+                  </DialogFooter>
+                </form>
+              </DialogContent>
+            </Dialog>
+          </div>
+          <LinkTree
+            data={data}
+            openLinkTree={openLinkTree}
+            setOpenLinkTree={setOpenLinkTree}
+          />
+        </Flex>
         <div class="w-full bg-white shadow-lg rounded-lg px-4 py-2 mx-auto">
           <div class="grid grid-cols-2 items-center">
             <p class="text-md font-medium mr-2">Full Name</p>
@@ -150,120 +275,7 @@ const PersonalDetails = ({ data, openPersonal, setOpenPersonal }) => {
           </div> */}
         </div>
 
-        <div>
-          <Dialog open={openPersonal} onOpenChange={setOpenPersonal}>
-            <DialogTrigger asChild>
-              <Button variant="outline" className="my-4">
-                Edit Profile
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>Edit profile</DialogTitle>
-                <DialogDescription>
-                  Make changes to your profile here. Click save when you{"'"}re
-                  done.
-                </DialogDescription>
-              </DialogHeader>
-              <form onSubmit={handleSubmitPersonal(onSubmit)}>
-                <div className="grid gap-4 py-4">
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="fullname" className="text-right">
-                      Full Name
-                    </Label>
-                    <Input
-                      id="fullname"
-                      className="col-span-3"
-                      {...registerPersonal("fullname")}
-                    />
-                  </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="phone" className="text-right">
-                      Phone
-                    </Label>
-                    <Input
-                      id="phone"
-                      className="col-span-3"
-                      {...registerPersonal("phone")}
-                    />
-                  </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="location" className="text-right">
-                      Location
-                    </Label>
-                    <div className="w-[280px]">
-                      <AsyncLocationSelect
-                        control={controlPersonal}
-                        name="location"
-                      />
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="currentJobRole" className="text-right">
-                      Current Job Role
-                    </Label>
-                    <Input
-                      id="currentJobRole"
-                      className="col-span-3"
-                      {...registerPersonal("currentJobRole")}
-                    />
-                  </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="company" className="text-right">
-                      Current Company
-                    </Label>
-                    <Input
-                      id="company"
-                      className="col-span-3"
-                      {...registerPersonal("company")}
-                    />
-                  </div>
-                  {/* <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="salary" className="text-right">
-                      Salary <br /> (in LPA)
-                    </Label>
-                    <Input
-                      id="salary"
-                      type="number"
-                      className="col-span-3"
-                      {...registerPersonal("salary")}
-                    /> 
-                  </div> */}
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="experience" className="text-right">
-                      Experience <br /> (in yrs)
-                    </Label>
-                    <Input
-                      id="experience"
-                      type="number"
-                      defaultValue={data.experience}
-                      className="col-span-3"
-                      required
-                      {...registerPersonal("experience")}
-                    />
-                  </div>
-                  {/* <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="noticePeriod" className="text-right">
-                      Notice Period <br />
-                      (in days)
-                    </Label>
-                    <Input
-                      id="noticePeriod"
-                      type="number"
-                      className="col-span-3"
-                      {...registerPersonal("noticePeriod")}
-                    />
-                  </div> */}
-                </div>
-                <DialogFooter>
-                  <Button type="submit" isLoading={mutationPersonal.isLoading}>
-                    Save changes
-                  </Button>
-                </DialogFooter>
-              </form>
-            </DialogContent>
-          </Dialog>
-        </div>
+        <SocialButtons data={data} />
       </div>
     </div>
   );
@@ -485,104 +497,73 @@ const LinkTree = ({ data, openLinkTree, setOpenLinkTree }) => {
   };
 
   return (
-    <div className="">
-      <div className="flex flex-col">
-        <div className="w-full bg-white shadow-lg rounded-lg px-4 py-2 mx-auto">
-          {links.length > 0 ? (
-            <ul>
-              {links.map(([name, value], index) => {
-                // Check if the value is not empty before rendering
-                if (value.trim() !== "") {
-                  return (
-                    <diV key={index} className="flex space-x-2">
-                      <p className="text-md font-semibold capitalize">
-                        {name}:
-                      </p>
-                      <a href={value} target="_blank" rel="noopener noreferrer">
-                        {value}
-                      </a>
-                    </diV>
-                  );
-                }
-                return null; // Don't render the list item if the value is empty
-              })}
-            </ul>
-          ) : (
-            <p>No links available.</p>
-          )}
-        </div>
-
-        <div>
-          <Dialog open={openLinkTree} onOpenChange={setOpenLinkTree}>
-            <DialogTrigger asChild>
-              <Button variant="outline" className="my-4">
-                Add or Edit Links
+    <div>
+      <Dialog open={openLinkTree} onOpenChange={setOpenLinkTree}>
+        <DialogTrigger asChild>
+          <Button size="sm">Add or Edit Links</Button>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Add links</DialogTitle>
+            <DialogDescription>
+              Fill the links that you have, leave the rest empty.
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleSubmitLinkTree(onSubmit)}>
+            <div className="">
+              <div className="grid grid-cols-4 items-center gap-4 my-2">
+                <Label htmlFor="linkedin" className="text-right">
+                  Linkedin
+                </Label>
+                <Input
+                  id="linkedin"
+                  className="col-span-3"
+                  defaultValue={data.linktree?.properties?.linkedin || ""}
+                  {...registerLinkTree("linkedin")}
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4 my-2">
+                <Label htmlFor="github" className="text-right">
+                  Github
+                </Label>
+                <Input
+                  id="github"
+                  className="col-span-3"
+                  defaultValue={data.linktree?.properties?.github || ""}
+                  {...registerLinkTree("github")}
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4 my-2">
+              <Label htmlFor="blog" className="text-right">
+                Blog
+              </Label>
+              <Input
+                id="blog"
+                className="col-span-3"
+                defaultValue={data.linktree?.properties?.blog || ""}
+                {...registerLinkTree("blog")}
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4 my-2">
+              <Label htmlFor="portfolio" className="text-right">
+                Portfolio
+              </Label>
+              <Input
+                id="portfolio"
+                className="col-span-3"
+                defaultValue={data.linktree?.properties?.portfolio || ""}
+                {...registerLinkTree("portfolio")}
+              />
+            </div>
+            <DialogFooter>
+              <Button type="submit" isLoading={mutationLinkTree.isLoading}>
+                Save changes
               </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>Add links</DialogTitle>
-                <DialogDescription>
-                  Fill the links that you have, leave the rest empty.
-                </DialogDescription>
-              </DialogHeader>
-              <form onSubmit={handleSubmitLinkTree(onSubmit)}>
-                <div className="">
-                  <div className="grid grid-cols-4 items-center gap-4 my-2">
-                    <Label htmlFor="linkedin" className="text-right">
-                      Linkedin
-                    </Label>
-                    <Input
-                      id="linkedin"
-                      className="col-span-3"
-                      defaultValue={data.linktree?.properties?.linkedin || ""}
-                      {...registerLinkTree("linkedin")}
-                    />
-                  </div>
-                  <div className="grid grid-cols-4 items-center gap-4 my-2">
-                    <Label htmlFor="github" className="text-right">
-                      Github
-                    </Label>
-                    <Input
-                      id="github"
-                      className="col-span-3"
-                      defaultValue={data.linktree?.properties?.github || ""}
-                      {...registerLinkTree("github")}
-                    />
-                  </div>
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4 my-2">
-                  <Label htmlFor="blog" className="text-right">
-                    Blog
-                  </Label>
-                  <Input
-                    id="blog"
-                    className="col-span-3"
-                    defaultValue={data.linktree?.properties?.blog || ""}
-                    {...registerLinkTree("blog")}
-                  />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4 my-2">
-                  <Label htmlFor="portfolio" className="text-right">
-                    Portfolio
-                  </Label>
-                  <Input
-                    id="portfolio"
-                    className="col-span-3"
-                    defaultValue={data.linktree?.properties?.portfolio || ""}
-                    {...registerLinkTree("portfolio")}
-                  />
-                </div>
-                <DialogFooter>
-                  <Button type="submit" isLoading={mutationLinkTree.isLoading}>
-                    Save changes
-                  </Button>
-                </DialogFooter>
-              </form>
-            </DialogContent>
-          </Dialog>
-        </div>
-      </div>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
@@ -619,51 +600,29 @@ const Profile = ({ username }) => {
 
   return (
     <div className="w-[95%] h-full mx-auto">
-      <p className="font-bold text-2xl text-center m-4 p-2 border-2 rounded-sm">
-        Profile
+      <p className="font-bold text-2xl text-center my-4 py-2 bg-white shadow-md rounded-md">
+        My Profile
       </p>
       <div className="grid grid-cols-2 gap-4">
-        <div className="mt-10">
-          <Accordion type="single" collapsible className="w-full">
-            <AccordionItem value="Personal Details">
-              <AccordionTrigger>Personal Details</AccordionTrigger>
-              <AccordionContent>
-                <PersonalDetails
-                  data={data}
-                  openPersonal={openPersonal}
-                  setOpenPersonal={setOpenPersonal}
-                />
-              </AccordionContent>
-            </AccordionItem>
-            {/* <AccordionItem value="Work Experience">
-              <AccordionTrigger>Work Experience</AccordionTrigger>
-              <AccordionContent>
-                <WorkDetails
-                  data={data}
-                  openWork={openWork}
-                  setOpenWork={setOpenWork}
-                  openWorkUpdate={openWorkUpdate}
-                  setOpenWorkUpdate={setOpenWorkUpdate}
-                />
-              </AccordionContent>
-            </AccordionItem> */}
-            <AccordionItem value="Link Tree">
-              <AccordionTrigger>Link Tree</AccordionTrigger>
-              <AccordionContent>
-                <LinkTree
-                  data={data}
-                  openLinkTree={openLinkTree}
-                  setOpenLinkTree={setOpenLinkTree}
-                />
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-          <div className="w-full flex md:flex-row flex-col justify-center items-center p-1 m-2">
-            <p>Upload Resume: </p>
-            <ResumeUpload />
-          </div>
-        </div>
+        <PersonalDetails
+          data={data}
+          openPersonal={openPersonal}
+          setOpenPersonal={setOpenPersonal}
+        />
         <div className="flex flex-col justify-start items-center">
+          <ResumeUpload />
+          <object data={resumeUrl} type="application/pdf" width="100%">
+            <p className="my-2">
+              Link to the{" "}
+              <a
+                className="text-blue-800 underline cursor-pointer"
+                href={resumeUrl}
+                target="_blank"
+              >
+                resume!
+              </a>
+            </p>
+          </object>
           <iframe
             src={resumeUrl}
             width="100%"

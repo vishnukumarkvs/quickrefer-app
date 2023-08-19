@@ -50,6 +50,7 @@
     "firebase": "^10.0.0",
     "formidable": "^3.4.0",
     "framer-motion": "^6.5.1",
+    "fuzzy-search": "^3.2.1",
     "lodash.debounce": "^4.0.8",
     "lucide-react": "^0.224.0",
     "nanoid": "^4.0.2",

@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import CreatableSelect from "react-select/creatable";
 import { useSession } from "next-auth/react";
 import { Flex, Text, Input, Button } from "@chakra-ui/react";
+import AutoCompleteCompanyName from "@/components/autocomplete/CompanyNameFromList";
 
 const skillOptions = [
   { value: "java", label: "java" },
@@ -26,6 +27,7 @@ const Page = () => {
     register,
     errors,
     control,
+    setValue,
     formState: { isSubmitting },
   } = useForm();
   const [username, setUsername] = useState("");
@@ -133,13 +135,18 @@ const Page = () => {
           onUsernameTakenChange={handleUsernameTakenChange}
         />
         <Text>Current/Previous Company</Text>
-        <Input
+        {/* <Input
           {...register("company", {
             required: true,
             maxLength: 32,
             minLength: 3,
           })}
           placeholder="ex: Google"
+        /> */}
+        <AutoCompleteCompanyName
+          onSelect={(val) => {
+            setValue("company", val);
+          }}
         />
         <Text>Your Top 3 Skills</Text>
         <Controller

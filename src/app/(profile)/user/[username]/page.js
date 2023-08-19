@@ -10,7 +10,6 @@ const Page = async ({ params }) => {
   let realUser;
   try {
     const user = await authOptions.adapter.getUser(session.user.id);
-    console.log("User:", user);
     realUser = user;
 
     if (params.username === realUser.jtusername) {

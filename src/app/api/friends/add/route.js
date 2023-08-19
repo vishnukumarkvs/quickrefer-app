@@ -58,13 +58,11 @@ export async function POST(req) {
 
       // Check if a friend request has already been sent
       if (sentFriendRequest) {
-        console.log("Friend request already sent");
         return new Response("Friend request already sent", { status: 409 }); // Conflict status
       }
 
       // Check if they are already friends
       if (friendsWith) {
-        console.log("You are already friends with this person");
         return new Response("You are already friends with this person", {
           status: 409,
         }); // Conflict status

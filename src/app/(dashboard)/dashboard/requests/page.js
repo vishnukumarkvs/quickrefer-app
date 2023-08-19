@@ -31,8 +31,6 @@ const Page = async () => {
       });
     });
 
-  console.log("incomingFriendRequests", incomingFriendRequests);
-
   return (
     <main className="mt-8">
       <h1 className="font-bold text-5xl mb-8">Accept and Chat</h1>
