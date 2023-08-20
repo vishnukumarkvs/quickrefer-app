@@ -8,7 +8,7 @@ export default withAuth(
 
     // Manage route protection
     const isAuth = await getToken({ req });
-    const isLoginPage = pathname.startsWith("/login");
+    const isLoginPage = pathname === "/"; // Changed this line to treat root as login page
 
     const sensitiveRoutes = [
       "/referral-status",
@@ -22,18 +22,16 @@ export default withAuth(
 
     if (isLoginPage) {
       if (isAuth) {
-        return NextResponse.redirect(new URL("/ask-referral", req.url));
+        return NextResponse.redirect(new URL("/ask-referral", req.url)); // Redirect to dashboard or some other page
       }
 
       return NextResponse.next();
     }
 
-    if (pathname === "/") {
-      return NextResponse.redirect(new URL("/ask-referral", req.url));
-    }
+    // Removed the condition that redirects from root as it's now the login page
 
     if (!isAuth && isAccessingSensitiveRoute) {
-      return NextResponse.redirect(new URL("/login", req.url));
+      return NextResponse.redirect(new URL("/", req.url)); // Redirect to root as it's the login page now
     }
   },
   {
@@ -46,11 +44,11 @@ export default withAuth(
 );
 
 export const config = {
-  matchter: [
+  matcher: [
     "/",
-    "/login",
     "/dashboard/:path*",
     "/referral-status/:path*",
     "/user/:path*",
+    "/ask-referral/:path*",
   ],
 };

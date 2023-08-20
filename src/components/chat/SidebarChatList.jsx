@@ -13,6 +13,7 @@ import {
   TooltipTrigger,
   TooltipContent,
 } from "../ui/tooltip";
+import { Text } from "@chakra-ui/react";
 
 const SidebarChatList = ({ friends: initialFriends, sessionId }) => {
   const router = useRouter();
@@ -66,42 +67,48 @@ const SidebarChatList = ({ friends: initialFriends, sessionId }) => {
   return (
     <ul
       role="list"
-      className="list-none max-h-[25rem] overflow-y-auto mx-2 space-y-1"
+      className="list-none max-h-[25rem] overflow-y-auto mx-2 my-2 space-y-1"
       id="sidebar-chat-list"
     >
-      {updatedFriends.sort().map((friend) => {
-        const unseenMessageCount = friend.unseenCount || 0;
-        return (
-          <li key={friend.userId}>
-            <div className="flex space-x-1 items-center">
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Building className="text-gray-500 p-1" />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>{friend.company}</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-              <a
-                href={`/dashboard/chat/${chatHrefConstructor(
-                  sessionId,
-                  friend.userId
-                )}`}
-                className="text-gray-700 hover:text-indigo-600 hover-bg-gray-50 group flex items-center gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
-              >
-                {friend.name}
-                {unseenMessageCount > 0 && (
-                  <div className="bg-indigo-600 font-medium text-xs text-white w-4 h-4 rounded-full flex justify-center items-center">
-                    {unseenMessageCount}
-                  </div>
-                )}
-              </a>
-            </div>
-          </li>
-        );
-      })}
+      {updatedFriends?.length > 0 ? (
+        updatedFriends.sort().map((friend) => {
+          const unseenMessageCount = friend.unseenCount || 0;
+          return (
+            <li key={friend.userId}>
+              <div className="flex space-x-1 items-center">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Building className="text-gray-500 p-1" />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{friend.company}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+                <a
+                  href={`/dashboard/chat/${chatHrefConstructor(
+                    sessionId,
+                    friend.userId
+                  )}`}
+                  className="text-gray-700 hover:text-indigo-600 hover-bg-gray-50 group flex items-center gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
+                >
+                  {friend.name}
+                  {unseenMessageCount > 0 && (
+                    <div className="bg-indigo-600 font-medium text-xs text-white w-4 h-4 rounded-full flex justify-center items-center">
+                      {unseenMessageCount}
+                    </div>
+                  )}
+                </a>
+              </div>
+            </li>
+          );
+        })
+      ) : (
+        <Text fontSize="sm" color={"gray.500"}>
+          No chats found
+        </Text>
+      )}
     </ul>
   );
 };
