@@ -28,7 +28,6 @@ const Messages = ({ sessionId, chatId }) => {
     const chatRef = ref(db, `chat/${chatId}/messages`);
     const messageHandler = (snapshot) => {
       const message = snapshot.val();
-      console.log("message received from server", message.message);
       setMessages((prevMessages) => [message, ...prevMessages]);
     };
 

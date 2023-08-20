@@ -554,7 +554,6 @@ const PersonalDetails = ({ data, openPersonal, setOpenPersonal }) => {
 const ProfilePlane = ({ username, userId }) => {
   // https://next-auth.js.org/getting-started/client
   const { data, isLoading, error } = useProfileData(username);
-  console.log("profile adta", data);
 
   const [openPersonal, setOpenPersonal] = useState(false);
   //   const [openWork, setOpenWork] = useState(false);
@@ -562,7 +561,6 @@ const ProfilePlane = ({ username, userId }) => {
   //   const [openLinkTree, setOpenLinkTree] = useState(false);
 
   let resumeUrl = `https://d1b9e92isytfe8.cloudfront.net/${userId}.pdf`;
-  console.log("resumeUrl", resumeUrl);
 
   if (isLoading) {
     return <PageLoader />;

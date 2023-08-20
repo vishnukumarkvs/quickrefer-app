@@ -17,7 +17,6 @@ const ReferralSubmit = ({ options }) => {
     e.preventDefault();
 
     try {
-      console.log(url, company);
       const response = await axios.post(
         "https://e80yu93nsk.execute-api.us-east-1.amazonaws.com/dev/referralSubmit",
         { url: url, company: company.value, targetUserId: session.user.id }

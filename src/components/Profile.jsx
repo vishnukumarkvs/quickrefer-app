@@ -336,7 +336,6 @@ const WorkDetails = ({ data, openWork, setOpenWork }) => {
 
   const onSubmitWorkDetails = (data1) => {
     setLoading(true);
-    console.log("data1", data1);
     if (editingExperience) {
       mutationEdit.mutate({
         ...data1,
@@ -348,7 +347,6 @@ const WorkDetails = ({ data, openWork, setOpenWork }) => {
   };
 
   let experiences = data.workExperiences;
-  console.log("experiences", experiences);
 
   const deleteWorkExperience = (workId) => {
     mutationDelete.mutate(workId);
@@ -489,10 +487,8 @@ const LinkTree = ({ data, openLinkTree, setOpenLinkTree }) => {
     useForm({});
 
   let links = Object.entries(data.linktree?.properties || {});
-  console.log("links", links);
 
   const onSubmit = (data0) => {
-    console.log("data0", data0);
     mutationLinkTree.mutate(data0);
   };
 
@@ -572,7 +568,6 @@ const Profile = ({ username }) => {
   // https://next-auth.js.org/getting-started/client
   const { data: session, status } = useSession();
   const { data, isLoading, error } = useProfileData(username);
-  console.log("profile adta", data);
 
   const [openPersonal, setOpenPersonal] = useState(false);
   const [openWork, setOpenWork] = useState(false);
@@ -582,9 +577,7 @@ const Profile = ({ username }) => {
   if (status === "loading") {
     return <PageLoader />;
   }
-  console.log("session", session);
   let resumeUrl = `https://d1b9e92isytfe8.cloudfront.net/${session.user.id}.pdf`;
-  console.log("resumeUrl", resumeUrl);
 
   if (isLoading) {
     return (

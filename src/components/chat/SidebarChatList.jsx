@@ -18,7 +18,6 @@ const SidebarChatList = ({ friends: initialFriends, sessionId }) => {
   const router = useRouter();
   const pathname = usePathname();
   const [updatedFriends, setUpdatedFriends] = useState(initialFriends);
-  console.log("updatedFriends", updatedFriends);
 
   useEffect(() => {
     // function inside - only on useEffect
@@ -35,7 +34,6 @@ const SidebarChatList = ({ friends: initialFriends, sessionId }) => {
         })
       );
 
-      console.log("unseen", friendsWithUnseenCounts);
       setUpdatedFriends(friendsWithUnseenCounts);
     };
     fetchUnseenCounts();

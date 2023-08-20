@@ -30,8 +30,6 @@ export async function POST(req) {
       })
     );
 
-    console.log("writeResult", writeResult);
-
     return new Response(JSON.stringify("Create Successful"), { status: 200 });
   } catch (e) {
     console.log(e);

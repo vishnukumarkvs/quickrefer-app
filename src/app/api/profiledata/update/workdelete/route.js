@@ -20,8 +20,6 @@ export async function POST(req) {
       })
     );
 
-    console.log("writeResult", writeResult);
-
     return new Response(JSON.stringify("Delete Successful"), { status: 200 });
   } catch (e) {
     console.log(e);

@@ -49,7 +49,6 @@ const Page = () => {
       reader.onload = async () => {
         const base64File = reader.result.split(",")[1];
         const fileExtension = file.name.split(".").pop();
-        console.log("session user id", session.user.id);
 
         // Send the data
         const response = await axios.put(
@@ -65,8 +64,6 @@ const Page = () => {
             },
           }
         );
-
-        console.log(response.data);
       };
 
       reader.readAsDataURL(file);

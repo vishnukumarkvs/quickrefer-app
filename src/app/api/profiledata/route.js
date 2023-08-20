@@ -4,7 +4,6 @@ export async function GET(req) {
   const url = new URL(req.url);
 
   const username = url.searchParams.get("username");
-  console.log("neo4j username", username);
 
   try {
     const neo4jSession = driver.session({ database: "neo4j" });

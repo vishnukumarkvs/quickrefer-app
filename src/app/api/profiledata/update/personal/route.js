@@ -68,8 +68,6 @@ export async function POST(req) {
 
     query += "SET " + updateClauses.join(", ");
 
-    console.log("query", query);
-
     const writeResult = await neo4jSession.executeWrite((tx) =>
       tx.run(query, {
         userId: usession.user.id,
@@ -84,8 +82,6 @@ export async function POST(req) {
         company: company,
       })
     );
-
-    console.log("writeResult", writeResult);
 
     return new Response(JSON.stringify("Update Successful"), { status: 200 });
   } catch (e) {

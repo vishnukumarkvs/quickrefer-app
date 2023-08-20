@@ -30,7 +30,6 @@ const AVAILABLE_FOR_CHAT = "availableForChat";
 
 const fetchReferralRequests = async () => {
   const { data } = await axios.get("/api/getreferralrequests");
-  console.log("holahola", data);
   if (!data || !data.records || !Array.isArray(data.records)) {
     throw new Error("Invalid data structure from API");
   }
@@ -93,7 +92,6 @@ const processData = (records) => {
     .filter((request) => request.relationship === "friends")
     .map((request) => transformRecord(request, AVAILABLE_FOR_CHAT));
 
-  console.log("bhola", sentFriendRequests, friends);
   return { sentFriendRequests, friends };
 };
 

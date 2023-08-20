@@ -3,7 +3,6 @@ import { Flex, Button } from "@chakra-ui/react";
 import { FaGithub, FaLinkedin, FaBlog, FaBriefcase } from "react-icons/fa";
 
 const SocialButtons = ({ data }) => {
-  console.log(data);
   return (
     <Flex direction="row" gap={4}>
       <Button

@@ -30,9 +30,7 @@ const AutoCompleteCompanyName = ({ onSelect }) => {
     setLoading(true);
 
     if (newQuery) {
-      console.log(newQuery, searcher);
       const results = searcher.search(newQuery);
-      console.log(results);
       setResults(results);
       setShowResults(true);
     } else {

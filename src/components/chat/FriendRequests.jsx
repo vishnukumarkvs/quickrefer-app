@@ -19,7 +19,6 @@ import Link from "next/link";
 const FriendRequests = ({ incomingFriendRequests, sessionId }) => {
   const router = useRouter();
   const [friendRequests, setFriendRequests] = useState(incomingFriendRequests);
-  console.log("fffffff", friendRequests);
 
   useEffect(() => {
     pusherClient.subscribe(
