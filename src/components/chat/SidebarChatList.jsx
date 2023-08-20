@@ -64,6 +64,11 @@ const SidebarChatList = ({ friends: initialFriends, sessionId }) => {
     }
   }, [pathname, sessionId]);
 
+  const totalUnseenMessageCount = updatedFriends.reduce(
+    (acc, friend) => acc + (friend.unseenCount || 0),
+    0
+  );
+
   return (
     <ul
       role="list"

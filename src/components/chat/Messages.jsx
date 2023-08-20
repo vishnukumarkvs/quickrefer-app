@@ -3,7 +3,7 @@
 import { db } from "@/lib/firebase";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
-import { off, onChildAdded, onValue, ref } from "firebase/database";
+import { off, onChildAdded, onValue, ref, update } from "firebase/database";
 import { useEffect, useRef, useState } from "react";
 
 // Ref for scrolldown to latest message
@@ -24,11 +24,33 @@ const Messages = ({ sessionId, chatId }) => {
     return format(timestamp, "HH:mm");
   };
 
+  // useEffect(() => {
+  //   const chatRef = ref(db, `chat/${chatId}/messages`);
+  //   const messageHandler = (snapshot) => {
+  //     const message = snapshot.val();
+  //     setMessages((prevMessages) => [message, ...prevMessages]);
+  //   };
+
+  //   onChildAdded(chatRef, messageHandler);
+
+  //   return () => {
+  //     off(chatRef, "child_added", messageHandler);
+  //   };
+  // }, [chatId]);
+
   useEffect(() => {
     const chatRef = ref(db, `chat/${chatId}/messages`);
-    const messageHandler = (snapshot) => {
+    const messageHandler = async (snapshot) => {
       const message = snapshot.val();
       setMessages((prevMessages) => [message, ...prevMessages]);
+
+      // Check if the message sender is not the current user
+      // and if the message has not been marked as seen
+      if (message.senderId !== sessionId && !message.seen) {
+        // Update the message's seen status
+        const messageRef = ref(db, `chat/${chatId}/messages/${snapshot.key}`);
+        await update(messageRef, { seen: true });
+      }
     };
 
     onChildAdded(chatRef, messageHandler);
@@ -36,7 +58,7 @@ const Messages = ({ sessionId, chatId }) => {
     return () => {
       off(chatRef, "child_added", messageHandler);
     };
-  }, [chatId]);
+  }, [chatId, sessionId]);
 
   return (
     <div
