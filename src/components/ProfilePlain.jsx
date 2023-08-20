@@ -552,8 +552,11 @@ const PersonalDetails = ({ data, openPersonal, setOpenPersonal }) => {
 // };
 
 const ProfilePlane = ({ username, userId }) => {
+  console.log(username, userId);
   // https://next-auth.js.org/getting-started/client
   const { data, isLoading, error } = useProfileData(username);
+
+  console.log(data);
 
   const [openPersonal, setOpenPersonal] = useState(false);
   //   const [openWork, setOpenWork] = useState(false);

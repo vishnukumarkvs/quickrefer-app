@@ -21,7 +21,7 @@ const Page = async ({ params }) => {
     } else {
       return (
         <div>
-          <ProfilePlane username={realUser.jtusername} userId={realUser.id} />
+          <ProfilePlane username={params.username} userId={realUser.id} />
         </div>
       );
     }

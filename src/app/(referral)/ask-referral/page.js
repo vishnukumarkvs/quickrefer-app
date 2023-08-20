@@ -16,13 +16,14 @@ import {
 } from "@/components/ui/table";
 
 import AddFriendButton from "@/components/chat/AddFriendButton";
-import { Input } from "@/components/ui/input";
+
 import toast from "react-hot-toast";
 import { BeatLoader } from "react-spinners";
-import { Flex } from "@chakra-ui/react";
+import { Flex, Input } from "@chakra-ui/react";
 import AsyncSelect from "react-select/async";
 import AutoCompleteCompanyName from "@/components/autocomplete/CompanyNameFromNeo4J";
 import EmptyComponent from "@/components/emptystates/EmptyComponent";
+import { isValidURL } from "@/lib/utils";
 
 const Page = () => {
   const [company, setCompany] = useState(null);
@@ -60,16 +61,16 @@ const Page = () => {
     if (selectedCompany) {
       try {
         const response = await axios.get(
-          `/api/getnewreferrers?company=${selectedCompany.value}`
+          `/api/getnewreferrers?company=${selectedCompany}`
         );
         const usersData = response.data.records.map(
           (record) => record._fields[0].properties
         );
         if (usersData.length === 0) {
-          toast(
-            "No referrers found at this moment for the particular company.\n\n Try again later or please select other company",
-            { position: "bottom-right", duration: 6000 }
-          );
+          // toast(
+          //   "No referrers found at this moment for the particular company.\n\n Try again later or please select other company",
+          //   { position: "bottom-right", duration: 6000 }
+          // );
         }
         setUsers(usersData);
       } catch (error) {
@@ -83,6 +84,12 @@ const Page = () => {
   const handleFetch = async (event) => {
     event.preventDefault();
     if (company && url) {
+      if (!isValidURL(url)) {
+        toast.error("Please enter a valid URL", {
+          position: "bottom-right",
+        });
+        return;
+      }
       setFetchUsersLoading(true);
       await getUsersOfCompany(company);
     } else {
@@ -98,19 +105,17 @@ const Page = () => {
         <h1 className="text-5xl font-bold m-4 text-center">
           Ask for a Referral
         </h1>
-        <p className="w-[70%] text-justify mx-auto my-10">
-          If you want to ask for a referral for a particular job, please submit
-          the job link and select the company of the posted job. We have many
-          people on the platform who are willing to give referrals. Once a
-          referrer wishes to give you a referral, they will contact you through
-          the chat for further details.
+        <p className="w-[70%] mx-auto my-10 text-center">
+          Submit the job link and choose the company for the referral. <br />{" "}
+          Referrers interested in helping will connect with you via chat for
+          details.
         </p>
         {/* <ReferralSubmit options={options} /> */}
         <div className="flex flex-col max-w-xl mx-auto gap-y-4">
           <Input
             type="text"
             onChange={(e) => setUrl(e.target.value)}
-            className="bg-white placeholder:text-lg placeholder:text-zinc-400"
+            className="bg-white"
             placeholder="Enter Job Link"
             required
           />
@@ -130,9 +135,8 @@ const Page = () => {
           </div>
           <div className="flex flex-col items-center">
             {/* <Button onClick={handleReferralSubmit}>Direct Submit</Button> */}
-            <p className="p-5 text-center">Find people here</p>
             <Button onClick={handleFetch} isLoading={fetchUsersLoading}>
-              Find
+              Search
             </Button>
           </div>
         </div>
