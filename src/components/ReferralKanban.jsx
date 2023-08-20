@@ -23,6 +23,7 @@ import PageLoader from "./PageLoader";
 
 // Hooks
 import { useQuery } from "@tanstack/react-query";
+import EmptyComponent from "./emptystates/EmptyComponent";
 
 const REQUESTED = "requested";
 const AVAILABLE_FOR_CHAT = "availableForChat";
@@ -175,7 +176,7 @@ const ReferralKanban = () => {
             <TabPanels>
               <TabPanel>
                 <Flex direction={"column"} gap="5">
-                  {sentRequests &&
+                  {sentRequests?.length > 0 ? (
                     sentRequests.map((job) => {
                       const {
                         worksAt = "Unknown",
@@ -251,14 +252,17 @@ const ReferralKanban = () => {
                           </Flex>
                         </Card>
                       );
-                    })}
+                    })
+                  ) : (
+                    <EmptyComponent title="No referrals applied" />
+                  )}
                 </Flex>
               </TabPanel>
               <TabPanel>
                 {/* For now, this is a placeholder. You would need to fetch and display the users who referred the main user here. */}
                 <Flex direction={"column"} gap="5">
                   {/* Map over the referrals received by the user. For now, I'm reusing the same `requests` data for demonstration. */}
-                  {friendRequests &&
+                  {friendRequests?.length > 0 ? (
                     friendRequests.map((job) => {
                       const {
                         worksAt = "Unknown",
@@ -334,7 +338,10 @@ const ReferralKanban = () => {
                           </Flex>
                         </Card>
                       );
-                    })}
+                    })
+                  ) : (
+                    <EmptyComponent title="No referrals received yet!!" />
+                  )}
                 </Flex>
               </TabPanel>
             </TabPanels>

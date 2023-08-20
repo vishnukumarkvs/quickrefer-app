@@ -1,5 +1,4 @@
 "use client";
-import { poppins } from "@/lib/fonts";
 import Link from "next/link";
 import SignOutButton from "@/components/SignOutButton";
 import { usePathname } from "next/navigation";
@@ -13,9 +12,7 @@ const SideBarItem = ({ title, href }) => {
 
   return (
     <p
-      className={`${
-        poppins.className
-      } py-1 cursor-pointer hover:text-gray-600 ${
+      className={`py-1 cursor-pointer hover:text-gray-600 ${
         pathname === href ? "text-gray-600 bg-white -ml-1 p-1 rounded-md" : ""
       }`}
     >
@@ -80,7 +77,7 @@ const SideBar = () => {
         <div className="text-left flex flex-col">
           <div className="my-10">
             <p
-              className={`${poppins.className} py-2 text-lg text-[#7B3F00] underline decoration-2 underline-offset-8`}
+              className={`py-2 text-lg text-[#7B3F00] underline decoration-2 underline-offset-8`}
             >
               MENU
             </p>

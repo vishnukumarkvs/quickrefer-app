@@ -22,10 +22,11 @@ import { BeatLoader } from "react-spinners";
 import { Flex } from "@chakra-ui/react";
 import AsyncSelect from "react-select/async";
 import AutoCompleteCompanyName from "@/components/autocomplete/CompanyNameFromNeo4J";
+import EmptyComponent from "@/components/emptystates/EmptyComponent";
 
 const Page = () => {
   const [company, setCompany] = useState(null);
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState(null);
   const [url, setUrl] = useState("");
   const [fetchUsersLoading, setFetchUsersLoading] = useState(false);
   // const [allCompanies, setAllCompanies] = useState([]);
@@ -135,7 +136,7 @@ const Page = () => {
             </Button>
           </div>
         </div>
-        {users.length > 0 && ( // Check if users is not empty
+        {users?.length > 0 ? ( // Check if users is not empty
           <div className="my-5">
             <Table>
               <TableCaption>A list of potential referrers.</TableCaption>
@@ -172,6 +173,11 @@ const Page = () => {
               </TableBody>
             </Table>
           </div>
+        ) : (
+          users &&
+          users.length === 0 && (
+            <EmptyComponent title="We are onboarding more referers from 150+ companies very soon, please wait or explore other compnaies." />
+          )
         )}
       </div>
     </div>

@@ -7,7 +7,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <div className="flex overflow-y-hidden">
+    <div className={`flex overflow-y-hidden bg-[#fbf9f0]`}>
       <SideBar className="w-1/4" />
       <main className="flex-grow max-h-screen overflow-y-auto">{children}</main>
     </div>

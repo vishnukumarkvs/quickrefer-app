@@ -1,8 +1,6 @@
 // app/layout.tsx
 import Provider from "@/components/Providers";
 import "./globals.css";
-//poppins import
-import { poppins } from "@/lib/fonts";
 
 export const metadata = {
   title: "Referral Hub",
@@ -12,7 +10,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`bg-[#fbf9f0] ${poppins.className}`}>
+      <body className={`bg-[#fbf9f0]`}>
         <Provider>{children}</Provider>
       </body>
     </html>

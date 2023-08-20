@@ -1,3 +1,4 @@
+import EmptyComponent from "@/components/emptystates/EmptyComponent";
 import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
 
@@ -7,7 +8,7 @@ const Dashboard = async () => {
   return (
     <div>
       <p>Hi Dashboard</p>
-      <pre>{JSON.stringify(session, null, 2)}</pre>
+      <EmptyComponent title={"No Data found"} />
       {/* interactivity like this shou;d be in client component */}
       {/* <Button onClick={() => signOut()}>Sign Out</Button> */}
     </div>

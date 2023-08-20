@@ -5,8 +5,6 @@ import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
 import Link from "next/link";
 import driver from "@/lib/neo4jClient";
-//poppins import
-import { poppins } from "@/lib/fonts";
 
 import { Icons } from "@/components/chat/icons";
 import { notFound } from "next/navigation";
@@ -32,7 +30,7 @@ const Layout = async ({ children }) => {
   if (!session) notFound(); // this wont be called if you handle it in middleware
 
   return (
-    <div className={`bg-[#fbf9f0] ${poppins.className} flex`}>
+    <div className={`bg-[#fbf9f0] flex`}>
       <main className="flex-grow">
         <div className="w-full flex h-screen">
           <div className="flex h-full w-full max-w-xs grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6">
