@@ -17,6 +17,11 @@ const AutoCompleteCompanyName = ({ onSelect }) => {
     };
   }, []);
 
+  const searchOptions = {
+    caseSensitive: false,
+    sort: true,
+  };
+
   const handleChange = async (event) => {
     const newQuery = event.target.value;
     setQuery(newQuery);
@@ -25,7 +30,12 @@ const AutoCompleteCompanyName = ({ onSelect }) => {
     if (newQuery) {
       const res = await fetch(`/api/getCompanyList`);
       const data = await res.json();
-      setResults(data.records[0]._fields[0]);
+      const searcher = new FuzzySearch(
+        data.records[0]._fields[0],
+        [],
+        searchOptions
+      );
+      setResults(searcher.search(newQuery));
       setShowResults(true);
     } else {
       setResults([]);
@@ -90,9 +100,9 @@ const AutoCompleteCompanyName = ({ onSelect }) => {
           ))}
         </Box>
       )}
-      {loading && (
+      {/* {loading && (
         <Spinner position="absolute" top="50%" left="50%" zIndex={30} />
-      )}
+      )} */}
       {!loading && showResults && results?.length === 0 && (
         <Box
           mt="2"

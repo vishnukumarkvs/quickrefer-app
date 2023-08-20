@@ -96,9 +96,9 @@ const AutoCompleteCompanyName = ({ onSelect }) => {
           ))}
         </Box>
       )}
-      {loading && (
+      {/* {loading && (
         <Spinner position="absolute" top="50%" left="50%" zIndex={30} />
-      )}
+      )} */}
       {!loading && showResults && results?.length === 0 && (
         <Box
           mt="2"
