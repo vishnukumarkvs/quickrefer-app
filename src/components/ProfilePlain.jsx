@@ -551,19 +551,15 @@ const PersonalDetails = ({ data, openPersonal, setOpenPersonal }) => {
 //   );
 // };
 
-const ProfilePlane = ({ username, userId }) => {
-  console.log(username, userId);
+const ProfilePlane = ({ username }) => {
+  console.log(username);
   // https://next-auth.js.org/getting-started/client
   const { data, isLoading, error } = useProfileData(username);
-
-  console.log(data);
 
   const [openPersonal, setOpenPersonal] = useState(false);
   //   const [openWork, setOpenWork] = useState(false);
   //   const [openWorkUpdate, setOpenWorkUpdate] = useState(false);
   //   const [openLinkTree, setOpenLinkTree] = useState(false);
-
-  let resumeUrl = `https://d1b9e92isytfe8.cloudfront.net/${userId}.pdf`;
 
   if (isLoading) {
     return <PageLoader />;
@@ -572,6 +568,8 @@ const ProfilePlane = ({ username, userId }) => {
   if (error) {
     return <div>Error: {error.message}</div>;
   }
+
+  let resumeUrl = `https://d1b9e92isytfe8.cloudfront.net/${data.userId}.pdf`;
 
   return (
     <div className="w-[95%] h-full mx-auto">
@@ -588,14 +586,18 @@ const ProfilePlane = ({ username, userId }) => {
           <SocialButtons data={data} />
         </div>
         <div className="flex flex-col justify-start items-center">
-          <iframe
-            src={resumeUrl}
-            width="100%"
-            height="600px"
-            frameBorder="0"
-            title="PDF Viewer"
-            allowFullScreen
-          />
+          <object data={resumeUrl} type="application/pdf" width="100%">
+            <p className="my-2">
+              Link to the{" "}
+              <a
+                className="text-blue-800 underline cursor-pointer"
+                href={resumeUrl}
+                target="_blank"
+              >
+                resume!
+              </a>
+            </p>
+          </object>
         </div>
       </div>
     </div>

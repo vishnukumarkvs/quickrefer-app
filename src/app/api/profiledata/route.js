@@ -32,6 +32,7 @@ export async function GET(req) {
     const profidata = {
       fullname: userData[0]?.properties.fullname,
       username: userData[0]?.properties.username,
+      userId: userData[0]?.properties.userId,
       email: userData[0]?.properties.email,
       phone: userData[0]?.properties?.phone || null,
       currentJobRole: userData[0]?.properties?.currentJobRole || null,

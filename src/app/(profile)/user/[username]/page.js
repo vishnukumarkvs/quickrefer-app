@@ -7,21 +7,19 @@ import { getServerSession } from "next-auth";
 const Page = async ({ params }) => {
   //   const { data: session, status } = useSession();
   const session = await getServerSession(authOptions);
-  let realUser;
   try {
-    const user = await authOptions.adapter.getUser(session.user.id);
-    realUser = user;
+    // let realUser = await authOptions.adapter.getUser(session.user.id);
 
-    if (params.username === realUser.jtusername) {
+    if (params.username === session.user.jtusername) {
       return (
         <div>
-          <Profile username={realUser.jtusername} />
+          <Profile username={session.user.jtusername} />
         </div>
       );
     } else {
       return (
         <div>
-          <ProfilePlane username={params.username} userId={realUser.id} />
+          <ProfilePlane username={params.username} />
         </div>
       );
     }
