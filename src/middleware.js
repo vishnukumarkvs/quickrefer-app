@@ -15,6 +15,7 @@ export default withAuth(
       "/dashboard",
       "/user",
       "/ask-referral",
+      "/new/user",
     ];
     const isAccessingSensitiveRoute = sensitiveRoutes.some((route) =>
       pathname.startsWith(route)
@@ -22,10 +23,14 @@ export default withAuth(
 
     if (isLoginPage) {
       if (isAuth) {
-        return NextResponse.redirect(new URL("/ask-referral", req.url)); // Redirect to dashboard or some other page
+        if (isAuth.userNew) {
+          return NextResponse.redirect(new URL("/new/user", req.url)); // Redirect to a page for new users
+        } else {
+          return NextResponse.redirect(new URL("/ask-referral", req.url)); // Redirect to a referral page or dashboard
+        }
+      } else {
+        return NextResponse.next(); // Continue processing for non-authenticated users
       }
-
-      return NextResponse.next();
     }
 
     // Removed the condition that redirects from root as it's now the login page
@@ -50,5 +55,6 @@ export const config = {
     "/referral-status/:path*",
     "/user/:path*",
     "/ask-referral/:path*",
+    "/new/user",
   ],
 };

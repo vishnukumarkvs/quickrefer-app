@@ -158,10 +158,12 @@ const jwtCallback = async ({ token, user, session, trigger, isNewUser }) => {
     const atIndex = email.indexOf("@");
     const username = email.substring(0, atIndex);
     const jtusername = username.replace(/\./g, "");
+    let userNew = true;
 
     // Generate a NanoID and add it to the jtusername
     const nanoId = nanoid();
     dbUser.jtusername = `${jtusername}_${nanoId}`;
+    dbUser.userNew = userNew;
 
     const putParams = {
       TableName: "Users",
@@ -182,6 +184,7 @@ const jwtCallback = async ({ token, user, session, trigger, isNewUser }) => {
     email: dbUser.email,
     image: dbUser?.image,
     jtusername: dbUser.jtusername,
+    userNew: dbUser.userNew,
   };
 };
 
