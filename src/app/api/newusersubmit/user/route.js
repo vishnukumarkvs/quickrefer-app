@@ -7,7 +7,7 @@ import { UpdateItemCommand } from "@aws-sdk/client-dynamodb";
 export async function POST(req) {
   const session = await getServerSession(authOptions);
 
-  const { username, company, skills, exp, fullname } = await req.json();
+  const { username, company, exp, fullname } = await req.json();
 
   const id = session.user.id;
   const email = session.user.email;
@@ -45,11 +45,6 @@ export async function POST(req) {
         ON CREATE SET u.username = $username, u.email = $email, u.userRole = $userRole, u.ReferralScore = 0, u.experience = $experience, u.fullname = $fullname
         MERGE (c:Company {name: $company})
         MERGE (u)-[:WORKS_AT]->(c)
-        WITH u
-        UNWIND $topSkills AS skill
-        MERGE (s:Skill {name: skill})
-        MERGE (u)-[:HAS_TOP_SKILL]->(s)
-        MERGE (c)-[:HAS_SKILL]->(s)
     `;
     const writeResult = await neo4jSession.executeWrite((tx) =>
       tx.run(query, {
@@ -58,7 +53,6 @@ export async function POST(req) {
         email: email,
         company: company,
         userRole: userRole,
-        topSkills: skills,
         experience: exp,
         fullname: fullname,
       })

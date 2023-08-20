@@ -64,7 +64,7 @@ const AutoCompleteCompanyName = ({ onSelect }) => {
         bg="white"
         value={query}
         onChange={handleChange}
-        placeholder="Search for a merchant"
+        placeholder="Search for a company"
         onClick={handleClick}
       />
       {showResults && results?.length > 0 && (

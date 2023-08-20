@@ -51,7 +51,7 @@ const Page = () => {
         const fileExtension = file.name.split(".").pop();
 
         // Send the data
-        const response = await axios.put(
+        await axios.put(
           "https://s9u8bu61y6.execute-api.us-east-1.amazonaws.com/dev/upload", // Replace with your API Gateway URL
           {
             fileData: base64File,
@@ -82,15 +82,15 @@ const Page = () => {
 
   const onSubmit = async (data) => {
     // console.log(data);
-    if (file) {
-      await onFileUpload(); // Upload the file before form submission
-    }
+    // if (file) {
+    //   await onFileUpload(); // Upload the file before form submission
+    // }
     try {
       await axios.post("/api/newusersubmit/user", {
         username: username,
         fullname: data.fullname,
         company: data.company,
-        skills: data.skills.map((skill) => skill.value),
+        // skills: data.skills.map((skill) => skill.value),
         exp: data.exp,
       });
       update({ jtusername: username, userNew: false });
@@ -116,21 +116,32 @@ const Page = () => {
         borderRadius={"8px"}
         boxShadow={"md"}
       >
-        <Text>Full Name</Text>
-        <Input
-          {...register("fullname", {
-            required: true,
-            maxLength: 32,
-            minLength: 3,
-          })}
-        />
-        <Text>User Name</Text>
-        <UniqueUsernameInput
-          onUsernameChange={handleUsernameChange}
-          onUsernameTakenChange={handleUsernameTakenChange}
-        />
-        <Text>Current/Previous Company</Text>
-        {/* <Input
+        <div>
+          <Text fontSize={"sm"} fontWeight={500}>
+            Full Name
+          </Text>
+          <Input
+            {...register("fullname", {
+              required: true,
+              maxLength: 32,
+              minLength: 3,
+            })}
+          />
+        </div>
+        <div>
+          <Text fontSize={"sm"} fontWeight={500}>
+            Username
+          </Text>
+          <UniqueUsernameInput
+            onUsernameChange={handleUsernameChange}
+            onUsernameTakenChange={handleUsernameTakenChange}
+          />
+        </div>
+        <div>
+          <Text fontSize={"sm"} fontWeight={500}>
+            Current/Previous Company
+          </Text>
+          {/* <Input
           {...register("company", {
             required: true,
             maxLength: 32,
@@ -138,12 +149,13 @@ const Page = () => {
           })}
           placeholder="ex: Google"
         /> */}
-        <AutoCompleteCompanyName
-          onSelect={(val) => {
-            setValue("company", val);
-          }}
-        />
-        <Text>Your Top 3 Skills</Text>
+          <AutoCompleteCompanyName
+            onSelect={(val) => {
+              setValue("company", val);
+            }}
+          />
+        </div>
+        {/* <Text>Your Top 3 Skills</Text>
         <Controller
           name="skills"
           control={control}
@@ -168,16 +180,20 @@ const Page = () => {
               }}
             />
           )}
-        />
-        <Text>Experience</Text>
-        <Input
-          type="number"
-          min="0"
-          {...register("exp", {
-            required: true,
-          })}
-        />
-        <Text>Your Latest Resume</Text>
+        /> */}
+        <div>
+          <Text fontSize={"sm"} fontWeight={500}>
+            Experience
+          </Text>
+          <Input
+            type="number"
+            min="0"
+            {...register("exp", {
+              required: true,
+            })}
+          />
+        </div>
+        {/* <Text>Your Latest Resume</Text>
         <input
           type="file"
           required
@@ -185,8 +201,8 @@ const Page = () => {
           // accept=".pdf,.doc,.docx"
           accept=".pdf"
           className="flex-1 px-4 py-2 border rounded-lg  focus:outline-none focus:ring focus:border-blue-300"
-        />
-        <Button isLoading={isSubmitting} type="submit">
+        /> */}
+        <Button isLoading={isSubmitting} type="submit" className="mt-4">
           Submit
         </Button>
       </Flex>
