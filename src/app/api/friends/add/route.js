@@ -20,8 +20,15 @@ export async function POST(req) {
     const { id: idToAdd, url } = input;
 
     const sessionAuth = await getServerSession(authOptions);
+
     if (!sessionAuth) {
       return new Response("Unauthorized", { status: 401 });
+    }
+
+    if (!sessionAuth.user.isResume) {
+      return new Response("Please upload Resume in your Profile page", {
+        status: 403,
+      });
     }
 
     if (idToAdd === sessionAuth.user.id) {

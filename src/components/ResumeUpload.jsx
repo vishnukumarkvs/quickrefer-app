@@ -8,9 +8,10 @@ import { Button } from "./ui/button";
 import toast from "react-hot-toast";
 
 const ResumeUpload = () => {
-  const { data: session } = useSession();
+  const { data: session, update } = useSession();
   const [file, setFile] = useState(null);
   const [fileName, setFileName] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const onFileChange = (event) => {
     setFile(event.target.files[0]);
@@ -18,6 +19,7 @@ const ResumeUpload = () => {
   };
 
   const onFileUpload = async () => {
+    setIsLoading(true);
     try {
       const reader = new FileReader();
 
@@ -26,7 +28,7 @@ const ResumeUpload = () => {
         const fileExtension = file.name.split(".").pop();
 
         // Send the data
-        const response = await axios.put(
+        await axios.put(
           "https://s9u8bu61y6.execute-api.us-east-1.amazonaws.com/dev/upload", // Replace with your API Gateway URL
           {
             fileData: base64File,
@@ -40,12 +42,15 @@ const ResumeUpload = () => {
           }
         );
       };
-
       reader.readAsDataURL(file);
+      update({ isResume: true });
+      await axios.post("/api/updateresume", { isResume: true });
       toast.success("File uploaded successfully");
     } catch (error) {
       toast.error("Error uploading file");
-      console.error(error);
+      console.error("here is the error", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -57,7 +62,7 @@ const ResumeUpload = () => {
           onChange={onFileChange}
           className="flex-1 px-4 py-2 border rounded-lg shadow-md focus:outline-none focus:ring focus:border-blue-300"
         />
-        <Button onClick={onFileUpload} variant="ghost">
+        <Button onClick={onFileUpload} variant="ghost" isLoading={isLoading}>
           <Upload size={24} />
         </Button>
       </div>

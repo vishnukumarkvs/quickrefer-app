@@ -133,7 +133,7 @@ const authorizeCredentials = async (credentials) => {
   return user;
 };
 
-const jwtCallback = async ({ token, user, session, trigger, isNewUser }) => {
+const jwtCallback = async ({ token, user, session, trigger }) => {
   const params = {
     TableName: "Users",
     Key: {
@@ -158,12 +158,12 @@ const jwtCallback = async ({ token, user, session, trigger, isNewUser }) => {
     const atIndex = email.indexOf("@");
     const username = email.substring(0, atIndex);
     const jtusername = username.replace(/\./g, "");
-    let userNew = true;
 
     // Generate a NanoID and add it to the jtusername
     const nanoId = nanoid();
     dbUser.jtusername = `${jtusername}_${nanoId}`;
-    dbUser.userNew = userNew;
+    dbUser.userNew = true;
+    dbUser.isResume = false;
 
     const putParams = {
       TableName: "Users",
@@ -173,8 +173,10 @@ const jwtCallback = async ({ token, user, session, trigger, isNewUser }) => {
     await ddbClient.send(new PutItemCommand(putParams));
   }
 
-  if (trigger === "update" && session?.jtusername) {
+  if (trigger === "update") {
     token.jtusername = session.jtusername;
+    token.userNew = session.userNew;
+    token.isResume = session.isResume;
     return token;
   }
 
@@ -185,6 +187,7 @@ const jwtCallback = async ({ token, user, session, trigger, isNewUser }) => {
     image: dbUser?.image,
     jtusername: dbUser.jtusername,
     userNew: dbUser.userNew,
+    isResume: dbUser.isResume,
   };
 };
 
@@ -195,6 +198,8 @@ const sessionCallback = ({ session, token }) => {
     session.user.email = token.email;
     session.user.image = token?.image;
     session.user.jtusername = token?.jtusername;
+    session.user.userNew = token?.userNew;
+    session.user.isResume = token?.isResume;
   }
 
   return session;

@@ -591,6 +591,8 @@ const Profile = ({ username }) => {
     return <div>Error: {error.message}</div>;
   }
 
+  // console.log(session, "session profile");
+
   return (
     <div className="w-[95%] h-full mx-auto">
       <p className="font-bold text-2xl text-center my-4 py-2 bg-white shadow-md rounded-md">
@@ -604,26 +606,22 @@ const Profile = ({ username }) => {
         />
         <div className="flex flex-col justify-start items-center">
           <ResumeUpload />
-          <object data={resumeUrl} type="application/pdf" width="100%">
-            <p className="my-2">
-              Link to the{" "}
-              <a
-                className="text-blue-800 underline cursor-pointer"
-                href={resumeUrl}
-                target="_blank"
-              >
-                resume!
-              </a>
-            </p>
-          </object>
-          <iframe
-            src={resumeUrl}
-            width="100%"
-            height="600px"
-            frameBorder="0"
-            title="PDF Viewer"
-            allowFullScreen
-          />
+          {session.user.isResume ? (
+            <object data={resumeUrl} type="application/pdf" width="100%">
+              <p className="my-2">
+                Link to the{" "}
+                <a
+                  className="text-blue-800 underline cursor-pointer"
+                  href={resumeUrl}
+                  target="_blank"
+                >
+                  resume!
+                </a>
+              </p>
+            </object>
+          ) : (
+            <p className="my-2">Upload your resume to view it here!</p>
+          )}
         </div>
       </div>
     </div>
