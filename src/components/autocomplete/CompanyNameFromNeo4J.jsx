@@ -28,10 +28,10 @@ const AutoCompleteCompanyName = ({ onSelect }) => {
     setLoading(true);
 
     if (newQuery) {
-      // const res = await fetch(`/api/getCompanyList`, { cache: "no-cache" });
-      const res = await fetch(`/api/getCompanyList`, {
-        next: { revalidate: 120 }, // in seconds
-      });
+      const res = await fetch(`/api/getCompanyList`, { cache: "no-cache" });
+      // const res = await fetch(`/api/getCompanyList`, {
+      //   next: { revalidate: 120 }, // in seconds
+      // });
       const data = await res.json();
       const searcher = new FuzzySearch(
         data.records[0]._fields[0],

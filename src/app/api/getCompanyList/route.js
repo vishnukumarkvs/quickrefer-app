@@ -14,8 +14,8 @@ export async function GET(req) {
       return result;
     });
 
-    const path = "/api/getCompanyList";
-    // const path = req.nextUrl.searchParams.get("path") || '/';
+    // const path = "/api/getCompanyList";
+    const path = req.nextUrl.searchParams.get("path") || "/";
     revalidatePath(path);
 
     return new Response(JSON.stringify(getResult), { status: 200 });
