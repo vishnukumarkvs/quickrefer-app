@@ -40,7 +40,7 @@ const FriendRequestsSidebarOption = ({
       <div className="text-gray-400 border-gray-400 group-hover:border-indigo-600 group-hover:text-indigo-600 flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border text-[0.625rem] font-medium bg-white">
         <User className="h-4 w-4" />
       </div>
-      <p className="truncate">Friend Requests</p>
+      <p className="truncate">Referral Requests</p>
       {unseenRequestsCount > 0 ? (
         <div className="rounded-full w-5 h-5 text-xs flex justify-center items-center text-white bg-indigo-600">
           {unseenRequestsCount}

@@ -167,8 +167,8 @@ const ReferralKanban = () => {
           </Flex>
           <Tabs>
             <TabList>
-              <Tab>Referrals Applied</Tab>
-              <Tab>Requests Accepted</Tab>
+              <Tab>Pending Requests</Tab>
+              <Tab>Accepted Requests</Tab>
             </TabList>
 
             <TabPanels>

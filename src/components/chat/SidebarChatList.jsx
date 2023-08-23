@@ -14,6 +14,7 @@ import {
   TooltipContent,
 } from "../ui/tooltip";
 import { Text } from "@chakra-ui/react";
+import Link from "next/link";
 
 const SidebarChatList = ({ friends: initialFriends, sessionId }) => {
   const router = useRouter();
@@ -64,6 +65,14 @@ const SidebarChatList = ({ friends: initialFriends, sessionId }) => {
     }
   }, [pathname, sessionId]);
 
+  const handleChatClick = (clickedUserId) => {
+    setUpdatedFriends((prevFriends) =>
+      prevFriends.map((friend) =>
+        friend.userId === clickedUserId ? { ...friend, unseenCount: 0 } : friend
+      )
+    );
+  };
+
   const totalUnseenMessageCount = updatedFriends.reduce(
     (acc, friend) => acc + (friend.unseenCount || 0),
     0
@@ -91,20 +100,25 @@ const SidebarChatList = ({ friends: initialFriends, sessionId }) => {
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
-                <a
+                <Link
                   href={`/dashboard/chat/${chatHrefConstructor(
                     sessionId,
                     friend.userId
                   )}`}
-                  className="text-gray-700 hover:text-indigo-600 hover-bg-gray-50 group flex items-center gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
                 >
-                  {friend.name}
-                  {unseenMessageCount > 0 && (
-                    <div className="bg-indigo-600 font-medium text-xs text-white w-4 h-4 rounded-full flex justify-center items-center">
-                      {unseenMessageCount}
-                    </div>
-                  )}
-                </a>
+                  <div
+                    role="button"
+                    className="text-gray-700 hover:text-indigo-600 hover-bg-gray-50 group flex items-center gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
+                    onClick={() => handleChatClick(friend.userId)}
+                  >
+                    {friend.name}
+                    {unseenMessageCount > 0 && (
+                      <div className="bg-indigo-600 font-medium text-xs text-white w-4 h-4 rounded-full flex justify-center items-center">
+                        {unseenMessageCount}
+                      </div>
+                    )}
+                  </div>
+                </Link>
               </div>
             </li>
           );
