@@ -2,6 +2,8 @@ import React, { useState, useRef, useEffect } from "react";
 import { Box, Input, List, ListItem, Spinner, Text } from "@chakra-ui/react";
 import { companies } from "@/constants/companies";
 import FuzzySearch from "fuzzy-search";
+import { Loader2 } from "lucide-react";
+import { BeatLoader } from "react-spinners";
 
 const AutoCompleteCompanyName = ({ onSelect }) => {
   const [query, setQuery] = useState("");
@@ -67,13 +69,17 @@ const AutoCompleteCompanyName = ({ onSelect }) => {
 
   return (
     <Box ref={wrapperRef} position="relative">
-      <Input
-        bg="white"
-        value={query}
-        onChange={handleChange}
-        placeholder="Type to search company name"
-        onClick={handleClick}
-      />
+      <div className="flex flex-row items-center space-x-2">
+        <Input
+          bg="white"
+          value={query}
+          onChange={handleChange}
+          placeholder="Type to search company name"
+          onClick={handleClick}
+        />
+        {loading && <BeatLoader color="#ffc800e5" size={7} />}
+      </div>
+
       {showResults && results?.length > 0 && (
         <Box
           mt="2"
@@ -103,9 +109,6 @@ const AutoCompleteCompanyName = ({ onSelect }) => {
           ))}
         </Box>
       )}
-      {/* {loading && (
-        <Spinner position="absolute" top="50%" left="50%" zIndex={30} />
-      )} */}
       {!loading && showResults && results?.length === 0 && (
         <Box
           mt="2"
