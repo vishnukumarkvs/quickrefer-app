@@ -168,7 +168,7 @@ const ReferralKanban = () => {
           <Tabs>
             <TabList>
               <Tab>Referrals Applied</Tab>
-              <Tab>Got Referred</Tab>
+              <Tab>Requests Accepted</Tab>
             </TabList>
 
             <TabPanels>
@@ -252,7 +252,7 @@ const ReferralKanban = () => {
                       );
                     })
                   ) : (
-                    <EmptyComponent title="No referrals applied" />
+                    <EmptyComponent title="No pending referral requests" />
                   )}
                 </Flex>
               </TabPanel>
@@ -338,7 +338,7 @@ const ReferralKanban = () => {
                       );
                     })
                   ) : (
-                    <EmptyComponent title="No referrals received yet!!" />
+                    <EmptyComponent title="No referrals received yet" />
                   )}
                 </Flex>
               </TabPanel>
