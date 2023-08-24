@@ -112,7 +112,7 @@ export async function POST(req) {
     const addFriendRequestQuery = `
       MATCH (u:User {userId: $userId}), (f:User {userId: $friendId})
       MERGE (u)-[:SENT_FRIEND_REQUEST]->(f)
-      CREATE (u)-[:FOR_JOB_URL{url: $url, applied_on: datetime()}]->(f)
+      MERGE (u)-[:FOR_JOB_URL{url: $url, applied_on: datetime(), asked_to : $friendId}]->(:URLS {nodeId: 1})
     `;
     await session.run(addFriendRequestQuery, {
       userId: sessionAuth.user.id,
