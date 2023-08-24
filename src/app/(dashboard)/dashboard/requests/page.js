@@ -13,16 +13,18 @@ const Page = async () => {
       `
       MATCH (u:User {userId: $userId})<-[:SENT_FRIEND_REQUEST]-(u2:User)
       OPTIONAL MATCH (u2)-[r:FOR_JOB_URL]->(urls:URLS {nodeId: 1}) WHERE r.asked_to = $userId
-      WITH u2, r ORDER BY r.applied_on DESC LIMIT 1
+      WITH u2, r 
+      ORDER BY r.applied_on DESC 
+      WITH u2, COLLECT(r)[0] as latestRelation
       OPTIONAL MATCH (u2)-[:WORKS_AT]->(company:Company)
       RETURN 
-        u2.userId as senderId,  
-        u2.fullname as fullname, 
-        u2.experience as experience, 
-        u2.email as email, 
-        u2.username as username, 
-        company.name as companyName, 
-        r.url as jobURL
+          u2.userId as senderId,  
+          u2.fullname as fullname, 
+          u2.experience as experience, 
+          u2.email as email, 
+          u2.username as username, 
+          company.name as companyName, 
+          latestRelation.url as jobURL
     `,
       { userId: session.user.id }
     )

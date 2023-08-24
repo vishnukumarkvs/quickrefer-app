@@ -7,7 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useEffect } from "react";
 import { Skeleton } from "./ui/skeleton";
 
-const SideBarItem = ({ title, href }) => {
+const SideBarItem = ({ title, href, useAnchor }) => {
   const pathname = usePathname();
 
   return (
@@ -16,9 +16,17 @@ const SideBarItem = ({ title, href }) => {
         pathname === href ? "text-gray-600 bg-white -ml-1 p-1 rounded-md" : ""
       }`}
     >
-      <Link href={href || "/"}>{title}</Link>
+      {useAnchor ? (
+        <a href={href}>{title}</a>
+      ) : (
+        <Link href={href || "/"}>{title}</Link>
+      )}
     </p>
   );
+};
+
+SideBarItem.defaultProps = {
+  useAnchor: false,
 };
 
 const SideBar = () => {
@@ -83,7 +91,11 @@ const SideBar = () => {
             </p>
             <SideBarItem title="Ask for Referral" href="/ask-referral" />
             <SideBarItem title="Referral Status" href="/referral-status" />
-            <SideBarItem title="Chat" href="/dashboard/requests" />
+            <SideBarItem
+              title="Chat"
+              href="/dashboard/requests"
+              useAnchor={true}
+            />
             <SideBarItem
               title="Profile"
               href={`/user/${session.user.jtusername}`}
