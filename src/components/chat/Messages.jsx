@@ -24,20 +24,6 @@ const Messages = ({ sessionId, chatId }) => {
     return format(timestamp, "HH:mm");
   };
 
-  // useEffect(() => {
-  //   const chatRef = ref(db, `chat/${chatId}/messages`);
-  //   const messageHandler = (snapshot) => {
-  //     const message = snapshot.val();
-  //     setMessages((prevMessages) => [message, ...prevMessages]);
-  //   };
-
-  //   onChildAdded(chatRef, messageHandler);
-
-  //   return () => {
-  //     off(chatRef, "child_added", messageHandler);
-  //   };
-  // }, [chatId]);
-
   useEffect(() => {
     const chatRef = ref(db, `chat/${chatId}/messages`);
     const messageHandler = async (snapshot) => {
@@ -86,14 +72,6 @@ const Messages = ({ sessionId, chatId }) => {
                   }
                 )}
               >
-                {/* <span
-                  className={cn("px-4 py-2 rounded-lg inline-block", {
-                    "bg-indigo-600 text-white": isCurrentUser,
-                    "bg-gray-200 text-gray-900": !isCurrentUser,
-                  })}
-                >
-                  {message.text}{" "}
-                </span> */}
                 <span
                   className={cn("px-4 py-2 rounded-lg inline-block", {
                     "bg-indigo-600 text-white": isCurrentUser,

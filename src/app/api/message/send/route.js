@@ -6,14 +6,6 @@ import { nanoid } from "nanoid";
 import { getServerSession } from "next-auth";
 import driver from "@/lib/neo4jClient";
 
-// function linkify(text) {
-//   const urlRegex = /(https?:\/\/[^\s]+)/g;
-//   return text.replace(
-//     urlRegex,
-//     (url) => `<a href="${url}" target="_blank">${url}</a>`
-//   );
-// }
-
 export async function POST(req) {
   try {
     const { text, chatId } = await req.json();
