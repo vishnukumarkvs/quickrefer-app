@@ -1,9 +1,6 @@
 "use client";
 
-import { db } from "@/lib/firebase";
 import { cn } from "@/lib/utils";
-import { format } from "date-fns";
-import { off, onChildAdded, onValue, ref, update } from "firebase/database";
 import { useEffect, useRef, useState } from "react";
 
 // Ref for scrolldown to latest message
@@ -16,36 +13,33 @@ function linkify(inputText) {
 }
 
 const Messages = ({ sessionId, chatId }) => {
-  // direct show to users rather than refresh
   const [messages, setMessages] = useState([]);
+  const [webSocket, setWebSocket] = useState(null);
   const scrollDownRef = useRef(null);
 
-  const formatTimestamp = (timestamp) => {
-    return format(timestamp, "HH:mm");
-  };
-
   useEffect(() => {
-    const chatRef = ref(db, `chat/${chatId}/messages`);
-    const messageHandler = async (snapshot) => {
-      const message = snapshot.val();
-      setMessages((prevMessages) => [message, ...prevMessages]);
+    const ws = new WebSocket(
+      `wss://1hsde5qkbk.execute-api.us-east-1.amazonaws.com/prod?userId=${sessionId}&chatId=${chatId}`
+    );
+    setWebSocket(ws);
 
-      // Check if the message sender is not the current user
-      // and if the message has not been marked as seen
-      if (message.senderId !== sessionId && !message.seen) {
-        // Update the message's seen status
-        const messageRef = ref(db, `chat/${chatId}/messages/${snapshot.key}`);
-        await update(messageRef, { seen: true });
-      }
+    ws.onopen = () => {
+      console.log("WebSocket connected");
     };
 
-    onChildAdded(chatRef, messageHandler);
+    ws.onmessage = (event) => {
+      const receivedMessage = JSON.parse(event.data);
+      setMessages((prevMessages) => [receivedMessage, ...prevMessages]);
+    };
+
+    ws.onclose = () => {
+      console.log("WebSocket closed");
+    };
 
     return () => {
-      off(chatRef, "child_added", messageHandler);
+      ws.close();
     };
   }, [chatId, sessionId]);
-
   return (
     <div
       id="messages"
