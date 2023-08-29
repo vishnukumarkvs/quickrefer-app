@@ -76,8 +76,12 @@ const Page = async ({ params }) => {
           </div>
         </div>
       </div>
-      <Messages sessionId={session.user.id} chatId={params.chatId} />
-      <ChatInput chatId={params.chatId} chatPartner={chatPartner} />
+      <Messages
+        userId={session.user.id}
+        friendId={chatPartnerId}
+        chatId={params.chatId}
+      />
+      {/* <ChatInput chatId={params.chatId} chatPartner={chatPartner} /> */}
     </div>
   );
 };
