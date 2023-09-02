@@ -19,3 +19,12 @@ export function isValidURL(url) {
     /^(https?:\/\/)?(www\.)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/\S*)?$/;
   return urlPattern.test(url);
 }
+
+export function linkify(inputText) {
+  if (!inputText || typeof inputText !== "string") return inputText;
+
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  return inputText.replace(urlRegex, (url) => {
+    return `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`;
+  });
+}

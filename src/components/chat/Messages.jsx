@@ -1,20 +1,11 @@
 "use client";
-
 import { cn } from "@/lib/utils";
 import { useEffect, useRef, useState } from "react";
 import TextAreaAutosize from "react-textarea-autosize";
 import { Button } from "@/components/ui/button";
 import { toast } from "react-hot-toast";
-
-// Ref for scrolldown to latest message
-function linkify(inputText) {
-  if (!inputText || typeof inputText !== "string") return inputText;
-
-  const urlRegex = /(https?:\/\/[^\s]+)/g;
-  return inputText.replace(urlRegex, (url) => {
-    return `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`;
-  });
-}
+import axios from "axios";
+import { linkify } from "@/lib/utils"; // Assume you have your utility functions in a file named utils.js
 
 const Messages = ({ userId, friendId, chatId }) => {
   const [messages, setMessages] = useState([]);
@@ -24,24 +15,39 @@ const Messages = ({ userId, friendId, chatId }) => {
   const textareaRef = useRef(null);
   const scrollDownRef = useRef(null);
 
+  const fetchMessages = async () => {
+    try {
+      const response = await axios.get(
+        `https://rr8ykls1lb.execute-api.us-east-1.amazonaws.com/dev/messages?chatId=${chatId}`
+      );
+      if (response.status === 200) {
+        const data = response.data.map((msg) => ({
+          content: msg.content.S,
+          chatId: msg.chatId.S,
+          senderId: msg.senderId.S,
+          seen: msg.seen.BOOL,
+          timestamp: msg.timestamp.N,
+        }));
+        setMessages(data);
+      } else {
+        throw new Error(`Error! status: ${response.status}`);
+      }
+    } catch (error) {
+      console.error("Error fetching messages:", error);
+    }
+  };
+
   useEffect(() => {
+    fetchMessages();
+
     const ws = new WebSocket(
       `wss://1hsde5qkbk.execute-api.us-east-1.amazonaws.com/prod?userId=${userId}&chatId=${chatId}`
     );
     setWebSocket(ws);
 
-    ws.onopen = () => {
-      console.log("WebSocket connected");
-    };
-
     ws.onmessage = (event) => {
-      console.log(event);
       const receivedMessage = JSON.parse(event.data);
       setMessages((prevMessages) => [receivedMessage, ...prevMessages]);
-    };
-
-    ws.onclose = () => {
-      console.log("WebSocket closed");
     };
 
     return () => {
@@ -50,24 +56,26 @@ const Messages = ({ userId, friendId, chatId }) => {
   }, [chatId, userId]);
 
   const handleSend = () => {
-    if (!input.trim()) return;
-    setIsLoading(true);
-    const payload = {
-      action: "sendMessage",
-      senderId: userId,
-      receiverId: friendId,
-      chatId: chatId,
-      content: input,
-    };
-    if (webSocket && webSocket.readyState === WebSocket.OPEN) {
-      webSocket.send(JSON.stringify(payload));
-    } else {
-      toast.error("Please refresh window and try again.");
+    if (input.trim()) {
+      setIsLoading(true);
+      const payload = {
+        action: "sendMessage",
+        senderId: userId,
+        receiverId: friendId,
+        chatId: chatId,
+        content: input,
+      };
+      if (webSocket && webSocket.readyState === WebSocket.OPEN) {
+        webSocket.send(JSON.stringify(payload));
+        setInput("");
+        textareaRef.current?.focus();
+      } else {
+        toast.error("Please refresh window and try again.");
+      }
+      setIsLoading(false);
     }
-    setInput("");
-    setIsLoading(false);
-    textareaRef.current?.focus();
   };
+
   return (
     <div className="w-full flex flex-col">
       <div
