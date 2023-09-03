@@ -25,7 +25,6 @@ const Messages = ({ userId, friendId, chatId }) => {
           content: msg.content.S,
           chatId: msg.chatId.S,
           senderId: msg.senderId.S,
-          seen: msg.seen.BOOL,
           timestamp: msg.timestamp.N,
         }));
         setMessages(data);

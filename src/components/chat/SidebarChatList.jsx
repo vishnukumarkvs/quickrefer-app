@@ -3,9 +3,6 @@
 import { chatHrefConstructor } from "@/lib/utils";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import UnseenChatToast from "./UnseenChatToast";
-import { toast } from "react-hot-toast";
-import { getUnseenCount, updateSeenStatus } from "@/helperClient/firebase";
 import { Building } from "lucide-react";
 import {
   Tooltip,
@@ -15,6 +12,7 @@ import {
 } from "../ui/tooltip";
 import { Text } from "@chakra-ui/react";
 import Link from "next/link";
+import axios from "axios";
 
 const SidebarChatList = ({ friends: initialFriends, sessionId }) => {
   const router = useRouter();
@@ -28,10 +26,20 @@ const SidebarChatList = ({ friends: initialFriends, sessionId }) => {
       const friendsWithUnseenCounts = await Promise.all(
         initialFriends.map(async (friend) => {
           const chatId = chatHrefConstructor(sessionId, friend.userId);
-          const unseenCount = await getUnseenCount(chatId, sessionId);
+          // console.log("chatId", chatId);
+          // console.log("sessionId", sessionId);
+          const response = await axios.get(
+            `https://rr8ykls1lb.execute-api.us-east-1.amazonaws.com/dev/status/getUnseenCountOfChat?chatId=${chatId}&userId=${sessionId}`
+          );
+          const {
+            data: { seenCount },
+            status,
+          } = response;
+          // console.log("unseen count in response", seenCount);
+
           return {
             ...friend,
-            unseenCount,
+            unseenCount: seenCount,
           };
         })
       );
@@ -41,27 +49,19 @@ const SidebarChatList = ({ friends: initialFriends, sessionId }) => {
     fetchUnseenCounts();
   }, [sessionId, initialFriends]);
 
-  useEffect(() => {
+  useEffect(async () => {
     if (pathname?.includes("chat")) {
       const chatId = pathname.split("/").pop();
-      const chatSenderUserId = chatId.replace(sessionId, "");
 
-      // Since `updateSeenStatus` is asynchronous, wrap it in an async function
-      const updateStatusAndFriends = async () => {
-        await updateSeenStatus(chatId, sessionId); // Update seen status for the current chat
-
-        // Update the `updatedFriends` state
-        setUpdatedFriends((prevFriends) => {
-          return prevFriends.map((friend) =>
-            friend.userId === chatSenderUserId
-              ? { ...friend, unseenCount: 0 }
-              : friend
-          );
-        });
-      };
-
-      // Invoke the function
-      updateStatusAndFriends();
+      console.log("chatId@", chatId);
+      console.log("sessionId@", sessionId);
+      await axios.post(
+        "https://rr8ykls1lb.execute-api.us-east-1.amazonaws.com/dev/status/updateUnseenStatus",
+        {
+          chatId: chatId,
+          receiverId: sessionId,
+        }
+      );
     }
   }, [pathname, sessionId]);
 
