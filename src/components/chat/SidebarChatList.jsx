@@ -49,21 +49,21 @@ const SidebarChatList = ({ friends: initialFriends, sessionId }) => {
     fetchUnseenCounts();
   }, [sessionId, initialFriends]);
 
-  useEffect(async () => {
-    if (pathname?.includes("chat")) {
-      const chatId = pathname.split("/").pop();
+  // useEffect(async () => {
+  //   if (pathname?.includes("chat")) {
+  //     const chatId = pathname.split("/").pop();
 
-      console.log("chatId@", chatId);
-      console.log("sessionId@", sessionId);
-      await axios.post(
-        "https://rr8ykls1lb.execute-api.us-east-1.amazonaws.com/dev/status/updateUnseenStatus",
-        {
-          chatId: chatId,
-          receiverId: sessionId,
-        }
-      );
-    }
-  }, [pathname, sessionId]);
+  //     console.log("chatId@", chatId);
+  //     console.log("sessionId@", sessionId);
+  //     await axios.post(
+  //       "https://rr8ykls1lb.execute-api.us-east-1.amazonaws.com/dev/status/updateUnseenStatus",
+  //       {
+  //         chatId: chatId,
+  //         receiverId: sessionId,
+  //       }
+  //     );
+  //   }
+  // }, [pathname, sessionId]);
 
   const handleChatClick = (clickedUserId) => {
     setUpdatedFriends((prevFriends) =>
