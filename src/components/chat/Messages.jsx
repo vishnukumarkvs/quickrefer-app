@@ -27,6 +27,7 @@ const Messages = ({ userId, friendId, chatId }) => {
           senderId: msg.senderId.S,
           timestamp: msg.timestamp.N,
         }));
+        data.sort((a, b) => parseInt(a.timestamp) - parseInt(b.timestamp));
         setMessages(data);
       } else {
         throw new Error(`Error! status: ${response.status}`);
