@@ -29,7 +29,7 @@ const SideBarItem = ({ title, href, useAnchor = false }) => {
 const SideBar = () => {
   const { data: session, status } = useSession();
   const pathname = usePathname();
-  const [unseenCount, setUnseenCount] = useState(0);
+  const [unseenCount, setUnseenCount] = useState();
   useEffect(() => {
     if (!session?.user?.id) return; // Exit early if session.user.id is not available
 
@@ -102,9 +102,11 @@ const SideBar = () => {
                 href="/dashboard/requests"
                 useAnchor={true}
               />
-              <p className="bg-[#3453b9] rounded-full text-white px-2 ml-2">
-                {unseenCount}
-              </p>
+              {unseenCount > 0 && (
+                <p className="bg-[#3453b9] rounded-full text-white px-2 ml-2">
+                  {unseenCount}
+                </p>
+              )}
             </div>
             {/* <div
               className={`py-1 cursor-pointer hover:text-gray-600 ${

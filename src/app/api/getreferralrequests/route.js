@@ -24,7 +24,7 @@ export async function GET(req) {
 
 `;
 
-  const session = driver.session({ database: "neo4j" });
+  const session = driver.session({ database: process.env.NEO4J_DATABASE });
   try {
     const getResult = await session.executeRead((tx) => {
       const result = tx.run(getReferralRequestsOfUser, {

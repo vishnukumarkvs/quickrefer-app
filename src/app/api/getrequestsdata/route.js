@@ -11,7 +11,7 @@ export async function GET(req) {
       RETURN u2.userId as senderId, u2.fullname as fullname, u2.experience as experience, u2.email as email, u2.username as username, company.name as companyName, r.url as jobURL
   `;
 
-  const session = driver.session({ database: "neo4j" });
+  const session = driver.session({ database: process.env.NEO4J_DATABASE });
   try {
     const getResult = await session.executeRead((tx) => {
       const result = tx.run(getRequestsData, {

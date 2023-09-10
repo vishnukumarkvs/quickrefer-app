@@ -7,7 +7,9 @@ export async function POST(req) {
   const { fullname, phone, address } = await req.json();
 
   try {
-    const neo4jSession = driver.session({ database: "neo4j" });
+    const neo4jSession = driver.session({
+      database: process.env.NEO4J_DATABASE,
+    });
     const query = `
         MATCH (u:User {userId: $userId})
         SET u.fullname = $fullname, u.phone = $phone, u.address = $address 

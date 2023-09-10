@@ -7,7 +7,9 @@ export async function POST(req) {
   const { github, linkedin, blog, portfolio } = await req.json();
 
   try {
-    const neo4jSession = driver.session({ database: "neo4j" });
+    const neo4jSession = driver.session({
+      database: process.env.NEO4J_DATABASE,
+    });
 
     let queryString = `
       MATCH (user:User {userId: $userId}) 

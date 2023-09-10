@@ -7,7 +7,9 @@ export async function POST(req) {
   const { workId } = await req.json();
 
   try {
-    const neo4jSession = driver.session({ database: "neo4j" });
+    const neo4jSession = driver.session({
+      database: process.env.NEO4J_DATABASE,
+    });
     let query = `
     MATCH (user:User {userId: $userId})-[r:HAS_WORK_EXPERIENCE]->(work:WorkExperience {workId: $workId})
     DELETE r, work

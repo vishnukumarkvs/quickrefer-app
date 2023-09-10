@@ -39,7 +39,9 @@ export async function POST(req) {
   }
 
   try {
-    const neo4jSession = driver.session({ database: "neo4j" });
+    const neo4jSession = driver.session({
+      database: process.env.NEO4J_DATABASE,
+    });
     const query = `
         MERGE (u:User {userId: $id})
         ON CREATE SET u.username = $username, u.email = $email, u.userRole = $userRole, u.ReferralScore = 0, u.experience = $experience, u.fullname = $fullname

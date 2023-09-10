@@ -4,10 +4,9 @@ import { pusherServer } from "@/lib/pusher";
 import { chatHrefConstructor, toPusherKey } from "@/lib/utils";
 import { getServerSession } from "next-auth";
 import driver from "@/lib/neo4jClient";
-import { ref, set } from "firebase/database";
-import { nanoid } from "nanoid";
-import { db } from "@/lib/firebase";
-import { messageValidator } from "@/lib/validations/message";
+// import { messageValidator } from "@/lib/validations/message";
+import ddbClient from "@/lib/ddbclient";
+import { PutItemCommand } from "@aws-sdk/client-dynamodb";
 
 const addFriendSchema = z.object({
   id: z.string(),
@@ -50,29 +49,21 @@ export async function POST(req) {
     });
     // console.log("Start2");
 
-    const timestamp = Date.now();
-    const messageData = {
-      id: nanoid(),
-      senderId: idToAdd,
-      text: `Hello, could you kindly consider providing a referral for the job: ${url}. Thank you.`,
-      timestamp: timestamp,
-      seen: false,
-    };
-
-    const message = messageValidator.parse(messageData);
-
+    const currentUnixTimestamp = Math.floor(Date.now() / 1000);
     const chatId = chatHrefConstructor(sessionAuth.user.id, idToAdd);
 
-    await set(ref(db, `chat/${chatId}/messages/${timestamp}`), message)
-      .then(() => {
-        // console.log("Message sent successfully");
-      })
-      .catch((error) => {
-        console.error("Error sending message:", error);
-        throw error; // Propagate the error to the catch block
-      });
+    const messageParams = {
+      TableName: "QrChatMessages3",
+      Item: {
+        chatId: { S: chatId },
+        timestamp: { N: currentUnixTimestamp.toString() },
+        senderId: { S: idToAdd },
+        // receiverId: { S: receiverId },
+        content: { S: content },
+      },
+    };
 
-    // console.log("Start3");
+    await ddbClient.send(new PutItemCommand(messageParams));
 
     return new Response("OK");
   } catch (error) {

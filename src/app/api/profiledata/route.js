@@ -6,7 +6,9 @@ export async function GET(req) {
   const username = url.searchParams.get("username");
 
   try {
-    const neo4jSession = driver.session({ database: "neo4j" });
+    const neo4jSession = driver.session({
+      database: process.env.NEO4J_DATABASE,
+    });
     const query = `
         WITH $username AS username
         MATCH (u:User {username: username})

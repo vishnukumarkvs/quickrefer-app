@@ -5,7 +5,7 @@ import TextAreaAutosize from "react-textarea-autosize";
 import { Button } from "@/components/ui/button";
 import { toast } from "react-hot-toast";
 import axios from "axios";
-import { linkify } from "@/lib/utils"; // Assume you have your utility functions in a file named utils.js
+import { linkify } from "@/lib/utils";
 
 const Messages = ({ userId, friendId, chatId }) => {
   const [messages, setMessages] = useState([]);
