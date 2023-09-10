@@ -4,10 +4,11 @@ import SignOutButton from "@/components/SignOutButton";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Skeleton } from "./ui/skeleton";
+import axios from "axios";
 
-const SideBarItem = ({ title, href, useAnchor }) => {
+const SideBarItem = ({ title, href, useAnchor = false }) => {
   const pathname = usePathname();
 
   return (
@@ -25,19 +26,23 @@ const SideBarItem = ({ title, href, useAnchor }) => {
   );
 };
 
-SideBarItem.defaultProps = {
-  useAnchor: false,
-};
-
 const SideBar = () => {
   const { data: session, status } = useSession();
-  // Use useEffect to perform actions when session changes
-  // useEffect(() => {
-  //   if (status === "authenticated") {
-  //     // Perform any actions you need after authentication
-  //     console.log("Session authenticated:", session);
-  //   }
-  // }, [status, session]);
+  const pathname = usePathname();
+  const [unseenCount, setUnseenCount] = useState(0);
+  useEffect(() => {
+    if (!session?.user?.id) return; // Exit early if session.user.id is not available
+
+    const fetchData = async () => {
+      const response = await axios.get(
+        `https://rr8ykls1lb.execute-api.us-east-1.amazonaws.com/dev/status/getAllUnseen?userId=${session.user.id}`
+      );
+      console.log("response", response);
+      setUnseenCount(response.data.sumSeenCount);
+    };
+
+    fetchData();
+  }, [session?.user?.id]);
   if (status === "loading") {
     return (
       <div className="w-[15%] md:w-[20%] lg:w-[25%] min-w-[200px] max-w-[300px] h-screen p-4 bg-yellow-200">
@@ -91,11 +96,30 @@ const SideBar = () => {
             </p>
             <SideBarItem title="Ask for Referral" href="/ask-referral" />
             <SideBarItem title="Referral Status" href="/referral-status" />
-            <SideBarItem
-              title="Chat"
-              href="/dashboard/requests"
-              useAnchor={true}
-            />
+            <div className="flex items-center">
+              <SideBarItem
+                title="Chat"
+                href="/dashboard/requests"
+                useAnchor={true}
+              />
+              <p className="bg-[#3453b9] rounded-full text-white px-2 ml-2">
+                {unseenCount}
+              </p>
+            </div>
+            {/* <div
+              className={`py-1 cursor-pointer hover:text-gray-600 ${
+                pathname === "/dashboard/requests"
+                  ? "text-gray-600 bg-white -ml-1 p-1 rounded-md"
+                  : ""
+              }`}
+            >
+              <div className="flex justify-center items-center space-x-2">
+                <a href={"/dashboard/requests"}>Chat</a>
+                <p className="bg-[#3453b9] rounded-full text-white px-2">
+                  {unseenCount}
+                </p>
+              </div>
+            </div> */}
             <SideBarItem
               title="Profile"
               href={`/user/${session.user.jtusername}`}

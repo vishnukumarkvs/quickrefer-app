@@ -49,21 +49,31 @@ const SidebarChatList = ({ friends: initialFriends, sessionId }) => {
     fetchUnseenCounts();
   }, [sessionId, initialFriends]);
 
-  // useEffect(async () => {
-  //   if (pathname?.includes("chat")) {
-  //     const chatId = pathname.split("/").pop();
+  useEffect(() => {
+    if (pathname?.includes("chat")) {
+      const chatId = pathname.split("/").pop();
 
-  //     console.log("chatId@", chatId);
-  //     console.log("sessionId@", sessionId);
-  //     await axios.post(
-  //       "https://rr8ykls1lb.execute-api.us-east-1.amazonaws.com/dev/status/updateUnseenStatus",
-  //       {
-  //         chatId: chatId,
-  //         receiverId: sessionId,
-  //       }
-  //     );
-  //   }
-  // }, [pathname, sessionId]);
+      console.log("chatId@", chatId);
+      console.log("sessionId@", sessionId);
+
+      const updateUnseenStatus = async () => {
+        try {
+          await axios.post(
+            "https://rr8ykls1lb.execute-api.us-east-1.amazonaws.com/dev/status/updateSeenStatus",
+            {
+              chatId: chatId,
+              receiverId: sessionId,
+            }
+          );
+          console.log("Unseen status updated successfully");
+        } catch (error) {
+          console.error("Error updating unseen status:", error);
+        }
+      };
+
+      updateUnseenStatus();
+    }
+  }, [pathname, sessionId]);
 
   const handleChatClick = (clickedUserId) => {
     setUpdatedFriends((prevFriends) =>

@@ -28,7 +28,8 @@ const Messages = ({ userId, friendId, chatId }) => {
           timestamp: msg.timestamp.N,
         }));
         data.sort((a, b) => parseInt(a.timestamp) - parseInt(b.timestamp));
-        setMessages(data);
+        // console.log("buhaha", data);
+        setMessages(data); // Reverse the array to show recent messages at the bottom
       } else {
         throw new Error(`Error! status: ${response.status}`);
       }
@@ -47,7 +48,7 @@ const Messages = ({ userId, friendId, chatId }) => {
 
     ws.onmessage = (event) => {
       const receivedMessage = JSON.parse(event.data);
-      setMessages((prevMessages) => [receivedMessage, ...prevMessages]);
+      setMessages((prevMessages) => [...prevMessages, receivedMessage]); // Add the new message at the end
     };
 
     return () => {
@@ -80,7 +81,7 @@ const Messages = ({ userId, friendId, chatId }) => {
     <div className="w-full flex flex-col">
       <div
         id="messages"
-        className="flex h-full flex-1 flex-col-reverse gap-4 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch"
+        className="flex h-full flex-1 flex-col gap-4 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch"
       >
         <div ref={scrollDownRef} />
         {messages &&
