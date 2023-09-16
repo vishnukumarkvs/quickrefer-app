@@ -13,6 +13,12 @@ import { useSession } from "next-auth/react";
 import { Flex, Text, Input, Button } from "@chakra-ui/react";
 import AutoCompleteCompanyName from "@/components/autocomplete/CompanyNameFromList";
 
+const resume_api_url = process.env.NEXT_PUBLIC_RESUME_UPLOAD_URL;
+
+if (!resume_api_url) {
+  console.error("API URL is not defined.");
+}
+
 const skillOptions = [
   { value: "java", label: "java" },
   { value: "python", label: "python" },
@@ -52,10 +58,10 @@ const Page = () => {
 
         // Send the data
         await axios.put(
-          "https://s9u8bu61y6.execute-api.us-east-1.amazonaws.com/dev/upload", // Replace with your API Gateway URL
+          resume_api_url,
           {
             fileData: base64File,
-            userId: session.user.id, // Replace with your user ID
+            userId: session.user.id,
           },
           {
             headers: {

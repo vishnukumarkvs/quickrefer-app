@@ -14,6 +14,14 @@ import { Text } from "@chakra-ui/react";
 import Link from "next/link";
 import axios from "axios";
 
+const get_unseen_of_chat = process.env.NEXT_PUBLIC_GET_UNSEEN_OF_CHAT_URL;
+const update_unseen = process.env.NEXT_PUBLIC_UPDATE_UNSEEN_URL;
+if (!get_unseen_of_chat || !update_unseen) {
+  console.error(
+    "NEXT_PUBLIC_GET_UNSEEN_OF_CHAT_URL and NEXT_PUBLIC_UPDATE_UNSEEN_URL is not defined"
+  );
+}
+
 const SidebarChatList = ({ friends: initialFriends, sessionId }) => {
   const router = useRouter();
   const pathname = usePathname();
@@ -29,7 +37,7 @@ const SidebarChatList = ({ friends: initialFriends, sessionId }) => {
           // console.log("chatId", chatId);
           // console.log("sessionId", sessionId);
           const response = await axios.get(
-            `https://rr8ykls1lb.execute-api.us-east-1.amazonaws.com/dev/status/getUnseenCountOfChat?chatId=${chatId}&userId=${sessionId}`
+            `${get_unseen_of_chat}?chatId=${chatId}&userId=${sessionId}`
           );
           const {
             data: { seenCount },
@@ -58,13 +66,10 @@ const SidebarChatList = ({ friends: initialFriends, sessionId }) => {
 
       const updateUnseenStatus = async () => {
         try {
-          await axios.post(
-            "https://rr8ykls1lb.execute-api.us-east-1.amazonaws.com/dev/status/updateSeenStatus",
-            {
-              chatId: chatId,
-              receiverId: sessionId,
-            }
-          );
+          await axios.post(`${update_unseen}`, {
+            chatId: chatId,
+            receiverId: sessionId,
+          });
           console.log("Unseen status updated successfully");
         } catch (error) {
           console.error("Error updating unseen status:", error);

@@ -7,6 +7,12 @@ import { Upload } from "lucide-react";
 import { Button } from "./ui/button";
 import toast from "react-hot-toast";
 
+const resume_api_url = process.env.NEXT_PUBLIC_RESUME_UPLOAD_URL;
+
+if (!resume_api_url) {
+  console.error("API URL is not defined.");
+}
+
 const ResumeUpload = () => {
   const { data: session, update } = useSession();
   const [file, setFile] = useState(null);
@@ -34,7 +40,7 @@ const ResumeUpload = () => {
         const fileExtension = file.name.split(".").pop();
 
         await axios.put(
-          "https://s9u8bu61y6.execute-api.us-east-1.amazonaws.com/dev/upload",
+          resume_api_url,
           {
             fileData: base64File,
             userId: session.user.id,

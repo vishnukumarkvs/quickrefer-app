@@ -6,6 +6,16 @@ import { Button } from "@/components/ui/button";
 import { toast } from "react-hot-toast";
 import axios from "axios";
 import { linkify } from "@/lib/utils";
+import { get } from "firebase/database";
+
+chat_websocket_url = process.env.NEXT_PUBLIC_CHAT_WEBSOCKET_URL;
+get_messages_url = process.env.NEXT_PUBLIC_GET_CHAT_MESSAGES_URL;
+
+if (!chat_websocket_url || !get_messages_url) {
+  console.error(
+    "API URL is not defined. Please define NEXT_PUBLIC_CHAT_WEBSOCKET_URL and NEXT_PUBLIC_GET_CHAT_MESSAGES_URL in .env"
+  );
+}
 
 const Messages = ({ userId, friendId, chatId }) => {
   const [messages, setMessages] = useState([]);
@@ -17,9 +27,7 @@ const Messages = ({ userId, friendId, chatId }) => {
 
   const fetchMessages = async () => {
     try {
-      const response = await axios.get(
-        `https://rr8ykls1lb.execute-api.us-east-1.amazonaws.com/dev/messages?chatId=${chatId}`
-      );
+      const response = await axios.get(`${get_messages_url}?chatId=${chatId}`);
       if (response.status === 200) {
         const data = response.data.map((msg) => ({
           content: msg.content.S,
@@ -42,7 +50,7 @@ const Messages = ({ userId, friendId, chatId }) => {
     fetchMessages();
 
     const ws = new WebSocket(
-      `wss://2n2odqalpa.execute-api.us-east-1.amazonaws.com/dev?userId=${userId}&chatId=${chatId}`
+      `${chat_websocket_url}?userId=${userId}&chatId=${chatId}`
     );
     setWebSocket(ws);
 

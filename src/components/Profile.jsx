@@ -6,6 +6,13 @@ import { Button } from "@/components/ui/button";
 import dynamic from "next/dynamic";
 import * as DOMPurify from "dompurify";
 
+const cloudfront_url = process.env.NEXT_PUBLIC_CLOUDFRONT_URL;
+if (!cloudfront_url) {
+  console.error(
+    "API URL is not defined. Please define NEXT_PUBLIC_CLOUDFRONT_URL in .env"
+  );
+}
+
 import {
   Dialog,
   DialogClose,
@@ -225,53 +232,53 @@ const PersonalDetails = ({ data, openPersonal, setOpenPersonal }) => {
             setOpenLinkTree={setOpenLinkTree}
           />
         </Flex>
-        <div class="w-full bg-white shadow-lg rounded-lg px-4 py-2 mx-auto">
-          <div class="grid grid-cols-2 items-center">
-            <p class="text-md font-medium mr-2">Full Name</p>
-            <p class="text-md">{data.fullname}</p>
+        <div className="w-full bg-white shadow-lg rounded-lg px-4 py-2 mx-auto">
+          <div className="grid grid-cols-2 items-center">
+            <p className="text-md font-medium mr-2">Full Name</p>
+            <p className="text-md">{data.fullname}</p>
           </div>
 
-          <div class="grid grid-cols-2 items-center">
-            <p class="text-md font-medium mr-2">Email</p>
-            <p class="text-md ">{data.email}</p>
+          <div className="grid grid-cols-2 items-center">
+            <p className="text-md font-medium mr-2">Email</p>
+            <p className="text-md ">{data.email}</p>
           </div>
 
-          <div class="grid grid-cols-2 items-center">
-            <p class="text-md font-medium mr-2">Phone</p>
-            <p class="text-md ">{data.phone}</p>
+          <div className="grid grid-cols-2 items-center">
+            <p className="text-md font-medium mr-2">Phone</p>
+            <p className="text-md ">{data.phone}</p>
           </div>
 
-          <div class="grid grid-cols-2 items-center">
-            <p class="text-md font-medium mr-2">Location</p>
-            <p class="text-md ">
+          <div className="grid grid-cols-2 items-center">
+            <p className="text-md font-medium mr-2">Location</p>
+            <p className="text-md ">
               {data.location.includes("null") ? "" : data.location}
             </p>
           </div>
 
-          <div class="grid grid-cols-2 items-center">
-            <p class="text-md font-medium mr-2">Current Job Role</p>
-            <p class="text-md">{data.currentJobRole}</p>
+          <div className="grid grid-cols-2 items-center">
+            <p className="text-md font-medium mr-2">Current Job Role</p>
+            <p className="text-md">{data.currentJobRole}</p>
           </div>
-          <div class="grid grid-cols-2 items-center">
-            <p class="text-md font-medium mr-2">Current Company</p>
-            <p class="text-md">{data.company}</p>
+          <div className="grid grid-cols-2 items-center">
+            <p className="text-md font-medium mr-2">Current Company</p>
+            <p className="text-md">{data.company}</p>
           </div>
 
-          <div class="grid grid-cols-2 items-center">
-            <p class="text-md font-medium mr-2">Experience</p>
-            <p class="text-md ">
+          <div className="grid grid-cols-2 items-center">
+            <p className="text-md font-medium mr-2">Experience</p>
+            <p className="text-md ">
               {data.experience} <span className="pl-1">yrs</span>
             </p>
           </div>
 
-          {/* <div class="grid grid-cols-2 items-center">
-            <p class="text-md font-medium mr-2">Salary (in LPA)</p>
-            <p class="text-md ">{data.salary}</p>
+          {/* <div className="grid grid-cols-2 items-center">
+            <p className="text-md font-medium mr-2">Salary (in LPA)</p>
+            <p className="text-md ">{data.salary}</p>
           </div>
 
-          <div class="grid grid-cols-2 items-center">
-            <p class="text-md font-medium mr-2">Notice Period (in days)</p>
-            <p class="text-md ">{data.noticePeriod}</p>
+          <div className="grid grid-cols-2 items-center">
+            <p className="text-md font-medium mr-2">Notice Period (in days)</p>
+            <p className="text-md ">{data.noticePeriod}</p>
           </div> */}
         </div>
 
@@ -577,7 +584,7 @@ const Profile = ({ username }) => {
   if (status === "loading") {
     return <PageLoader />;
   }
-  let resumeUrl = `https://d1b9e92isytfe8.cloudfront.net/${session.user.id}.pdf`;
+  let resumeUrl = `${cloudfront_url}/${session.user.id}.pdf`;
 
   if (isLoading) {
     return (

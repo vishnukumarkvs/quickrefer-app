@@ -7,6 +7,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useEffect, useState } from "react";
 import { Skeleton } from "./ui/skeleton";
 import axios from "axios";
+import { get } from "firebase/database";
+
+const get_all_unseen = process.env.NEXT_PUBLIC_GET_ALL_UNSEEN_URL;
+if (!get_all_unseen) {
+  console.error("NEXT_PUBLIC_GET_ALL_UNSEEN_URL is not defined");
+}
 
 const SideBarItem = ({ title, href, useAnchor = false }) => {
   const pathname = usePathname();
@@ -35,7 +41,7 @@ const SideBar = () => {
 
     const fetchData = async () => {
       const response = await axios.get(
-        `https://rr8ykls1lb.execute-api.us-east-1.amazonaws.com/dev/status/getAllUnseen?userId=${session.user.id}`
+        `${get_all_unseen}?userId=${session.user.id}`
       );
       console.log("response", response);
       setUnseenCount(response.data.sumSeenCount);

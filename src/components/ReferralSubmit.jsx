@@ -8,6 +8,11 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { useSession } from "next-auth/react";
 
+const referral_submit_url = process.env.NEXT_PUBLIC_REFERRAL_SUBMIT_URL;
+if (!referral_submit_url) {
+  console.error("NEXT_PUBLIC_REFERRAL_SUBMIT_URL is not defined");
+}
+
 const ReferralSubmit = ({ options }) => {
   const { data: session, status } = useSession();
   const [url, setUrl] = useState("");
@@ -17,10 +22,11 @@ const ReferralSubmit = ({ options }) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post(
-        "https://e80yu93nsk.execute-api.us-east-1.amazonaws.com/dev/referralSubmit",
-        { url: url, company: company.value, targetUserId: session.user.id }
-      );
+      const response = await axios.post(`${referral_submit_url}`, {
+        url: url,
+        company: company.value,
+        targetUserId: session.user.id,
+      });
       toast.success("Referral submitted successfully");
     } catch (err) {
       console.error(err);

@@ -6,6 +6,13 @@ import { Button } from "@/components/ui/button";
 import dynamic from "next/dynamic";
 import * as DOMPurify from "dompurify";
 
+const cloudfront_url = process.env.NEXT_PUBLIC_CLOUDFRONT_URL;
+if (!cloudfront_url) {
+  console.error(
+    "API URL is not defined. Please define NEXT_PUBLIC_CLOUDFRONT_URL in .env"
+  );
+}
+
 import {
   Accordion,
   AccordionContent,
@@ -569,7 +576,7 @@ const ProfilePlane = ({ username }) => {
     return <div>Error: {error.message}</div>;
   }
 
-  let resumeUrl = `https://d1b9e92isytfe8.cloudfront.net/${data.userId}.pdf`;
+  let resumeUrl = `${cloudfront_url}/${data.userId}.pdf`;
 
   return (
     <div className="w-[95%] h-full mx-auto">
