@@ -92,7 +92,7 @@ const getGoogleCredentials = () => {
 const authorizeCredentials = async (credentials) => {
   // Use secondary index GSI1 to fetch the user by email
   const params = {
-    TableName: "Users",
+    TableName: process.env.DDB_USERS_TABLE,
     IndexName: "GSI1",
     KeyConditionExpression: "GSI1PK = :partitionValue AND GSI1SK = :sortValue",
     ExpressionAttributeValues: {
@@ -135,7 +135,7 @@ const authorizeCredentials = async (credentials) => {
 
 const jwtCallback = async ({ token, user, session, trigger }) => {
   const params = {
-    TableName: "Users",
+    TableName: process.env.DDB_USERS_TABLE,
     Key: {
       pk: { S: `USER#${token.id}` },
       sk: { S: `USER#${token.id}` },
@@ -166,7 +166,7 @@ const jwtCallback = async ({ token, user, session, trigger }) => {
     dbUser.isResume = false;
 
     const putParams = {
-      TableName: "Users",
+      TableName: process.env.DDB_USERS_TABLE,
       Item: marshall(dbUser),
     };
 
@@ -207,7 +207,7 @@ const sessionCallback = ({ session, token }) => {
 
 export const authOptions = {
   adapter: DynamoDBAdapter(cclient, {
-    tableName: "Users",
+    tableName: process.env.DDB_USERS_TABLE,
   }),
   session: {
     strategy: "jwt",

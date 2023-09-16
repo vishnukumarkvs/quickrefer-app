@@ -16,7 +16,7 @@ export async function POST(req) {
 
   try {
     const paramsUpdate = {
-      TableName: "Users",
+      TableName: process.env.DDB_USERS_TABLE,
       Key: {
         pk: { S: `USER#${id}` }, // replace 'userPK' and 'userSK' with actual values
         sk: { S: `USER#${id}` },

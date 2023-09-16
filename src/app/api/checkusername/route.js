@@ -9,7 +9,7 @@ export async function POST(req) {
   }
 
   const params = {
-    TableName: "Users",
+    TableName: process.env.DDB_USERS_TABLE,
     IndexName: "jtusername-index",
     KeyConditionExpression: "jtusername = :input",
     ExpressionAttributeValues: {

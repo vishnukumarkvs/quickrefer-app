@@ -10,7 +10,7 @@ export async function POST(req) {
   try {
     // Check if user already exists in DynamoDB
     const params = {
-      TableName: "Users",
+      TableName: process.env.DDB_USERS_TABLE,
       IndexName: "GSI1",
       KeyConditionExpression:
         "GSI1PK = :partitionValue AND GSI1SK = :sortValue",
@@ -46,7 +46,7 @@ export async function POST(req) {
 
     // Save user to DynamoDB
     const createUserCommand = new PutItemCommand({
-      TableName: "Users",
+      TableName: process.env.DDB_USERS_TABLE,
       Item: marshall(user),
     });
 

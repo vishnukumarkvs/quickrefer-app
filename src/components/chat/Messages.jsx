@@ -42,7 +42,7 @@ const Messages = ({ userId, friendId, chatId }) => {
     fetchMessages();
 
     const ws = new WebSocket(
-      `wss://1hsde5qkbk.execute-api.us-east-1.amazonaws.com/prod?userId=${userId}&chatId=${chatId}`
+      `wss://2n2odqalpa.execute-api.us-east-1.amazonaws.com/dev?userId=${userId}&chatId=${chatId}`
     );
     setWebSocket(ws);
 
