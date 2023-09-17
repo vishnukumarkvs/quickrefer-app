@@ -8,8 +8,8 @@ import axios from "axios";
 import { linkify } from "@/lib/utils";
 import { get } from "firebase/database";
 
-chat_websocket_url = process.env.NEXT_PUBLIC_CHAT_WEBSOCKET_URL;
-get_messages_url = process.env.NEXT_PUBLIC_GET_CHAT_MESSAGES_URL;
+const chat_websocket_url = process.env.NEXT_PUBLIC_CHAT_WEBSOCKET_URL;
+const get_messages_url = process.env.NEXT_PUBLIC_GET_CHAT_MESSAGES_URL;
 
 if (!chat_websocket_url || !get_messages_url) {
   console.error(
@@ -68,7 +68,7 @@ const Messages = ({ userId, friendId, chatId }) => {
     if (input.trim()) {
       setIsLoading(true);
       const payload = {
-        action: "sendMessage",
+        action: "sendmessage",
         senderId: userId,
         receiverId: friendId,
         chatId: chatId,
