@@ -25,6 +25,6 @@ export function linkify(inputText) {
 
   const urlRegex = /(https?:\/\/[^\s]+)/g;
   return inputText.replace(urlRegex, (url) => {
-    return `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`;
+    return `<a href="${url}" target="_blank" rel="noopener noreferrer" style="color: blue;">${url}</a>`;
   });
 }

@@ -52,6 +52,8 @@ export async function POST(req) {
     const currentUnixTimestamp = Math.floor(Date.now() / 1000);
     const chatId = chatHrefConstructor(sessionAuth.user.id, idToAdd);
 
+    let content = `Hello, could you kindly consider providing a referral for the job: ${url}. Thank you.`;
+
     const messageParams = {
       TableName: "QrChatMessages3",
       Item: {
