@@ -1,6 +1,6 @@
 export const companies = {
   Innovacer: "https://innovaccer.com/careers/#open-positions",
-  Delliot: "https://www2.deloitte.com/global/en/careers/job-search.html",
+  Deloitte: "https://www2.deloitte.com/global/en/careers/job-search.html",
   JPMorgan: "https://careers.jpmorgan.com/us/en/home",
   WellsFargo: "https://www.wellsfargo.com/about/careers/",
   Pocketly: "https://www.pocketly.in/contact",
