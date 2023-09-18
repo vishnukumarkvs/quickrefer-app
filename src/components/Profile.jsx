@@ -614,18 +614,30 @@ const Profile = ({ username }) => {
         <div className="flex flex-col justify-start items-center">
           <ResumeUpload />
           {session.user.isResume ? (
-            <object data={resumeUrl} type="application/pdf" width="100%">
-              <p className="my-2">
-                Link to the{" "}
-                <a
-                  className="text-blue-800 underline cursor-pointer"
-                  href={resumeUrl}
-                  target="_blank"
-                >
-                  resume!
-                </a>
-              </p>
-            </object>
+            // <object data={resumeUrl} type="application/pdf" width="100%">
+            //   <p className="my-2">
+            //     Link to the{" "}
+            //     <a
+            //       className="text-blue-800 underline cursor-pointer"
+            //       href={resumeUrl}
+            //       target="_blank"
+            //     >
+            //       resume!
+            //     </a>
+            //   </p>
+            // </object>
+            <iframe
+              className="mt-3"
+              src={resumeUrl}
+              width="100%"
+              height="500px"
+            >
+              Sorry, your browser doesn{"'"}t support embedded PDFs. Please{" "}
+              <a target="_blank" href={resumeUrl}>
+                download the PDF
+              </a>{" "}
+              to view it.
+            </iframe>
           ) : (
             <p className="my-2">Upload your resume to view it here!</p>
           )}
