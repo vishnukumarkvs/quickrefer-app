@@ -23,7 +23,6 @@ const Messages = ({ userId, friendId, chatId }) => {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const textareaRef = useRef(null);
-  const scrollDownRef = useRef(null);
 
   const fetchMessages = async () => {
     try {
@@ -85,13 +84,23 @@ const Messages = ({ userId, friendId, chatId }) => {
     }
   };
 
+  const chatContainerRef = useRef(null);
+
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current.scrollHeight;
+    }
+  }, [messages]);
+
   return (
-    <div className="w-full flex flex-col">
+    <div className="w-full h-full flex flex-col">
       <div
         id="messages"
-        className="flex h-full flex-1 flex-col gap-4 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch"
+        ref={chatContainerRef}
+        className="flex flex-1 flex-col gap-4 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch"
       >
-        <div ref={scrollDownRef} />
+        <div />
         {messages &&
           messages.map((message) => {
             const isCurrentUser = message.senderId === userId;
@@ -128,7 +137,7 @@ const Messages = ({ userId, friendId, chatId }) => {
             );
           })}
       </div>
-      <div className="border-t border-gray-200 px-4 pt-4 mb-6 ">
+      <div className="border-t border-gray-200 px-4 pt-4 mb-8">
         <div className="relative flex-1 overflow-hidden rounded-lg shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
           <TextAreaAutosize
             ref={textareaRef}

@@ -33,7 +33,7 @@ const Layout = async ({ children }) => {
     <div className={`bg-[#fbf9f0] flex`}>
       <main className="flex-grow">
         <div className="w-full flex min-h-screen max-h-screen overflow-hidden">
-          <div className="flex min-h-full w-full max-w-xs grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6">
+          <div className="flex max-h-screen w-full max-w-xs grow flex-col gap-y-5 overflow-y-hidden border-r border-gray-200 bg-white px-6">
             <Link href="/dashboard" className="flex h-16 shrink-0 items-center">
               <Icons.Logo className="h-8 w-auto text-indigo-600" />
             </Link>
@@ -66,7 +66,7 @@ const Layout = async ({ children }) => {
               </ul>
             </nav>
           </div>
-          <aside className="min-h-full overflow-auto container py-16 md:py-12 w-full">
+          <aside className="max-h-screen overflow-hidden container py-4 w-full">
             {children}
           </aside>
         </div>
