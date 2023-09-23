@@ -58,6 +58,7 @@ import { useSession } from "next-auth/react";
 import PageLoader from "./PageLoader";
 import { Flex, Heading, Text } from "@chakra-ui/react";
 import SocialButtons from "./profile/SocialLinks";
+import AutoCompleteCompanyName from "./autocomplete/CompanyNameFromList";
 
 // import Select from "react-select";
 
@@ -126,59 +127,41 @@ const PersonalDetails = ({ data, openPersonal, setOpenPersonal }) => {
                 </DialogHeader>
                 <form onSubmit={handleSubmitPersonal(onSubmit)}>
                   <div className="grid gap-4 py-4">
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="fullname" className="text-right">
-                        Full Name
-                      </Label>
+                    <div className="flex flex-col gap-2">
+                      <Label htmlFor="fullname">Full Name</Label>
                       <Input
                         id="fullname"
                         className="col-span-3"
                         {...registerPersonal("fullname")}
                       />
                     </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="phone" className="text-right">
-                        Phone
-                      </Label>
+                    <div className="flex flex-col gap-2">
+                      <Label htmlFor="phone">Phone</Label>
                       <Input
                         id="phone"
                         className="col-span-3"
                         {...registerPersonal("phone")}
                       />
                     </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="location" className="text-right">
-                        Location
-                      </Label>
-                      <div className="w-[280px]">
-                        <AsyncLocationSelect
-                          control={controlPersonal}
-                          name="location"
-                        />
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="currentJobRole" className="text-right">
-                        Current Job Role
-                      </Label>
+
+                    <div className="flex flex-col gap-2">
+                      <Label htmlFor="currentJobRole">Current Job Role</Label>
                       <Input
                         id="currentJobRole"
                         className="col-span-3"
                         {...registerPersonal("currentJobRole")}
                       />
                     </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="company" className="text-right">
-                        Current Company
-                      </Label>
-                      <Input
-                        id="company"
-                        className="col-span-3"
-                        {...registerPersonal("company")}
+                    <div className="flex flex-col gap-2">
+                      <Label htmlFor="company">Current Company</Label>
+                      <AutoCompleteCompanyName
+                        onSelect={(val) => {
+                          setValue("company", val);
+                        }}
                       />
                     </div>
                     {/* <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="salary" className="text-right">
+                    <Label htmlFor="salary" >
                       Salary <br /> (in LPA)
                     </Label>
                     <Input
@@ -188,10 +171,8 @@ const PersonalDetails = ({ data, openPersonal, setOpenPersonal }) => {
                       {...registerPersonal("salary")}
                     /> 
                   </div> */}
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="experience" className="text-right">
-                        Experience <br /> (in yrs)
-                      </Label>
+                    <div className="flex flex-col gap-2">
+                      <Label htmlFor="experience">Experience (in yrs)</Label>
                       <Input
                         id="experience"
                         type="number"
@@ -201,8 +182,17 @@ const PersonalDetails = ({ data, openPersonal, setOpenPersonal }) => {
                         {...registerPersonal("experience")}
                       />
                     </div>
+                    <div className="flex flex-col gap-2">
+                      <Label htmlFor="location">Location</Label>
+                      <div className="w-[280px]">
+                        <AsyncLocationSelect
+                          control={controlPersonal}
+                          name="location"
+                        />
+                      </div>
+                    </div>
                     {/* <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="noticePeriod" className="text-right">
+                    <Label htmlFor="noticePeriod" >
                       Notice Period <br />
                       (in days)
                     </Label>

@@ -58,6 +58,12 @@ const AutoCompleteCompanyName = ({ onSelect }) => {
     setShowResults(true);
   };
 
+  useEffect(() => {
+    if (!loading && showResults && results?.length === 0) {
+      handleSelect(query);
+    }
+  }, [results]);
+
   return (
     <Box ref={wrapperRef} position="relative">
       <Input
