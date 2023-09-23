@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react";
 import { Upload } from "lucide-react";
 import { Button } from "./ui/button";
 import toast from "react-hot-toast";
+import { FileUpload } from "@/lib/file-upload";
 
 const resume_api_url = process.env.NEXT_PUBLIC_RESUME_UPLOAD_URL;
 
@@ -31,50 +32,30 @@ const ResumeUpload = () => {
       toast.error("Please select a file first");
       return;
     }
+    if (file.type !== "application/pdf") {
+      toast.error("Please select a pdf file");
+      return;
+    }
     setIsLoading(true);
-    const reader = new FileReader();
-
-    reader.onload = async () => {
-      try {
-        const base64File = reader.result.split(",")[1];
-        const fileExtension = file.name.split(".").pop();
-
-        await axios.put(
-          resume_api_url,
-          {
-            fileData: base64File,
-            userId: session.user.id,
-          },
-          {
-            headers: {
-              "file-extension": fileExtension,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-
+    FileUpload(file)
+      .then(async (res) => {
+        setIsLoading(false);
         if (!session.user.isResume) {
           update({ isResume: true });
           await axios.post("/api/updateresume", { isResume: true });
         }
-
-        toast.success("File uploaded successfully");
-
         // Reset the input field value
         if (fileInputRef.current) {
           fileInputRef.current.value = "";
           setFile(null); // clear the file state too
           setFileName(""); // clear the filename state
         }
-      } catch (error) {
-        toast.error("Error uploading file");
-        console.error("here is the error", error);
-      } finally {
+        toast.success("File uploaded successfully");
+      })
+      .catch((err) => {
         setIsLoading(false);
-      }
-    };
-
-    reader.readAsDataURL(file);
+        toast.error("Error uploading file");
+      });
   };
 
   return (
@@ -84,6 +65,7 @@ const ResumeUpload = () => {
           ref={fileInputRef} // Attach the reference to the input
           type="file"
           onChange={onFileChange}
+          accept=".pdf"
           className="flex-1 px-4 py-2 border rounded-lg shadow-md focus:outline-none focus:ring focus:border-blue-300"
         />
         <Button onClick={onFileUpload} variant="ghost" isLoading={isLoading}>
