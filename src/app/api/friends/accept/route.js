@@ -38,6 +38,7 @@ export async function POST(req) {
       MERGE (f)-[r2:FRIENDS_WITH {initiator: $friendId}]->(u)
       WITH u, f
       MATCH (f)-[sent:SENT_FRIEND_REQUEST]->(u)
+      SET u.AcceptScore = COALESCE(u.AcceptScore, 0) + 1
       DELETE sent
     `;
 
