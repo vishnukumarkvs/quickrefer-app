@@ -100,7 +100,9 @@ const Page = () => {
         exp: data.exp,
       });
       update({ jtusername: username, userNew: false });
-      toast.success("Profile updated successfully");
+      toast.success(
+        "Profile updated successfully, all the best for your job search"
+      );
       router.push("/ask-referral");
       console.log("successfully routed");
     } catch (err) {
@@ -110,6 +112,16 @@ const Page = () => {
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
+      <Text
+        fontSize={"lg"}
+        fontWeight={500}
+        textAlign={"center"}
+        py="5"
+        px="2"
+        bg="#ffc800e5"
+      >
+        Complete your profile for better referrals and community.
+      </Text>
       <Flex
         direction={"column"}
         gap="3"
