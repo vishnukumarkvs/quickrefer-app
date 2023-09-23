@@ -120,7 +120,7 @@ const Page = () => {
         px="2"
         bg="#ffc800e5"
       >
-        Complete your profile for better referrals and community.
+        Complete Your Profile - Let's Get Started!
       </Text>
       <Flex
         direction={"column"}
