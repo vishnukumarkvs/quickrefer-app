@@ -56,7 +56,7 @@ const UniqueUsernameInput = ({ onUsernameChange, onUsernameTakenChange }) => {
         value={username}
         onChange={handleUsernameChange}
         onBlur={handleBlur}
-        placeholder="johndoe"
+        // placeholder="johndoe"
         required
         disabled={isChecking}
       />
