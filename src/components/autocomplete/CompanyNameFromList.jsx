@@ -69,6 +69,7 @@ const AutoCompleteCompanyName = ({ onSelect }) => {
       <Input
         bg="white"
         value={query}
+        required
         onChange={handleChange}
         // placeholder="Search for a company"
         onClick={handleClick}

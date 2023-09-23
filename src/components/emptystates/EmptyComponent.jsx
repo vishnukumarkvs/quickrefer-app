@@ -1,6 +1,7 @@
 "use client";
 
 import { Flex, Text } from "@chakra-ui/react";
+import Image from "next/image";
 
 const EmptyComponent = ({ title }) => {
   return (
@@ -15,7 +16,7 @@ const EmptyComponent = ({ title }) => {
       boxShadow={"md"}
       borderRadius={"md"}
     >
-      <img height={"200px"} width={"200px"} src="/empty-box.png" alt="empty" />
+      <Image height={200} width={200} src="/empty-box.png" alt="empty" />
       <Text width={"40%"} textAlign={"center"} fontSize="xl" color="gray.500">
         {title || "No data found"}
       </Text>

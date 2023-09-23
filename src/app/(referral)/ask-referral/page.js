@@ -180,7 +180,7 @@ const Page = () => {
         ) : (
           users &&
           users.length === 0 && (
-            <EmptyComponent title="We are onboarding more referers from 150+ companies very soon, please wait or explore other compnaies." />
+            <EmptyComponent title="We are onboarding referers from 150+ companies very soon, please wait or try for different company." />
           )
         )}
       </div>

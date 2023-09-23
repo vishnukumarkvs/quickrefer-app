@@ -37,46 +37,10 @@ const Page = () => {
     formState: { isSubmitting },
   } = useForm();
   const [username, setUsername] = useState("");
-  const [isUsernameTaken, setIsUsernameTaken] = useState(false);
-  const [selectedSkills, setSelectedSkills] = useState([]);
+  const [isUsernameTaken, setIsUsernameTaken] = useState(true);
+  // const [selectedSkills, setSelectedSkills] = useState([]);
 
-  const [file, setFile] = useState(null);
-  const [fileName, setFileName] = useState("");
-
-  const onFileChange = (event) => {
-    setFile(event.target.files[0]);
-    setFileName(event.target.files[0].name);
-  };
-
-  const onFileUpload = async () => {
-    try {
-      const reader = new FileReader();
-
-      reader.onload = async () => {
-        const base64File = reader.result.split(",")[1];
-        const fileExtension = file.name.split(".").pop();
-
-        // Send the data
-        await axios.put(
-          resume_api_url,
-          {
-            fileData: base64File,
-            userId: session.user.id,
-          },
-          {
-            headers: {
-              "file-extension": fileExtension,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-      };
-
-      reader.readAsDataURL(file);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const isSubmitDisabled = username === "" || isUsernameTaken;
 
   const handleUsernameChange = (newUsername) => {
     setUsername(newUsername);
@@ -87,10 +51,6 @@ const Page = () => {
   };
 
   const onSubmit = async (data) => {
-    // console.log(data);
-    // if (file) {
-    //   await onFileUpload(); // Upload the file before form submission
-    // }
     try {
       await axios.post("/api/newusersubmit/user", {
         username: username,
@@ -120,7 +80,7 @@ const Page = () => {
         px="2"
         bg="#ffc800e5"
       >
-        Complete Your Profile - Let's Get Started!
+        Complete Your Profile - Lets Get Started!
       </Text>
       <Flex
         direction={"column"}
@@ -220,7 +180,12 @@ const Page = () => {
           accept=".pdf"
           className="flex-1 px-4 py-2 border rounded-lg  focus:outline-none focus:ring focus:border-blue-300"
         /> */}
-        <Button isLoading={isSubmitting} type="submit" className="mt-4">
+        <Button
+          isLoading={isSubmitting}
+          isDisabled={isSubmitDisabled}
+          type="submit"
+          className="mt-4"
+        >
           Submit
         </Button>
       </Flex>
