@@ -2,7 +2,6 @@
 import { authOptions } from "@/lib/auth";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getServerSession } from "next-auth";
-import { NextResponse } from "next/server";
 
 const client = new S3Client({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -17,14 +16,11 @@ export async function POST(req) {
     const file = data.get("file");
 
     if (!session.user) {
-      return NextResponse.json(
-        { message: "Not authenticated" },
-        { status: 401 }
-      );
+      return new Response("Unauthorized", { status: 401 });
     }
 
     if (!file) {
-      return NextResponse.json({ message: "File not found" }, { status: 400 });
+      return new Response("File not found", { status: 400 });
     }
 
     const key = `${session.user.id}.pdf`;
@@ -45,14 +41,11 @@ export async function POST(req) {
 
     const fileUrl = `s3://${process.env.AWS_BUCKET_NAME}/${key}`;
 
-    return NextResponse.json({ fileUrl });
+    return new Response({ fileUrl });
   } catch (error) {
     console.error(error);
-    return NextResponse.json(
-      { message: "Error uploading file" },
-      {
-        status: 500,
-      }
-    );
+    return new Response("Error uploading file", {
+      status: 500,
+    });
   }
 }

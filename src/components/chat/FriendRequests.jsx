@@ -89,7 +89,7 @@ const FriendRequests = ({ incomingFriendRequests, sessionId }) => {
                 <TableCell>{friendRequest.experience}</TableCell>
                 <TableCell>
                   <Link
-                    href={`http://localhost:3000/user/${friendRequest.username}`}
+                    href={`/user/${friendRequest.username}`}
                     target="_blank"
                     className="text-blue-500"
                   >

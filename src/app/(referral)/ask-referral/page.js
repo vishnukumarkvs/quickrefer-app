@@ -2,7 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import Select from "react-select";
+// import Select from "react-select";
+import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -20,7 +21,7 @@ import AddFriendButton from "@/components/chat/AddFriendButton";
 import toast from "react-hot-toast";
 import { BeatLoader } from "react-spinners";
 import { Flex, Input } from "@chakra-ui/react";
-import AsyncSelect from "react-select/async";
+// import AsyncSelect from "react-select/async";
 import AutoCompleteCompanyName from "@/components/autocomplete/CompanyNameFromNeo4J";
 import EmptyComponent from "@/components/emptystates/EmptyComponent";
 import { isValidURL } from "@/lib/utils";
@@ -159,14 +160,14 @@ const Page = () => {
                     <TableCell>{index + 1}</TableCell>
                     <TableCell>{user.fullname}</TableCell>
                     <TableCell>
-                      <a
+                      <Link
                         href={`/user/${user.username}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-blue-500"
                       >
                         {user.username}
-                      </a>
+                      </Link>
                     </TableCell>
                     <TableCell>{user.experience} yrs</TableCell>
                     <TableCell className="text-right">
