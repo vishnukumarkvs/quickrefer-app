@@ -34,10 +34,13 @@ const Layout = async ({ children }) => {
       <main className="flex-grow">
         <div className="w-full flex min-h-screen max-h-screen overflow-hidden">
           <div className="flex max-h-screen w-full max-w-xs grow flex-col gap-y-5 overflow-y-hidden border-r border-gray-200 bg-white px-6">
-            <Link href="/dashboard" className="flex h-16 shrink-0 items-center">
+            {/* <Link href="/dashboard" className="flex h-16 shrink-0 items-center">
               <Icons.Logo className="h-8 w-auto text-indigo-600" />
-            </Link>
-            <nav className="flex flex-1 flex-col" id="chat-dashboard-sidebar">
+            </Link> */}
+            <nav
+              className="flex flex-1 flex-col mt-12"
+              id="chat-dashboard-sidebar"
+            >
               <ul role="list" className="list-none flex flex-1 flex-col gp-y-7">
                 <li>
                   <FriendRequestsSidebarOption
