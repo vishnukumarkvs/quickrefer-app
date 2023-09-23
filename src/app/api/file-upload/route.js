@@ -2,6 +2,18 @@
 import { authOptions } from "@/lib/auth";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getServerSession } from "next-auth";
+import {
+  CloudFrontClient,
+  CreateInvalidationCommand,
+} from "@aws-sdk/client-cloudfront";
+
+const cloudFront = new CloudFrontClient({
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  region: "us-east-1",
+});
+
+const distributionId = process.env.AWS_CLOUDFRONT_DISTRIBUTION_ID;
 
 const client = new S3Client({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -31,12 +43,27 @@ export async function POST(req) {
       Bucket: process.env.AWS_BUCKET_NAME,
       Key: key,
       Body: buffer,
+      ContentType: "application/pdf",
     });
+    const pathToInvalidate = `/${key}`; // Invalidates a specific file. Use "/*" to invalidate everything.
+
+    const invalidationParams = {
+      DistributionId: distributionId,
+      InvalidationBatch: {
+        CallerReference: `${new Date().getTime()}`, // unique string required for each invalidation
+        Paths: {
+          Quantity: 1,
+          Items: [pathToInvalidate],
+        },
+      },
+    };
 
     try {
-      const data = await client.send(command);
+      await client.send(command);
     } catch (err) {
       console.error("Error uploading file: ", err);
+    } finally {
+      await cloudFront.send(new CreateInvalidationCommand(invalidationParams));
     }
 
     const fileUrl = `s3://${process.env.AWS_BUCKET_NAME}/${key}`;
