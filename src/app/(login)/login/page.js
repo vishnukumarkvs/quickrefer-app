@@ -58,7 +58,7 @@ export default function CallToActionWithAnnotation() {
               }}
               onClick={() => signIn("google")}
             >
-              Login with Google
+              Sign in with Google
             </Button>
           </Stack>
         </Stack>

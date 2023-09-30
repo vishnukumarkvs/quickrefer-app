@@ -48,6 +48,11 @@ export default function CallToActionWithAnnotation() {
             alignSelf={"center"}
             position={"relative"}
           >
+            <Text color={"blackAlpha.900"}>
+              <a href="/policy" target="_blank" rel="noopener noreferrer">
+                Privacy Policy
+              </a>
+            </Text>
             <Button
               bg={"#ffc800e5"}
               rounded={"full"}
@@ -57,7 +62,7 @@ export default function CallToActionWithAnnotation() {
               }}
               onClick={() => signIn("google")}
             >
-              Login with Google
+              Sign in with Google
             </Button>
           </Stack>
         </Stack>
