@@ -601,7 +601,7 @@ const Profile = ({ username }) => {
           openPersonal={openPersonal}
           setOpenPersonal={setOpenPersonal}
         />
-        <div className="flex flex-col justify-start items-center">
+        {/* <div className="flex flex-col justify-start items-center">
           <ResumeUpload />
           {session.user.isResume ? (
             // <object data={resumeUrl} type="application/pdf" width="100%">
@@ -631,7 +631,7 @@ const Profile = ({ username }) => {
           ) : (
             <p className="my-2">Upload your resume to view it here!</p>
           )}
-        </div>
+        </div> */}
       </div>
     </div>
   );
