@@ -69,7 +69,8 @@ const ResumeUpload = () => {
           className="flex-1 px-4 py-2 border rounded-lg shadow-md focus:outline-none focus:ring focus:border-blue-300"
         />
         <Button onClick={onFileUpload} variant="ghost" isLoading={isLoading}>
-          <Upload size={24} />
+          {/* <Upload size={24} /> */}
+          <p className="text-sm">Upload</p>
         </Button>
       </div>
     </div>

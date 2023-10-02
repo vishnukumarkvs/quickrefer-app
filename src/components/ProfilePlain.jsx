@@ -576,14 +576,14 @@ const ProfilePlane = ({ username }) => {
     return <div>Error: {error.message}</div>;
   }
 
-  let resumeUrl = `${cloudfront_url}/${data.userId}.pdf`;
+  let resumeUrl = `${cloudfront_url}/${data.userId}.pdf#toolbar=0`;
 
   return (
     <div className="w-[95%] h-full mx-auto">
       <p className="font-bold text-2xl text-center m-4 p-2 border-2 rounded-sm">
         Profile
       </p>
-      <div className="grid grid-cols-2 gap-4">
+      <div className="flex flex-col">
         <div className="flex flex-col gap-2">
           <PersonalDetails
             data={data}
@@ -592,14 +592,13 @@ const ProfilePlane = ({ username }) => {
           />
           <SocialButtons data={data} />
         </div>
-        <div className="flex flex-col justify-start items-center">
-          <iframe
-            className="mt-3"
-            src={resumeUrl}
-            width="100%"
-            height="500px"
-          >
-            Sorry, your browser doesn{"'"}t support embedded PDFs. Please <a target="_blank" href={resumeUrl}>download the PDF</a> to view it.
+        <div className="flex flex-col justify-start items-center col-span-2">
+          <iframe className="mt-3" src={resumeUrl} width="100%" height="500px">
+            Sorry, your browser doesn{"'"}t support embedded PDFs. Please{" "}
+            <a target="_blank" href={resumeUrl}>
+              download the PDF
+            </a>{" "}
+            to view it.
           </iframe>
         </div>
       </div>

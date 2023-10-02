@@ -595,32 +595,21 @@ const Profile = ({ username }) => {
       <p className="font-bold text-2xl text-center my-4 py-2 bg-white shadow-md rounded-md">
         My Profile
       </p>
-      <div className="grid grid-cols-2 gap-4">
+      {/* <div className="grid grid-cols-2 gap-4"> */}
+      <div className="flex flex-col gap-4">
         <PersonalDetails
           data={data}
           openPersonal={openPersonal}
           setOpenPersonal={setOpenPersonal}
         />
-        {/* <div className="flex flex-col justify-start items-center">
+        <div className="flex flex-col justify-start items-center">
           <ResumeUpload />
           {session.user.isResume ? (
-            // <object data={resumeUrl} type="application/pdf" width="100%">
-            //   <p className="my-2">
-            //     Link to the{" "}
-            //     <a
-            //       className="text-blue-800 underline cursor-pointer"
-            //       href={resumeUrl}
-            //       target="_blank"
-            //     >
-            //       resume!
-            //     </a>
-            //   </p>
-            // </object>
             <iframe
               className="mt-3"
               src={resumeUrl}
               width="100%"
-              height="500px"
+              height="1400px"
             >
               Sorry, your browser doesn{"'"}t support embedded PDFs. Please{" "}
               <a target="_blank" href={resumeUrl}>
@@ -631,7 +620,7 @@ const Profile = ({ username }) => {
           ) : (
             <p className="my-2">Upload your resume to view it here!</p>
           )}
-        </div> */}
+        </div>
       </div>
     </div>
   );
