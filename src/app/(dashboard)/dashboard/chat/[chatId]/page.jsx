@@ -1,6 +1,5 @@
 // dynamic route
 
-import ChatInput from "@/components/chat/ChatInput";
 import Messages from "@/components/chat/Messages";
 import { authOptions } from "@/lib/auth";
 import driver from "@/lib/neo4jClient";
@@ -81,7 +80,6 @@ const Page = async ({ params }) => {
         friendId={chatPartnerId}
         chatId={params.chatId}
       />
-      {/* <ChatInput chatId={params.chatId} chatPartner={chatPartner} /> */}
     </div>
   );
 };
