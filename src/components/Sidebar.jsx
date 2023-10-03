@@ -7,7 +7,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useEffect, useState } from "react";
 import { Skeleton } from "./ui/skeleton";
 import axios from "axios";
-import { get } from "firebase/database";
 
 const get_all_unseen = process.env.NEXT_PUBLIC_GET_ALL_UNSEEN_URL;
 if (!get_all_unseen) {

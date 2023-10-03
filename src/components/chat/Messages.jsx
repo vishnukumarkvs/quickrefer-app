@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { toast } from "react-hot-toast";
 import axios from "axios";
 import { linkify } from "@/lib/utils";
-import { get } from "firebase/database";
 
 const chat_websocket_url = process.env.NEXT_PUBLIC_CHAT_WEBSOCKET_URL;
 const get_messages_url = process.env.NEXT_PUBLIC_GET_CHAT_MESSAGES_URL;
