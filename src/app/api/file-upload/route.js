@@ -10,7 +10,7 @@ import {
 const cloudFront = new CloudFrontClient({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  region: "us-east-1",
+  region: process.env.AWS_REGION,
 });
 
 const distributionId = process.env.AWS_CLOUDFRONT_DISTRIBUTION_ID;
@@ -18,7 +18,7 @@ const distributionId = process.env.AWS_CLOUDFRONT_DISTRIBUTION_ID;
 const client = new S3Client({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  region: "us-east-1",
+  region: process.env.AWS_REGION,
 });
 
 export async function POST(req) {
