@@ -33,7 +33,6 @@ const SideBarItem = ({ title, href, useAnchor = false }) => {
 
 const SideBar = () => {
   const { data: session, status } = useSession();
-  const pathname = usePathname();
   const [unseenCount, setUnseenCount] = useState();
   useEffect(() => {
     if (!session?.user?.id) return; // Exit early if session.user.id is not available
@@ -42,8 +41,11 @@ const SideBar = () => {
       const response = await axios.get(
         `${get_all_unseen}?userId=${session.user.id}`
       );
-      console.log("response", response);
-      setUnseenCount(response.data.sumSeenCount);
+      const response2 = await axios.get("/api/getfriends");
+      let result = (
+        parseInt(response.data.sumSeenCount) + parseInt(response2.data)
+      ).toString();
+      setUnseenCount(result);
     };
 
     fetchData();
@@ -113,20 +115,6 @@ const SideBar = () => {
                 </p>
               )}
             </div>
-            {/* <div
-              className={`py-1 cursor-pointer hover:text-gray-600 ${
-                pathname === "/dashboard/requests"
-                  ? "text-gray-600 bg-white -ml-1 p-1 rounded-md"
-                  : ""
-              }`}
-            >
-              <div className="flex justify-center items-center space-x-2">
-                <a href={"/dashboard/requests"}>Chat</a>
-                <p className="bg-[#3453b9] rounded-full text-white px-2">
-                  {unseenCount}
-                </p>
-              </div>
-            </div> */}
             <SideBarItem
               title="Profile"
               href={`/user/${session.user.jtusername}`}
