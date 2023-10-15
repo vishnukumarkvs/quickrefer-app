@@ -107,7 +107,7 @@ const SideBar = () => {
               <SideBarItem
                 title="Chat"
                 href="/dashboard/requests"
-                useAnchor={true}
+                // useAnchor={true}
               />
               {unseenCount > 0 && (
                 <p className="bg-[#3453b9] rounded-full text-white px-2 ml-2">
