@@ -86,157 +86,52 @@ const PersonalDetails = ({ data, openPersonal, setOpenPersonal }) => {
       {/* Profile Section */}
       {/* <div className="w-full text-xl font-bold mb-5">Personal Details</div> */}
       <div className="flex flex-col">
-        <div class="w-full bg-white shadow-lg rounded-lg px-4 py-2 mx-auto">
-          <div class="grid grid-cols-2 items-center">
-            <p class="text-md font-medium mr-2">Full Name</p>
-            <p class="text-md">{data.fullname}</p>
+        <div className="w-full bg-white shadow-lg rounded-lg px-4 py-2 mx-auto">
+          <div className="grid grid-cols-2 items-center">
+            <p className="text-md font-medium mr-2">Full Name</p>
+            <p className="text-md">{data.fullname}</p>
           </div>
 
-          {/* <div class="grid grid-cols-2 items-center">
-            <p class="text-md font-medium mr-2">Email</p>
-            <p class="text-md ">{data.email}</p>
+          {/* <div className="grid grid-cols-2 items-center">
+            <p className="text-md font-medium mr-2">Email</p>
+            <p className="text-md ">{data.email}</p>
           </div> */}
 
-          {/* <div class="grid grid-cols-2 items-center">
-            <p class="text-md font-medium mr-2">Phone</p>
-            <p class="text-md ">{data.phone}</p>
+          {/* <div className="grid grid-cols-2 items-center">
+            <p className="text-md font-medium mr-2">Phone</p>
+            <p className="text-md ">{data.phone}</p>
           </div> */}
 
-          <div class="grid grid-cols-2 items-center">
-            <p class="text-md font-medium mr-2">Location</p>
-            <p class="text-md ">{data.location}</p>
+          <div className="grid grid-cols-2 items-center">
+            <p className="text-md font-medium mr-2">Location</p>
+            <p className="text-md ">{data.location}</p>
           </div>
 
-          <div class="grid grid-cols-2 items-center">
-            <p class="text-md font-medium mr-2">Current Job Role</p>
-            <p class="text-md">{data.currentJobRole}</p>
+          <div className="grid grid-cols-2 items-center">
+            <p className="text-md font-medium mr-2">Current Job Role</p>
+            <p className="text-md">{data.currentJobRole}</p>
           </div>
 
-          <div class="grid grid-cols-2 items-center">
-            <p class="text-md font-medium mr-2">Current Company</p>
-            <p class="text-md ">{data.company}</p>
+          <div className="grid grid-cols-2 items-center">
+            <p className="text-md font-medium mr-2">Current Company</p>
+            <p className="text-md ">{data.company}</p>
           </div>
 
-          <div class="grid grid-cols-2 items-center">
-            <p class="text-md font-medium mr-2">Experience (in years)</p>
-            <p class="text-md ">{data.experience}</p>
+          <div className="grid grid-cols-2 items-center">
+            <p className="text-md font-medium mr-2">Experience (in years)</p>
+            <p className="text-md ">{data.experience}</p>
           </div>
 
-          {/* <div class="grid grid-cols-2 items-center">
-            <p class="text-md font-medium mr-2">Salary (in LPA)</p>
-            <p class="text-md ">{data.salary}</p>
+          {/* <div className="grid grid-cols-2 items-center">
+            <p className="text-md font-medium mr-2">Salary (in LPA)</p>
+            <p className="text-md ">{data.salary}</p>
           </div> */}
 
-          {/* <div class="grid grid-cols-2 items-center">
-            <p class="text-md font-medium mr-2">Notice Period (in days)</p>
-            <p class="text-md ">{data.noticePeriod}</p>
+          {/* <div className="grid grid-cols-2 items-center">
+            <p className="text-md font-medium mr-2">Notice Period (in days)</p>
+            <p className="text-md ">{data.noticePeriod}</p>
           </div> */}
         </div>
-
-        {/* <div>
-          <Dialog open={openPersonal} onOpenChange={setOpenPersonal}>
-            <DialogTrigger asChild>
-              <Button variant="outline" className="my-4">
-                Edit Profile
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>Edit profile</DialogTitle>
-                <DialogDescription>
-                  Make changes to your profile here. Click save when you{"'"}re
-                  done.
-                </DialogDescription>
-              </DialogHeader>
-              <form onSubmit={handleSubmitPersonal(onSubmit)}>
-                <div className="grid gap-4 py-4">
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="fullname" className="text-right">
-                      Full Name
-                    </Label>
-                    <Input
-                      id="fullname"
-                      className="col-span-3"
-                      {...registerPersonal("fullname")}
-                    />
-                  </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="phone" className="text-right">
-                      Phone
-                    </Label>
-                    <Input
-                      id="phone"
-                      className="col-span-3"
-                      {...registerPersonal("phone")}
-                    />
-                  </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="location" className="text-right">
-                      Location
-                    </Label>
-                    <div className="w-[280px]">
-                      <AsyncLocationSelect
-                        control={controlPersonal}
-                        name="location"
-                      />
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="currentJobRole" className="text-right">
-                      Current Job Role
-                    </Label>
-                    <Input
-                      id="currentJobRole"
-                      className="col-span-3"
-                      {...registerPersonal("currentJobRole")}
-                    />
-                  </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="salary" className="text-right">
-                      Salary <br /> (in LPA)
-                    </Label>
-                    <Input
-                      id="salary"
-                      type="number"
-                      className="col-span-3"
-                      {...registerPersonal("salary")}
-                    />
-                  </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="experience" className="text-right">
-                      Experience <br /> (in yrs)
-                    </Label>
-                    <Input
-                      id="experience"
-                      type="number"
-                      defaultValue={data.experience}
-                      className="col-span-3"
-                      required
-                      {...registerPersonal("experience")}
-                    />
-                  </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="noticePeriod" className="text-right">
-                      Notice Period <br />
-                      (in days)
-                    </Label>
-                    <Input
-                      id="noticePeriod"
-                      type="number"
-                      className="col-span-3"
-                      {...registerPersonal("noticePeriod")}
-                    />
-                  </div>
-                </div>
-                <DialogFooter>
-                  <Button type="submit" isLoading={mutationPersonal.isLoading}>
-                    Save changes
-                  </Button>
-                </DialogFooter>
-              </form>
-            </DialogContent>
-          </Dialog>
-        </div>*/}
       </div>
     </div>
   );
@@ -559,25 +454,53 @@ const PersonalDetails = ({ data, openPersonal, setOpenPersonal }) => {
 // };
 
 const ProfilePlane = ({ username }) => {
-  console.log(username);
   // https://next-auth.js.org/getting-started/client
   const { data, isLoading, error } = useProfileData(username);
 
   const [openPersonal, setOpenPersonal] = useState(false);
-  //   const [openWork, setOpenWork] = useState(false);
-  //   const [openWorkUpdate, setOpenWorkUpdate] = useState(false);
-  //   const [openLinkTree, setOpenLinkTree] = useState(false);
+  const [iframeError, setIframeError] = useState(false);
+  const [iframeSrc, setIframeSrc] = useState("");
 
+  // Calculate resume URL
+  let resumeUrl = "";
+  if (data) {
+    resumeUrl = `${cloudfront_url}/${data.userId}.pdf#toolbar=0`;
+  }
+
+  // Function to handle iframe errors
+  const handleIframeError = () => {
+    setIframeError(true);
+  };
+
+  useEffect(() => {
+    // Fetch the resume URL and check its status code
+    fetch(resumeUrl)
+      .then((response) => {
+        if (response.status === 200) {
+          // Set the iframe source if status is 200
+          setIframeSrc(resumeUrl);
+        } else {
+          // Handle non-200 status codes
+          setIframeError(true);
+        }
+      })
+      .catch((error) => {
+        console.error("Error checking URL status:", error);
+        setIframeError(true);
+      });
+  }, [resumeUrl]);
+
+  // Loading state
   if (isLoading) {
     return <PageLoader />;
   }
 
+  // Error state
   if (error) {
     return <div>Error: {error.message}</div>;
   }
 
-  let resumeUrl = `${cloudfront_url}/${data.userId}.pdf#toolbar=0`;
-
+  // Profile content
   return (
     <div className="w-[95%] h-full mx-auto">
       <p className="font-bold text-2xl text-center m-4 p-2 border-2 rounded-sm">
@@ -593,13 +516,24 @@ const ProfilePlane = ({ username }) => {
           <SocialButtons data={data} />
         </div>
         <div className="flex flex-col justify-start items-center col-span-2">
-          <iframe className="mt-3" src={resumeUrl} width="100%" height="500px">
-            Sorry, your browser doesn{"'"}t support embedded PDFs. Please{" "}
-            <a target="_blank" href={resumeUrl}>
-              download the PDF
-            </a>{" "}
-            to view it.
-          </iframe>
+          {iframeSrc && !iframeError ? (
+            <iframe
+              className="mt-3"
+              src={iframeSrc}
+              width="100%"
+              height="500px"
+              onError={handleIframeError}
+            >
+              Sorry, your browser doesn{"'"}t support embedded PDFs. Please{" "}
+              <a target="_blank" href={iframeSrc}>
+                download the PDF
+              </a>{" "}
+              to view it.
+            </iframe>
+          ) : (
+            // <div>Error: Unable to load the PDF. Please try again later.</div>
+            <div></div>
+          )}
         </div>
       </div>
     </div>

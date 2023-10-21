@@ -1,8 +1,8 @@
 import { authOptions } from "@/lib/auth";
 import driver from "@/lib/neo4jClient";
 import { getServerSession } from "next-auth";
-import { revalidatePath } from "next/cache";
 
+// revalidation error coming, removed it for now
 export async function GET(req) {
   const usession = await getServerSession(authOptions);
   const getAllFriendsCountQuery = `
@@ -22,9 +22,6 @@ export async function GET(req) {
     const friendRequestCount = getResult.records[0]
       .get("friendRequestCount")
       .toNumber();
-
-    const path = req.nextUrl.searchParams.get("path") || "/";
-    revalidatePath(path);
 
     return new Response(JSON.stringify(friendRequestCount), { status: 200 });
   } catch (error) {
