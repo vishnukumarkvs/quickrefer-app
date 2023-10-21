@@ -34,7 +34,7 @@ export async function GET(req) {
       return new Response("User not found", { status: 404 });
     }
 
-    console.log(userData[0]?.properties.userId);
+    // console.log(userData[0]?.properties.userId);
 
     let resumeExists = true;
     try {
@@ -44,7 +44,7 @@ export async function GET(req) {
           Key: `${userData[0]?.properties.userId}.pdf`,
         })
       );
-      console.log("File exists", data);
+      // console.log("File exists", data);
     } catch (error) {
       resumeExists = false;
       if (error.name === "NoSuchKey") {

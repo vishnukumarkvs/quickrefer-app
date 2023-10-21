@@ -30,25 +30,28 @@ const loadOptions = (inputValue, callback) => {
   }, 1000);
 };
 
-const AsyncLocationSelect = ({ control, name }) => (
-  <div className="w-[280px]">
-    <Controller
-      name={name}
-      control={control}
-      defaultValue=""
-      render={({ field }) => (
-        <div className="w-full">
-          <AsyncSelect
-            {...field}
-            placeholder="Search..."
-            loadOptions={loadOptions}
-            defaultOptions={defaultLocationOptions}
-            isSearchable
-          />
-        </div>
-      )}
-    />
-  </div>
-);
+const AsyncLocationSelect = ({ control, name, defaultSelectedLocation }) => {
+  return (
+    <div className="w-[280px]">
+      <Controller
+        name={name}
+        control={control}
+        render={({ field }) => (
+          <div className="w-full">
+            <AsyncSelect
+              {...field}
+              placeholder="Search..."
+              loadOptions={loadOptions}
+              defaultOptions={defaultLocationOptions}
+              defaultValue={defaultSelectedLocation}
+              defaultInputValue={defaultSelectedLocation || null}
+              isSearchable
+            />
+          </div>
+        )}
+      />
+    </div>
+  );
+};
 
 export default AsyncLocationSelect;

@@ -87,6 +87,7 @@ const PersonalDetails = ({ data, openPersonal, setOpenPersonal }) => {
     handleSubmit: handleSubmitPersonal,
     control: controlPersonal,
     register: registerPersonal,
+    setValue: setValuePersonal,
   } = useForm({
     defaultValues: {
       fullname: data.fullname,
@@ -156,7 +157,7 @@ const PersonalDetails = ({ data, openPersonal, setOpenPersonal }) => {
                       <Label htmlFor="company">Current Company</Label>
                       <AutoCompleteCompanyName
                         onSelect={(val) => {
-                          setValue("company", val);
+                          setValuePersonal("company", val);
                         }}
                       />
                     </div>
@@ -188,6 +189,7 @@ const PersonalDetails = ({ data, openPersonal, setOpenPersonal }) => {
                         <AsyncLocationSelect
                           control={controlPersonal}
                           name="location"
+                          defaultSelectedLocation={data.location}
                         />
                       </div>
                     </div>
