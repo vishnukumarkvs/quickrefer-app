@@ -474,7 +474,7 @@ const ProfilePlane = ({ username }) => {
 
   useEffect(() => {
     // Fetch the resume URL and check its status code
-    fetch(resumeUrl)
+    fetch(resumeUrl, { mode: "no-cors" })
       .then((response) => {
         if (response.status === 200) {
           // Set the iframe source if status is 200
