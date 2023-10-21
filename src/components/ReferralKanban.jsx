@@ -170,8 +170,8 @@ const ReferralKanban = () => {
           </Flex>
           <Tabs>
             <TabList>
-              <Tab>Pending Requests</Tab>
-              <Tab>Accepted Requests</Tab>
+              <Tab>Pending Requests ({sentRequests?.length})</Tab>
+              <Tab>Accepted Requests ({friendRequests?.length})</Tab>
             </TabList>
 
             <TabPanels>

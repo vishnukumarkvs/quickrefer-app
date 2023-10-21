@@ -1,5 +1,6 @@
 import driver from "@/lib/neo4jClient";
 import s3Client from "@/lib/s3Client";
+import { HeadObjectCommand } from "@aws-sdk/client-s3";
 
 export async function GET(req) {
   const url = new URL(req.url);

@@ -5,7 +5,7 @@ import "./globals.css";
 export const metadata = {
   title: "QuickRefer",
   description: "Get instant referrals !!",
-  viewport: "viewport-fit=cover",
+  // viewport: "viewport-fit=cover",
 };
 
 export default function RootLayout({ children }) {
