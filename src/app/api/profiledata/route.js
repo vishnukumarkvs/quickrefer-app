@@ -7,8 +7,6 @@ export async function GET(req) {
 
   const username = url.searchParams.get("username");
 
-  let resumeExists = true;
-
   try {
     const neo4jSession = driver.session({
       database: process.env.NEO4J_DATABASE,
@@ -36,12 +34,14 @@ export async function GET(req) {
       return new Response("User not found", { status: 404 });
     }
 
+    console.log(userData[0]?.properties.userId);
+
     let resumeExists = true;
     try {
       const data = await s3Client.send(
         new HeadObjectCommand({
           Bucket: process.env.AWS_BUCKET_NAME,
-          Key: userData[0]?.properties.userId,
+          Key: `${userData[0]?.properties.userId}.pdf`,
         })
       );
       console.log("File exists", data);
