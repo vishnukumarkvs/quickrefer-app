@@ -13,11 +13,11 @@ import { useSession } from "next-auth/react";
 import { Flex, Text, Input, Button } from "@chakra-ui/react";
 import AutoCompleteCompanyName from "@/components/autocomplete/CompanyNameFromList";
 
-const resume_api_url = process.env.NEXT_PUBLIC_RESUME_UPLOAD_URL;
+// const resume_api_url = process.env.NEXT_PUBLIC_RESUME_UPLOAD_URL;
 
-if (!resume_api_url) {
-  console.error("API URL is not defined.");
-}
+// if (!resume_api_url) {
+//   console.error("API URL is not defined.");
+// }
 
 const skillOptions = [
   { value: "java", label: "java" },

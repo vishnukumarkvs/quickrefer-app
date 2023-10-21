@@ -460,6 +460,7 @@ const ProfilePlane = ({ username }) => {
   const [openPersonal, setOpenPersonal] = useState(false);
   const [iframeError, setIframeError] = useState(false);
   const [iframeSrc, setIframeSrc] = useState("");
+  const [iframeErrCode, setIframeErrCode] = useState("");
 
   // Calculate resume URL
   let resumeUrl = "";
@@ -476,12 +477,14 @@ const ProfilePlane = ({ username }) => {
     // Fetch the resume URL and check its status code
     fetch(resumeUrl, { mode: "no-cors" })
       .then((response) => {
-        if (response.status === 200) {
+        if (response.status < 400) {
           // Set the iframe source if status is 200
           setIframeSrc(resumeUrl);
         } else {
           // Handle non-200 status codes
           setIframeError(true);
+          let errString = response.status + "," + response.text;
+          setIframeErrCode(response.status, errString);
         }
       })
       .catch((error) => {
@@ -531,8 +534,7 @@ const ProfilePlane = ({ username }) => {
               to view it.
             </iframe>
           ) : (
-            // <div>Error: Unable to load the PDF. Please try again later.</div>
-            <div></div>
+            <div>Resume Not Found. {iframeErrCode}</div>
           )}
         </div>
       </div>
