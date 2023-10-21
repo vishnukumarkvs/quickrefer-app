@@ -460,7 +460,7 @@ const ProfilePlane = ({ username }) => {
   const [openPersonal, setOpenPersonal] = useState(false);
   const [iframeError, setIframeError] = useState(false);
   const [iframeSrc, setIframeSrc] = useState("");
-  const [iframeErrCode, setIframeErrCode] = useState("");
+  const [iframeErrString, setIframeErrString] = useState("");
 
   // Calculate resume URL
   let resumeUrl = "";
@@ -484,7 +484,7 @@ const ProfilePlane = ({ username }) => {
           // Handle non-200 status codes
           setIframeError(true);
           let errString = response.status + "," + response.text;
-          setIframeErrCode(response.status, errString);
+          setIframeErrString(errString);
         }
       })
       .catch((error) => {
@@ -534,7 +534,7 @@ const ProfilePlane = ({ username }) => {
               to view it.
             </iframe>
           ) : (
-            <div>Resume Not Found. {iframeErrCode}</div>
+            <div>Resume Not Found. {iframeErrString}</div>
           )}
         </div>
       </div>
