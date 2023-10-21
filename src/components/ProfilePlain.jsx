@@ -90,9 +90,6 @@ const ProfilePlane = ({ username }) => {
   const [iframeLoaded, setIframeLoaded] = useState(true);
 
   let resumeUrl = "";
-  const handleIframeError = () => {
-    setIframeError(true);
-  };
 
   if (isLoading) {
     return <PageLoader />;
@@ -116,13 +113,15 @@ const ProfilePlane = ({ username }) => {
           <SocialButtons data={data} />
         </div>
         <div className="flex flex-col justify-start items-center col-span-2">
-          <iframe
-            className="mt-3"
-            src={resumeUrl}
-            width="100%"
-            height="500px"
-            onError={() => setIframeLoaded(false)}
-          />
+          {data.resumeExists == true && (
+            <iframe
+              className="mt-3"
+              src={resumeUrl}
+              width="100%"
+              height="500px"
+              onError={() => setIframeLoaded(false)}
+            />
+          )}
           {!iframeLoaded && <div>Resume not found.</div>}
         </div>
       </div>

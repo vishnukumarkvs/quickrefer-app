@@ -1,9 +1,12 @@
 import driver from "@/lib/neo4jClient";
+import s3Client from "@/lib/s3Client";
 
 export async function GET(req) {
   const url = new URL(req.url);
 
   const username = url.searchParams.get("username");
+
+  let resumeExists = true;
 
   try {
     const neo4jSession = driver.session({
@@ -31,6 +34,24 @@ export async function GET(req) {
     if (!userData) {
       return new Response("User not found", { status: 404 });
     }
+
+    let resumeExists = true;
+    try {
+      const data = await s3Client.send(
+        new HeadObjectCommand({
+          Bucket: process.env.AWS_BUCKET_NAME,
+          Key: userData[0]?.properties.userId,
+        })
+      );
+      console.log("File exists", data);
+    } catch (error) {
+      resumeExists = false;
+      if (error.name === "NoSuchKey") {
+        console.log("File does not exist");
+      } else {
+        console.error("An error occurred:", error);
+      }
+    }
     const profidata = {
       fullname: userData[0]?.properties.fullname,
       username: userData[0]?.properties.username,
@@ -52,6 +73,7 @@ export async function GET(req) {
       resume: userData[0]?.properties?.resume || null,
       workExperiences: userData[6] || [],
       linktree: userData[7] || null,
+      resumeExists: resumeExists,
     };
 
     return new Response(JSON.stringify(profidata), { status: 200 });
