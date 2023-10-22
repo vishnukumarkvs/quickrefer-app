@@ -14,7 +14,6 @@ export async function GET(req) {
       return result;
     });
 
-    // const path = "/api/getCompanyList";
     const path = req.nextUrl.searchParams.get("path") || "/";
     revalidatePath(path);
 
