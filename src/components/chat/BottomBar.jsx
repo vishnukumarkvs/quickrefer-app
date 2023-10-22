@@ -1,7 +1,9 @@
 "use client";
 
 import { Box, Flex, Text, Spacer, Tag } from "@chakra-ui/react";
+import { useRouter } from "next/navigation";
 import { FaUsers, FaUserCheck, FaUserPlus } from "react-icons/fa";
+import { usePathname } from "next/navigation";
 
 function BottomNavbar({
   session,
@@ -9,6 +11,9 @@ function BottomNavbar({
   acceptedFriends,
   sentFriends,
 }) {
+  const router = useRouter();
+  const pathname = usePathname();
+  console.log("pathname", pathname);
   return (
     <Box
       display={{ base: "flex", lg: "hidden" }}
@@ -44,7 +49,14 @@ function BottomNavbar({
           </Box>
         )}
       </Box> */}
-      <Box>
+      <Box
+        p="2"
+        rounded={"full"}
+        bg={pathname === "/dashboard/accepted" ? "gray.200" : "white"}
+        onClick={() => {
+          router.push("/dashboard/accepted");
+        }}
+      >
         <Flex gap="2" alignItems={"center"}>
           <FaUserCheck size={24} />
           <Tag colorScheme="green" rounded={"full"}>
@@ -55,7 +67,14 @@ function BottomNavbar({
           Accepted Requests
         </Text>
       </Box>
-      <Box>
+      <Box
+        p="2"
+        rounded={"full"}
+        bg={pathname === "/dashboard/sent" ? "gray.200" : "white"}
+        onClick={() => {
+          router.push("/dashboard/sent");
+        }}
+      >
         <Flex gap="2" alignItems={"center"}>
           <FaUserPlus size={24} />
           <Tag colorScheme="yellow" rounded={"full"}>

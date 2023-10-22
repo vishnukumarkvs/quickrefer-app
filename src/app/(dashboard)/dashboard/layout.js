@@ -70,7 +70,7 @@ const Layout = async ({ children }) => {
             </ul>
           </nav>
         </div>
-        <aside className="max-h-screen overflow-hidden container py-4 w-full">
+        <aside className="max-h-screen overflow-hidden container p-0 lg:py-4 w-full">
           {children}
         </aside>
         <BottomNavbar

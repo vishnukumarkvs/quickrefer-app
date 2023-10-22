@@ -13,13 +13,7 @@ export default function RootLayout({ children }) {
   return (
     <Box minH="100vh">
       <LoggedNavbar />
-      <Box
-        px={{ base: "25px", lg: "20px" }}
-        py={{ base: "15px", lg: "30px" }}
-        ml={{ base: 0, lg: 60 }}
-      >
-        {children}
-      </Box>
+      <Box ml={{ base: 0, lg: 60 }}>{children}</Box>
     </Box>
   );
 }

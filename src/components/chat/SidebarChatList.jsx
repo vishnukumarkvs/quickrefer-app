@@ -96,7 +96,7 @@ const SidebarChatList = ({ friends: initialFriends, sessionId }) => {
   return (
     <ul
       role="list"
-      className="list-none max-h-[25rem] overflow-y-auto mx-2 my-2 space-y-1"
+      className="list-none max-h-[25rem] overflow-y-auto mx-2 my-2 space-y-2 lg:space-y-1"
       id="sidebar-chat-list"
     >
       {updatedFriends?.length > 0 ? (
@@ -123,10 +123,14 @@ const SidebarChatList = ({ friends: initialFriends, sessionId }) => {
                 >
                   <div
                     role="button"
-                    className="text-gray-700 hover:text-indigo-600 hover-bg-gray-50 group flex items-center gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
+                    className="text-gray-700 hover:text-indigo-600 hover-bg-gray-50 group flex items-center rounded-md p-2  leading-6"
                     onClick={() => handleChatClick(friend.userId)}
                   >
-                    {friend.name}
+                    <span className="text-lg lg:text-sm  font-semibold">
+                      {friend.name}
+                    </span>
+                    <span>, {friend.company}</span>
+
                     {unseenMessageCount > 0 && (
                       <div className="bg-indigo-600 font-medium text-xs text-white w-4 h-4 rounded-full flex justify-center items-center">
                         {unseenMessageCount}

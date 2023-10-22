@@ -147,7 +147,7 @@ const ReferralKanban = () => {
   }, [userData, filter, selectedDates]);
 
   return (
-    <Flex direction="column" gap="7" p="5">
+    <Flex direction="column" gap="7" p={{ base: "0", lg: "5" }}>
       {isLoading ? (
         <PageLoader />
       ) : isError ? (
@@ -157,14 +157,14 @@ const ReferralKanban = () => {
           <Flex gap="2">
             <Input
               type="text"
-              placeholder="Search here for any applied job or company ..."
+              placeholder="Search for a applied job or company ..."
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
               bg="white"
               boxShadow="md"
               borderRadius="md"
               border="none"
-              style={{ width: "50%" }}
+              width={{ base: "full", lg: "50%" }}
             />
             <DatePickerWithRange onDateChange={handleDateChange} />
           </Flex>
