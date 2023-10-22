@@ -95,7 +95,7 @@ const FriendRequests = ({ incomingFriendRequests, sessionId }) => {
           >
             <div>
               <div className="flex items-center justify-start space-x-2">
-                <p className="text-lg font-semibold">
+                <p className="text-sm font-semibold">
                   {friendRequest.fullname} ({friendRequest.experience} yrs exp)
                 </p>
                 <a
@@ -109,19 +109,19 @@ const FriendRequests = ({ incomingFriendRequests, sessionId }) => {
               </div>
               <div className="mt-2 flex flex-wrap items-center space-x-2">
                 <div className="flex items-center">
-                  <Building2 className="text-blue-500 mr-1" />
-                  <span className="font-semibold">
+                  <Building2 className="text-blue-400 mr-1 p-1/2" />
+                  <span className="text-sm font-semibold">
                     {friendRequest.companyName}
                   </span>
                 </div>
                 <div className="flex items-center">
-                  <UserCog className="text-blue-500 mr-1" />
-                  <span className="font-semibold">
+                  <UserCog className="text-blue-400 mr-1 p-1/2" />
+                  <span className="text-sm font-semibold">
                     {friendRequest.jobRole || "Software Engineer"}
                   </span>
                 </div>
               </div>
-              <p className="mt-2 text-md lg:text-lg">
+              <p className="mt-2 text-sm">
                 Requesting referral for{" "}
                 <a
                   href={`/job/${friendRequest.jobURL}`}

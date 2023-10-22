@@ -97,7 +97,7 @@ const Messages = ({ userId, friendId, chatId }) => {
       <div
         id="messages"
         ref={chatContainerRef}
-        className="flex flex-1 flex-col gap-4 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch"
+        className="flex-grow flex flex-col gap-4 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch"
       >
         <div />
         {messages &&
