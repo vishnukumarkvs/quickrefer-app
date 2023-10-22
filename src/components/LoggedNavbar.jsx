@@ -25,6 +25,12 @@ import { HiOutlineStatusOnline } from "react-icons/hi";
 import { BsFillChatFill } from "react-icons/bs";
 import { BiSolidUserCircle } from "react-icons/bi";
 import { FiMenu } from "react-icons/fi";
+import Link from "next/link";
+
+const get_all_unseen = process.env.NEXT_PUBLIC_GET_ALL_UNSEEN_URL;
+if (!get_all_unseen) {
+  console.error("NEXT_PUBLIC_GET_ALL_UNSEEN_URL is not defined");
+}
 
 export default function LoggedNavbar() {
   const { data: session, status } = useSession();
@@ -133,38 +139,39 @@ const SidebarContent = ({ onClose, unseenCount, session, ...rest }) => {
 
 const NavItem = ({ icon, children, link, ...rest }) => {
   return (
-    <Box
-      as="a"
-      href={link}
-      style={{ textDecoration: "none" }}
-      _focus={{ boxShadow: "none" }}
-    >
-      <Flex
-        align="center"
-        p="4"
-        mx="4"
-        borderRadius="lg"
-        role="group"
-        cursor="pointer"
-        _hover={{
-          bg: "yellow.400",
-          color: "white",
-        }}
-        {...rest}
+    <Link href={link} passHref>
+      <Box
+        as="a"
+        style={{ textDecoration: "none" }}
+        _focus={{ boxShadow: "none" }}
       >
-        {icon && (
-          <Icon
-            mr="4"
-            fontSize="16"
-            _groupHover={{
-              color: "white",
-            }}
-            as={icon}
-          />
-        )}
-        {children}
-      </Flex>
-    </Box>
+        <Flex
+          align="center"
+          p="4"
+          mx="4"
+          borderRadius="lg"
+          role="group"
+          cursor="pointer"
+          _hover={{
+            bg: "yellow.400",
+            color: "white",
+          }}
+          {...rest}
+        >
+          {icon && (
+            <Icon
+              mr="4"
+              fontSize="16"
+              _groupHover={{
+                color: "white",
+              }}
+              as={icon}
+            />
+          )}
+          {children}
+        </Flex>
+      </Box>
+    </Link>
   );
 };
 
