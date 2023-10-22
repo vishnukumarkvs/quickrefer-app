@@ -3,11 +3,7 @@
 import ReferralKanban from "@/components/ReferralKanban";
 
 const Page = () => {
-  return (
-    <>
-      <ReferralKanban />
-    </>
-  );
+  return <ReferralKanban />;
 };
 
 export default Page;

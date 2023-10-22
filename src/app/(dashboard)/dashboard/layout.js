@@ -8,6 +8,8 @@ import driver from "@/lib/neo4jClient";
 
 import { Icons } from "@/components/chat/icons";
 import { notFound } from "next/navigation";
+import LoggedNavbar from "@/components/LoggedNavbar";
+import BottomNavbar from "@/components/chat/BottomBar";
 
 const Layout = async ({ children }) => {
   const session = await getServerSession(authOptions);
@@ -30,51 +32,55 @@ const Layout = async ({ children }) => {
   if (!session) notFound(); // this wont be called if you handle it in middleware
 
   return (
-    <div className={`bg-[#fbf9f0] flex`}>
-      <main className="flex-grow">
-        <div className="w-full flex min-h-screen max-h-screen overflow-hidden">
-          <div className="flex max-h-screen w-full max-w-xs grow flex-col gap-y-5 overflow-y-hidden border-r border-gray-200 bg-white px-6">
-            {/* <Link href="/dashboard" className="flex h-16 shrink-0 items-center">
-              <Icons.Logo className="h-8 w-auto text-indigo-600" />
-            </Link> */}
-            <nav
-              className="flex flex-1 flex-col mt-12"
-              id="chat-dashboard-sidebar"
-            >
-              <ul role="list" className="list-none flex flex-1 flex-col gp-y-7">
-                <li>
-                  <FriendRequestsSidebarOption
-                    sessionId={session.user.id}
-                    initialUnseenRequestCount={unseenRequestCount}
-                  />
-                </li>
-                <li>
-                  <p className="text-sm font-semibold text-amber-950 p-1 underline underline-offset-4">
-                    Accepted Requests
-                  </p>
-                  <SidebarChatList
-                    sessionId={session.user.id}
-                    friends={acceptedFriends}
-                  />
-                </li>
-                <li>
-                  <p className="text-sm font-semibold text-amber-950 p-1 underline underline-offset-4">
-                    Sent Requests
-                  </p>
-                  <SidebarChatList
-                    sessionId={session.user.id}
-                    friends={sentFriends}
-                  />
-                </li>
-              </ul>
-            </nav>
-          </div>
-          <aside className="max-h-screen overflow-hidden container py-4 w-full">
-            {children}
-          </aside>
+    <main className="flex-grow">
+      <div className="w-full flex min-h-screen max-h-screen overflow-hidden">
+        <div className="hidden lg:flex max-h-screen w-full max-w-xs grow flex-col gap-y-5 overflow-y-hidden border-r border-gray-200 bg-white px-6">
+          {/* <Link href="/dashboard" className="flex h-16 shrink-0 items-center">
+          <Icons.Logo className="h-8 w-auto text-indigo-600" />
+        </Link> */}
+          <nav
+            className="flex flex-1 flex-col mt-12"
+            id="chat-dashboard-sidebar"
+          >
+            <ul role="list" className="list-none flex flex-1 flex-col gp-y-7">
+              <li>
+                <FriendRequestsSidebarOption
+                  sessionId={session.user.id}
+                  initialUnseenRequestCount={unseenRequestCount}
+                />
+              </li>
+              <li>
+                <p className="text-sm font-semibold text-amber-950 p-1 underline underline-offset-4">
+                  Accepted Requests
+                </p>
+                <SidebarChatList
+                  sessionId={session.user.id}
+                  friends={acceptedFriends}
+                />
+              </li>
+              <li>
+                <p className="text-sm font-semibold text-amber-950 p-1 underline underline-offset-4">
+                  Sent Requests
+                </p>
+                <SidebarChatList
+                  sessionId={session.user.id}
+                  friends={sentFriends}
+                />
+              </li>
+            </ul>
+          </nav>
         </div>
-      </main>
-    </div>
+        <aside className="max-h-screen overflow-hidden container p-0 lg:py-4 w-full">
+          {children}
+        </aside>
+        <BottomNavbar
+          session={session}
+          unseenRequestCount={unseenRequestCount}
+          acceptedFriends={acceptedFriends}
+          sentFriends={sentFriends}
+        />
+      </div>
+    </main>
   );
 };
 

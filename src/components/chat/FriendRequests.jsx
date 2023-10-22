@@ -1,24 +1,28 @@
 "use client";
-import { pusherClient } from "@/lib/pusher";
-import { toPusherKey } from "@/lib/utils";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-const { UserPlus, Check, X } = require("lucide-react");
 import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import Link from "next/link";
+  Box,
+  Button,
+  Flex,
+  HStack,
+  Text,
+  VStack,
+  Input,
+  Select,
+  Link,
+} from "@chakra-ui/react";
+import { FaCheck, FaTimes } from "react-icons/fa";
+import { GoOrganization } from "react-icons/go";
+import { pusherClient } from "@/lib/pusher";
+import { toPusherKey } from "@/lib/utils";
 
 const FriendRequests = ({ incomingFriendRequests, sessionId }) => {
   const router = useRouter();
   const [friendRequests, setFriendRequests] = useState(incomingFriendRequests);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortCriteria, setSortCriteria] = useState("");
 
   useEffect(() => {
     pusherClient.subscribe(
@@ -48,7 +52,7 @@ const FriendRequests = ({ incomingFriendRequests, sessionId }) => {
     router.refresh();
   };
 
-  const denyFriend = async (senderId, jobUrl) => {
+  const denyFriend = async (senderId) => {
     await axios.post("/api/friends/deny", { id: senderId });
 
     setFriendRequests((prev) => {
@@ -58,73 +62,115 @@ const FriendRequests = ({ incomingFriendRequests, sessionId }) => {
     router.refresh();
   };
 
+  const filteredFriendRequests = friendRequests.filter((friendRequest) => {
+    // Check if the search term matches any of the fields (jobURL, companyName, or fullname)
+    return (
+      friendRequest.jobURL.includes(searchTerm) ||
+      friendRequest.companyName.includes(searchTerm) ||
+      friendRequest.fullname.includes(searchTerm)
+    );
+  });
+
+  const sortedFriendRequests = [...filteredFriendRequests].sort((a, b) => {
+    if (sortCriteria === "experience") {
+      return b.experience - a.experience;
+    }
+    // Add more sorting criteria if needed
+    return 0;
+  });
+
   return (
     <div className="my-5">
-      <Table>
-        <TableCaption>A list of referral requests.</TableCaption>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-[100px]">No</TableHead>
-            <TableHead>Company</TableHead>
-            <TableHead>Fullname</TableHead>
-            <TableHead>Experience</TableHead>
-            <TableHead>Profile</TableHead>
-            <TableHead>Job URL</TableHead>
-            <TableHead>Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {friendRequests.length === 0 ? (
-            <TableRow>
-              <TableCell colSpan="8">
-                <p className="text-sm text-zinc-500">Nothing to show here...</p>
-              </TableCell>
-            </TableRow>
-          ) : (
-            friendRequests.map((friendRequest, index) => (
-              <TableRow key={friendRequest.senderId}>
-                <TableCell>{index + 1}</TableCell>
-                <TableCell>{friendRequest.companyName}</TableCell>
-                <TableCell>{friendRequest.fullname}</TableCell>
-                <TableCell>{friendRequest.experience}</TableCell>
-                <TableCell>
-                  <Link
-                    href={`/user/${friendRequest.username}`}
-                    target="_blank"
-                    className="text-blue-500"
-                  >
-                    {friendRequest.username}
-                  </Link>
-                </TableCell>
-                <TableCell>{friendRequest.jobURL}</TableCell>
-                <TableCell className="text-right">
-                  <div className="flex items-center gap-4">
-                    <button
-                      onClick={() =>
-                        acceptFriend(
-                          friendRequest.senderId,
-                          friendRequest.jobURL
-                        )
-                      }
-                      aria-label="accept friend"
-                      className="w-8 h-8 bg-indigo-600 hover:bg-indigo-700 grid place-items-center rounded-full transition hover:shadow-md "
-                    >
-                      <Check className="font-semibold text-white w-3/4 h-3/4" />
-                    </button>
-                    <button
-                      onClick={() => denyFriend(friendRequest.senderId)}
-                      aria-label="deny friend"
-                      className="w-8 h-8 bg-red-600 hover:bg-red-700 grid place-items-center rounded-full transition hover:shadow-md "
-                    >
-                      <X className="font-semibold text-white w-3/4 h-3/4" />
-                    </button>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))
-          )}
-        </TableBody>
-      </Table>
+      <VStack spacing={5} align="stretch">
+        {/* <Box p={5} shadow="md" bg="white" rounded={"md"}>
+          <Flex flexWrap={"wrap"} gap="2">
+            <Input
+              placeholder="Search by company name, or person name or Job URL"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <Button
+              colorScheme="yellow"
+              variant={sortCriteria ? "solid" : "outline"}
+              onClick={() => {
+                if (sortCriteria) {
+                  setSortCriteria("");
+                } else {
+                  setSortCriteria("experience");
+                }
+              }}
+            >
+              Sort by Experience
+            </Button>
+          </Flex>
+        </Box> */}
+        {sortedFriendRequests.length === 0 ? (
+          <Box p={5} shadow="md" bg="white" rounded={"md"}>
+            <Text>Click on accepted or sent requests to view them here</Text>
+          </Box>
+        ) : (
+          sortedFriendRequests.map((friendRequest, index) => (
+            <Box
+              shadow="md"
+              bg="white"
+              rounded={"md"}
+              key={friendRequest.senderId}
+              p={5}
+              overflow="hidden"
+            >
+              <Text fontSize="xl" fontWeight={500} mt={2}>
+                {friendRequest.fullname}{" "}
+                {`(${friendRequest.experience} experience)`}
+              </Text>
+              <Flex mt="3" alignItems={"center"} flexWrap={"wrap"}>
+                Works At: &nbsp;
+                <b>{friendRequest.companyName}</b> &nbsp;
+              </Flex>
+              Role: <b>{friendRequest.jobTitle || "Software Engineer"}</b>
+              <br />
+              <Link
+                href={`/user/${friendRequest.username}`}
+                isExternal
+                color="blue.500"
+                className="text-blue-500 underline"
+              >
+                View Profile
+              </Link>
+              <Text mt={5} fontSize={{ base: "md", lg: "lg" }}>
+                Requesting referral for{" "}
+                <Link
+                  href={`/job/${friendRequest.jobURL}`}
+                  isExternal
+                  color="blue.500"
+                  className="text-blue-500 underline truncate"
+                >
+                  {friendRequest.jobURL}
+                </Link>
+              </Text>
+              <HStack mt={4} spacing={4}>
+                <Button
+                  onClick={() =>
+                    acceptFriend(friendRequest.senderId, friendRequest.jobURL)
+                  }
+                  colorScheme="teal"
+                  variant="outline"
+                  leftIcon={<FaCheck />}
+                >
+                  Accept
+                </Button>
+                <Button
+                  onClick={() => denyFriend(friendRequest.senderId)}
+                  colorScheme="red"
+                  variant="outline"
+                  leftIcon={<FaTimes />}
+                >
+                  Deny
+                </Button>
+              </HStack>
+            </Box>
+          ))
+        )}
+      </VStack>
     </div>
   );
 };
