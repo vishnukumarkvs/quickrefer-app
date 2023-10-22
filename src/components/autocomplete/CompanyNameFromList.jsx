@@ -1,16 +1,21 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Box, Input, List, ListItem, Spinner, Text } from "@chakra-ui/react";
-import { companies } from "@/constants/companies";
+import { Box, Input, Text } from "@chakra-ui/react";
 import FuzzySearch from "fuzzy-search";
+import { companies } from "@/constants/companies";
 
-const AutoCompleteCompanyName = ({ onSelect }) => {
-  const [query, setQuery] = useState("");
+const AutoCompleteCompanyName = ({ onSelect, defaultvalue }) => {
+  const [query, setQuery] = useState(defaultvalue || "");
   const [results, setResults] = useState([]);
   const [showResults, setShowResults] = useState(false);
-  const [loading, setLoading] = useState(false);
   const wrapperRef = useRef(null);
 
   useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
+        setShowResults(false);
+      }
+    };
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
@@ -24,10 +29,9 @@ const AutoCompleteCompanyName = ({ onSelect }) => {
 
   const searcher = new FuzzySearch(Object.keys(companies), [], searchOptions);
 
-  const handleChange = async (event) => {
+  const handleChange = (event) => {
     const newQuery = event.target.value;
     setQuery(newQuery);
-    setLoading(true);
 
     if (newQuery) {
       const results = searcher.search(newQuery);
@@ -37,8 +41,6 @@ const AutoCompleteCompanyName = ({ onSelect }) => {
       setResults([]);
       setShowResults(false);
     }
-
-    setLoading(false);
   };
 
   const handleSelect = (result) => {
@@ -48,21 +50,11 @@ const AutoCompleteCompanyName = ({ onSelect }) => {
     onSelect(result);
   };
 
-  const handleClickOutside = (event) => {
-    if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
-      setShowResults(false);
-    }
-  };
-
   const handleClick = () => {
-    setShowResults(true);
-  };
-
-  useEffect(() => {
-    if (!loading && showResults && results?.length === 0) {
-      handleSelect(query);
+    if (query && results.length > 0) {
+      setShowResults(true);
     }
-  }, [results]);
+  };
 
   return (
     <Box ref={wrapperRef} position="relative">
@@ -71,10 +63,9 @@ const AutoCompleteCompanyName = ({ onSelect }) => {
         value={query}
         required
         onChange={handleChange}
-        // placeholder="Search for a company"
         onClick={handleClick}
       />
-      {showResults && results?.length > 0 && (
+      {showResults && results.length > 0 && (
         <Box
           mt="2"
           width="100%"
@@ -103,10 +94,7 @@ const AutoCompleteCompanyName = ({ onSelect }) => {
           ))}
         </Box>
       )}
-      {/* {loading && (
-        <Spinner position="absolute" top="50%" left="50%" zIndex={30} />
-      )} */}
-      {!loading && showResults && results?.length === 0 && (
+      {/* {!showResults && results.length === 0 && query && (
         <Box
           mt="2"
           position="absolute"
@@ -119,7 +107,7 @@ const AutoCompleteCompanyName = ({ onSelect }) => {
         >
           No results found
         </Box>
-      )}
+      )} */}
     </Box>
   );
 };

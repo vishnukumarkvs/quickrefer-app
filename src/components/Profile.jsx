@@ -159,6 +159,7 @@ const PersonalDetails = ({ data, openPersonal, setOpenPersonal }) => {
                         onSelect={(val) => {
                           setValuePersonal("company", val);
                         }}
+                        defaultvalue={data.company}
                       />
                     </div>
                     {/* <div className="grid grid-cols-4 items-center gap-4">
