@@ -22,7 +22,8 @@ const Page = async () => {
           u2.fullname as fullname, 
           u2.experience as experience, 
           u2.email as email, 
-          u2.username as username, 
+          u2.username as username,
+          u2.currentJobRole as jobRole,
           company.name as companyName, 
           latestRelation.url as jobURL
     `,
@@ -37,7 +38,8 @@ const Page = async () => {
           email: record.get("email"),
           username: record.get("username"),
           companyName: record.get("companyName"),
-          jobURL: record.get("jobURL"), // Include the jobURL property in the returned object
+          jobURL: record.get("jobURL"),
+          jobRole: record.get("jobRole"),
         };
       });
     });

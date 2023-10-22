@@ -50,7 +50,9 @@ const PersonalDetails = ({ data }) => {
 
           <div className="grid grid-cols-2 items-center">
             <p className="text-md font-medium mr-2">Location</p>
-            <p className="text-md ">{data.location}</p>
+            <p className="text-md ">
+              {data.location.includes("null") ? "" : data.location}
+            </p>
           </div>
 
           <div className="grid grid-cols-2 items-center">

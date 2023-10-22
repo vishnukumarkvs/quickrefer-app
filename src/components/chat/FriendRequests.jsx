@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -17,6 +18,7 @@ import { FaCheck, FaTimes } from "react-icons/fa";
 import { GoOrganization } from "react-icons/go";
 import { pusherClient } from "@/lib/pusher";
 import { toPusherKey } from "@/lib/utils";
+import { Building2, ExternalLink, UserCircle, UserCog } from "lucide-react";
 
 const FriendRequests = ({ incomingFriendRequests, sessionId }) => {
   const router = useRouter();
@@ -80,97 +82,78 @@ const FriendRequests = ({ incomingFriendRequests, sessionId }) => {
   });
 
   return (
-    <div className="my-5">
-      <VStack spacing={5} align="stretch">
-        {/* <Box p={5} shadow="md" bg="white" rounded={"md"}>
-          <Flex flexWrap={"wrap"} gap="2">
-            <Input
-              placeholder="Search by company name, or person name or Job URL"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            <Button
-              colorScheme="yellow"
-              variant={sortCriteria ? "solid" : "outline"}
-              onClick={() => {
-                if (sortCriteria) {
-                  setSortCriteria("");
-                } else {
-                  setSortCriteria("experience");
-                }
-              }}
-            >
-              Sort by Experience
-            </Button>
-          </Flex>
-        </Box> */}
-        {sortedFriendRequests.length === 0 ? (
-          <Box p={5} shadow="md" bg="white" rounded={"md"}>
-            <Text>Click on accepted or sent requests to view them here</Text>
-          </Box>
-        ) : (
-          sortedFriendRequests.map((friendRequest, index) => (
-            <Box
-              shadow="md"
-              bg="white"
-              rounded={"md"}
-              key={friendRequest.senderId}
-              p={5}
-              overflow="hidden"
-            >
-              <Text fontSize="xl" fontWeight={500} mt={2}>
-                {friendRequest.fullname}{" "}
-                {`(${friendRequest.experience} experience)`}
-              </Text>
-              <Flex mt="3" alignItems={"center"} flexWrap={"wrap"}>
-                Works At: &nbsp;
-                <b>{friendRequest.companyName}</b> &nbsp;
-              </Flex>
-              Role: <b>{friendRequest.jobTitle || "Software Engineer"}</b>
-              <br />
-              <Link
-                href={`/user/${friendRequest.username}`}
-                isExternal
-                color="blue.500"
-                className="text-blue-500 underline"
-              >
-                View Profile
-              </Link>
-              <Text mt={5} fontSize={{ base: "md", lg: "lg" }}>
+    <div className="my-5 space-y-5">
+      {sortedFriendRequests.length === 0 ? (
+        <div className="p-5 bg-white shadow-md rounded-md">
+          <p>Click on accepted or sent requests to view them here</p>
+        </div>
+      ) : (
+        sortedFriendRequests.map((friendRequest, index) => (
+          <div
+            className="lg:flex flex-row bg-white shadow-md rounded-md p-2 m-2 overflow-hidden justify-between"
+            key={friendRequest.senderId}
+          >
+            <div>
+              <div className="flex items-center justify-start space-x-2">
+                <p className="text-lg font-semibold">
+                  {friendRequest.fullname} ({friendRequest.experience} yrs exp)
+                </p>
+                <a
+                  href={`/user/${friendRequest.username}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:underline"
+                >
+                  <ExternalLink className="stroke-blue-600 pb-1" />
+                </a>
+              </div>
+              <div className="mt-2 flex flex-wrap items-center space-x-2">
+                <div className="flex items-center">
+                  <Building2 className="text-blue-500 mr-1" />
+                  <span className="font-semibold">
+                    {friendRequest.companyName}
+                  </span>
+                </div>
+                <div className="flex items-center">
+                  <UserCog className="text-blue-500 mr-1" />
+                  <span className="font-semibold">
+                    {friendRequest.jobRole || "Software Engineer"}
+                  </span>
+                </div>
+              </div>
+              <p className="mt-2 text-md lg:text-lg">
                 Requesting referral for{" "}
-                <Link
+                <a
                   href={`/job/${friendRequest.jobURL}`}
-                  isExternal
-                  color="blue.500"
                   className="text-blue-500 underline truncate"
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   {friendRequest.jobURL}
-                </Link>
-              </Text>
-              <HStack mt={4} spacing={4}>
-                <Button
-                  onClick={() =>
-                    acceptFriend(friendRequest.senderId, friendRequest.jobURL)
-                  }
-                  colorScheme="teal"
-                  variant="outline"
-                  leftIcon={<FaCheck />}
-                >
-                  Accept
-                </Button>
-                <Button
-                  onClick={() => denyFriend(friendRequest.senderId)}
-                  colorScheme="red"
-                  variant="outline"
-                  leftIcon={<FaTimes />}
-                >
-                  Deny
-                </Button>
-              </HStack>
-            </Box>
-          ))
-        )}
-      </VStack>
+                </a>
+              </p>
+            </div>
+            <div className="mt-4 flex space-x-4">
+              <button
+                onClick={() =>
+                  acceptFriend(friendRequest.senderId, friendRequest.jobURL)
+                }
+                className="border-teal-500 text-teal-500 border-2 px-4 py-1 rounded-md flex items-center hover:bg-teal-500 hover:text-white transition"
+              >
+                <FaCheck className="mr-2" />
+                Accept
+              </button>
+              <button
+                onClick={() => denyFriend(friendRequest.senderId)}
+                className="border-red-500 text-red-500 border-2 px-4 py-1 rounded-md flex items-center hover:bg-red-500 hover:text-white transition"
+              >
+                <FaTimes className="mr-2" />
+                Deny
+              </button>
+            </div>
+          </div>
+        ))
+      )}
     </div>
   );
 };
