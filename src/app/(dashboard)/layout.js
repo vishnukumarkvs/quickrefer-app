@@ -1,4 +1,8 @@
+"use client";
+
+import LoggedNavbar from "@/components/LoggedNavbar";
 import SideBar from "@/components/Sidebar";
+import { Box } from "@chakra-ui/react";
 
 export const metadata = {
   title: "Create Next App",
@@ -7,9 +11,15 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <div className={`flex overflow-y-hidden bg-[#fbf9f0]`}>
-      <SideBar className="w-1/4" />
-      <main className="flex-grow max-h-screen overflow-y-auto">{children}</main>
-    </div>
+    <Box minH="100vh">
+      <LoggedNavbar />
+      <Box
+        px={{ base: "25px", lg: "20px" }}
+        py={{ base: "15px", lg: "30px" }}
+        ml={{ base: 0, lg: 60 }}
+      >
+        {children}
+      </Box>
+    </Box>
   );
 }

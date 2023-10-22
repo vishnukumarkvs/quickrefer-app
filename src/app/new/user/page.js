@@ -86,7 +86,7 @@ const Page = () => {
         direction={"column"}
         gap="3"
         bg="white"
-        w="40%"
+        w={{ base: "90%", lg: "40%" }}
         mx="auto"
         mt="50px"
         px="25px"
