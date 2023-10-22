@@ -50,12 +50,14 @@ function BottomNavbar({
         )}
       </Box> */}
       <Box
-        p="2"
-        rounded={"full"}
+        px="6"
+        py="2"
+        rounded={"lg"}
         bg={pathname === "/dashboard/accepted" ? "gray.200" : "white"}
         onClick={() => {
           router.push("/dashboard/accepted");
         }}
+        cursor="pointer"
       >
         <Flex gap="2" alignItems={"center"}>
           <FaUserCheck size={24} />
@@ -68,12 +70,14 @@ function BottomNavbar({
         </Text>
       </Box>
       <Box
-        p="2"
-        rounded={"full"}
+        px="6"
+        py="2"
+        rounded={"lg"}
         bg={pathname === "/dashboard/sent" ? "gray.200" : "white"}
         onClick={() => {
           router.push("/dashboard/sent");
         }}
+        cursor="pointer"
       >
         <Flex gap="2" alignItems={"center"}>
           <FaUserPlus size={24} />
