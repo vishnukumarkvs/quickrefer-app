@@ -3,6 +3,7 @@
 import Messages from "@/components/chat/Messages";
 import { authOptions } from "@/lib/auth";
 import driver from "@/lib/neo4jClient";
+import { Download } from "lucide-react";
 // import { redis } from "@/lib/redis";
 import { getServerSession } from "next-auth";
 import { notFound } from "next/navigation";
@@ -43,6 +44,17 @@ const Page = async ({ params }) => {
       }
     });
 
+  let resumeurl = `${process.env.NEXT_PUBLIC_CLOUDFRONT_URL}/${chatPartner.userId}.pdf`;
+  const downloadResume = (
+    <a
+      href={resumeurl}
+      download={`${chatPartner.userId}.pdf`}
+      style={{ display: "inline-block" }}
+    >
+      <Download className="pt-1" />
+    </a>
+  );
+
   // console.log(chatPartner);
 
   // console.log("roberto", params.chatId);
@@ -68,9 +80,13 @@ const Page = async ({ params }) => {
                 {chatPartner.name}
               </span>
             </div>
-            <span className="text-sm text-gray-600">
+            <span
+              className="text-sm text-gray-600"
+              style={{ display: "inline-block" }}
+            >
               Works At{" "}
-              <span className="font-semibold">{chatPartner.company}</span>
+              <span className="font-semibold">{chatPartner.company}</span>,
+              Resume:<span className="mt-2">{downloadResume}</span>
             </span>
           </div>
         </div>
