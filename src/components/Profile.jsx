@@ -613,7 +613,7 @@ const Profile = ({ username }) => {
               className="mt-3"
               src={resumeUrl}
               width="100%"
-              height="1400px"
+              height="1290px"
             >
               Sorry, your browser doesn{"'"}t support embedded PDFs. Please{" "}
               <a target="_blank" href={resumeUrl}>

@@ -65,16 +65,13 @@ const UserList = ({ users, url }) => {
             <CardFooter pt="2">
               <ButtonGroup spacing="2">
                 <AddFriendButton id={user.userId} url={url} />
-                <Button
-                  size="xs"
-                  onClick={() => {
-                    router.push(`/user/${user.username}`);
-                  }}
-                  variant="ghost"
-                  colorScheme="blue"
-                >
-                  View Profile
-                </Button>
+                <Link href={`/user/${user.username}`} passHref>
+                  <a target="_blank" rel="noopener noreferrer">
+                    <Button size="xs" variant="ghost" colorScheme="blue">
+                      View Profile
+                    </Button>
+                  </a>
+                </Link>
               </ButtonGroup>
             </CardFooter>
           </Card>
