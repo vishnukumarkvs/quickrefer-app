@@ -1,48 +1,37 @@
 "use client";
 
+import { ResponsiveTable } from "responsive-table-react";
 import Link from "next/link";
-import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
-import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 import AddFriendButton from "../chat/AddFriendButton";
 import EmptyComponent from "../emptystates/EmptyComponent";
 
 const UserList = ({ users, url }) => {
-  return users?.length > 0 ? ( // Check if users is not empty
+  const columns = [
+    { id: "fullname", text: "Fullname" },
+    { id: "profile", text: "Profile" },
+    { id: "experience", text: "Experience" },
+    { id: "send", text: "Send" },
+  ];
+
+  const data = (users ? users : []).map((user) => ({
+    fullname: user.fullname,
+    profile: (
+      <Link
+        href={`/user/${user.username}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-blue-500"
+      >
+        {user.username}
+      </Link>
+    ),
+    experience: `${user.experience} yrs`,
+    send: <AddFriendButton id={user.userId} url={url} />,
+  }));
+
+  return users?.length > 0 ? (
     <div className="my-5">
-      <Table>
-        {/* <TableCaption>A list of potential referrers.</TableCaption> */}
-        <Thead>
-          <Tr>
-            {/* <Th>No</Th> */}
-            <Th>Fullname</Th>
-            <Th>Profile</Th>
-            <Th>Experience</Th>
-            <Th>Send</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {users.map((user, index) => (
-            <Tr key={index}>
-              {/* <Td>{index + 1}</Td> */}
-              <Td>{user.fullname}</Td>
-              <Td>
-                <Link
-                  href={`/user/${user.username}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-500"
-                >
-                  {user.username}
-                </Link>
-              </Td>
-              <Td>{user.experience} yrs</Td>
-              <Td>
-                <AddFriendButton id={user.userId} url={url} />
-              </Td>
-            </Tr>
-          ))}
-        </Tbody>
-      </Table>
+      <ResponsiveTable columns={columns} data={data} />
     </div>
   ) : (
     users && users.length === 0 && (
@@ -50,4 +39,5 @@ const UserList = ({ users, url }) => {
     )
   );
 };
+
 export default UserList;
