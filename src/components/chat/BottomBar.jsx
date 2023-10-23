@@ -66,7 +66,7 @@ function BottomNavbar({
           </Tag>
         </Flex>
         <Text mt="1" fontSize="sm">
-          Accepted Requests
+          Accepted By You
         </Text>
       </Box>
       <Box
@@ -86,7 +86,7 @@ function BottomNavbar({
           </Tag>
         </Flex>
         <Text mt="1" fontSize="sm">
-          Sent Requests
+          Sent By You
         </Text>
       </Box>
     </Box>
