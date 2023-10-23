@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@chakra-ui/react";
 import axios from "axios";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
@@ -40,8 +40,13 @@ const AddFriendButton = ({ id, url }) => {
   };
 
   return (
-    <Button variant="default" onClick={addFriend} isLoading={isLoading}>
-      {showSuccessState ? "Sent!" : "ADD"}
+    <Button
+      size="xs"
+      colorScheme="yellow"
+      onClick={addFriend}
+      isLoading={isLoading}
+    >
+      {showSuccessState ? "Sent!" : "Request"}
     </Button>
   );
 };

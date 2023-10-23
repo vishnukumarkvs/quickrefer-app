@@ -17,7 +17,12 @@ const EmptyComponent = ({ title }) => {
       borderRadius={"md"}
     >
       <Image height={200} width={200} src="/empty-box.png" alt="empty" />
-      <Text width={"40%"} textAlign={"center"} fontSize="xl" color="gray.500">
+      <Text
+        width={{ base: "full", lg: "40%" }}
+        textAlign={"center"}
+        fontSize="xl"
+        color="gray.500"
+      >
         {title || "No data found"}
       </Text>
     </Flex>

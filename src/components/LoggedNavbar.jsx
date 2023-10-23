@@ -17,7 +17,7 @@ import {
 } from "@chakra-ui/react";
 import { IconType } from "react-icons";
 import { ReactText } from "react";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import axios from "axios";
 //import all icons
 import { FaUsers, FaQuestion } from "react-icons/fa";
@@ -25,6 +25,7 @@ import { HiOutlineStatusOnline } from "react-icons/hi";
 import { BsFillChatFill } from "react-icons/bs";
 import { BiSolidUserCircle } from "react-icons/bi";
 import { FiMenu } from "react-icons/fi";
+import { BiLogOut } from "react-icons/bi";
 import Link from "next/link";
 
 const get_all_unseen = process.env.NEXT_PUBLIC_GET_ALL_UNSEEN_URL;
@@ -133,6 +134,9 @@ const SidebarContent = ({ onClose, unseenCount, session, ...rest }) => {
           )}
         </NavItem>
       ))}
+      <NavItem icon={BiLogOut} link="#" onClick={signOut}>
+        Logout
+      </NavItem>
     </Box>
   );
 };

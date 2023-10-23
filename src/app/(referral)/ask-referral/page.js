@@ -25,6 +25,7 @@ import { Flex, Input } from "@chakra-ui/react";
 import AutoCompleteCompanyName from "@/components/autocomplete/CompanyNameFromNeo4J";
 import EmptyComponent from "@/components/emptystates/EmptyComponent";
 import { isValidURL } from "@/lib/utils";
+import UserList from "@/components/ask-referral/UserList";
 
 const Page = () => {
   const [company, setCompany] = useState(null);
@@ -141,49 +142,7 @@ const Page = () => {
             </Button>
           </div>
         </div>
-        {users?.length > 0 ? ( // Check if users is not empty
-          <div className="my-5">
-            <Table>
-              <TableCaption>A list of potential referrers.</TableCaption>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-[100px]">No</TableHead>
-                  <TableHead>Fullname</TableHead>
-                  <TableHead>Profile</TableHead>
-                  <TableHead>Experience</TableHead>
-                  <TableHead className="text-right">Send</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {users.map((user, index) => (
-                  <TableRow key={index}>
-                    <TableCell>{index + 1}</TableCell>
-                    <TableCell>{user.fullname}</TableCell>
-                    <TableCell>
-                      <Link
-                        href={`/user/${user.username}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-500"
-                      >
-                        {user.username}
-                      </Link>
-                    </TableCell>
-                    <TableCell>{user.experience} yrs</TableCell>
-                    <TableCell className="text-right">
-                      <AddFriendButton id={user.userId} url={url} />
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        ) : (
-          users &&
-          users.length === 0 && (
-            <EmptyComponent title="We are onboarding referers from 150+ companies very soon, please wait or try for different company." />
-          )
-        )}
+        <UserList users={users} url={url} />
       </div>
     </div>
   );
