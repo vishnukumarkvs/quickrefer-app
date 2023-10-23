@@ -16,6 +16,7 @@ export default withAuth(
       "/user",
       "/ask-referral",
       "/new/user",
+      "/faq",
     ];
     const isAccessingSensitiveRoute = sensitiveRoutes.some((route) =>
       pathname.startsWith(route)
@@ -56,5 +57,6 @@ export const config = {
     "/user/:path*",
     "/ask-referral/:path*",
     "/new/user",
+    "/faq",
   ],
 };
