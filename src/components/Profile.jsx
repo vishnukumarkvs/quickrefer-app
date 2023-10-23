@@ -59,6 +59,7 @@ import PageLoader from "./PageLoader";
 import { Flex, Heading, Text } from "@chakra-ui/react";
 import SocialButtons from "./profile/SocialLinks";
 import AutoCompleteCompanyName from "./autocomplete/CompanyNameFromList";
+import { BeatLoader } from "react-spinners";
 
 // import Select from "react-select";
 
@@ -582,7 +583,7 @@ const Profile = ({ username }) => {
   if (isLoading) {
     return (
       <div className="w-full h-screen flex justify-center items-center">
-        <Loader2 className="animate-spin" />
+        <BeatLoader color="#ffc800e5" />
       </div>
     );
   }

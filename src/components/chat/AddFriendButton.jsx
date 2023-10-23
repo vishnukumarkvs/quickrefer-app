@@ -20,7 +20,9 @@ const AddFriendButton = ({ id, url }) => {
       if (error.response) {
         switch (error.response.status) {
           case 400:
-            toast.error("You cannot send yourself to yourself");
+            toast.error("You cannot send yourself to yourself", {
+              position: "bottom-center",
+            });
             break;
           case 403:
             toast.error(error.response.data);
