@@ -46,11 +46,7 @@ const Page = async ({ params }) => {
 
   let resumeurl = `${process.env.NEXT_PUBLIC_CLOUDFRONT_URL}/${chatPartner.userId}.pdf`;
   const downloadResume = (
-    <a
-      href={resumeurl}
-      download={`${chatPartner.userId}.pdf`}
-      style={{ display: "inline-block" }}
-    >
+    <a href={resumeurl} download style={{ display: "inline-block" }}>
       <Download className="pt-1" />
     </a>
   );
