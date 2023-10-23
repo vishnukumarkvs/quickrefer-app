@@ -134,9 +134,37 @@ const SidebarContent = ({ onClose, unseenCount, session, ...rest }) => {
           )}
         </NavItem>
       ))}
-      <NavItem icon={BiLogOut} link="#" onClick={signOut}>
-        Logout
-      </NavItem>
+
+      <Box
+        as="a"
+        style={{ textDecoration: "none" }}
+        _focus={{ boxShadow: "none" }}
+        onClick={() => signOut()}
+      >
+        <Flex
+          align="center"
+          p="4"
+          mx="4"
+          borderRadius="lg"
+          role="group"
+          cursor="pointer"
+          _hover={{
+            bg: "yellow.400",
+            color: "white",
+          }}
+          {...rest}
+        >
+          <Icon
+            mr="4"
+            fontSize="16"
+            _groupHover={{
+              color: "white",
+            }}
+            as={BiLogOut}
+          />
+          Logout
+        </Flex>
+      </Box>
     </Box>
   );
 };
