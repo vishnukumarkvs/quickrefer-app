@@ -84,8 +84,8 @@ const FriendRequests = ({ incomingFriendRequests, sessionId }) => {
   return (
     <div className="my-5 space-y-5">
       {sortedFriendRequests.length === 0 ? (
-        <div className="p-5 bg-white shadow-md rounded-md">
-          <p>Click on accepted or sent requests to view them here</p>
+        <div className="m-2 p-5 bg-white shadow-md rounded-md">
+          <p> No requests received yet. </p>
         </div>
       ) : (
         sortedFriendRequests.map((friendRequest, index) => (

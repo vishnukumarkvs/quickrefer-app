@@ -129,10 +129,10 @@ const SidebarChatList = ({ friends: initialFriends, sessionId }) => {
                     <span className="text-lg lg:text-sm  font-semibold">
                       {friend.name}
                     </span>
-                    <span>, {friend.company}</span>
+                    <span className="text-xs">, {friend.company}</span>
 
                     {unseenMessageCount > 0 && (
-                      <div className="bg-indigo-600 font-medium text-xs text-white w-4 h-4 rounded-full flex justify-center items-center">
+                      <div className="bg-indigo-600 ml-2 font-medium text-xs text-white w-4 h-4 rounded-full flex justify-center items-center">
                         {unseenMessageCount}
                       </div>
                     )}
