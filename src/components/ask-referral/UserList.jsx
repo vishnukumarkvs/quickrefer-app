@@ -46,16 +46,20 @@ const UserList = ({ users, url }) => {
           <Card w="full" key={index}>
             <CardHeader pb="1">
               <Flex spacing="4">
-                <Flex flex="1" gap="4" alignItems="center" flexWrap="wrap">
+                <Flex flex="1" gap="2" alignItems="center" flexWrap="wrap">
                   <Box>
-                    <Heading size="sm">{user.username}</Heading>
-                    <Text>{user.experience}&nbsp;years</Text>
+                    <Heading size="sm" pb="1">
+                      {user.username}
+                    </Heading>
+                    <Text>{user.experience}&nbsp;yrs exp</Text>
                   </Box>
                 </Flex>
               </Flex>
             </CardHeader>
             <CardBody py="0">
-              <Text>{`Works as a ${user.jobRole || "Software Engineer"}`}</Text>
+              <Text>{`Works as a ${
+                user.currentJobRole || "Software Engineer"
+              }`}</Text>
             </CardBody>
 
             <CardFooter pt="2">
@@ -84,6 +88,7 @@ const UserList = ({ users, url }) => {
             <TableRow>
               <TableHead className="w-[100px]">No</TableHead>
               <TableHead>Fullname</TableHead>
+              <TableHead>Role</TableHead>
               <TableHead>Profile</TableHead>
               <TableHead>Experience</TableHead>
               <TableHead className="text-right">Send</TableHead>
@@ -94,6 +99,9 @@ const UserList = ({ users, url }) => {
               <TableRow key={index}>
                 <TableCell>{index + 1}</TableCell>
                 <TableCell>{user.fullname}</TableCell>
+                <TableCell>
+                  {user.currentJobRole || "Software Engineer"}
+                </TableCell>
                 <TableCell>
                   <Link
                     href={`/user/${user.username}`}
