@@ -14,14 +14,22 @@ export default function RootLayout({ children }) {
         <title>QuickRefer</title>
         <meta property="og:title" content={"QuickRefer"} />
         <meta property="og:url" content={"quickrefer.in"} />
+        <meta property="og:type" content={"website"} />
+        <meta property="og:site_name" content={"QuickRefer"} />
+        <meta property="og:locale" content={"en_IN"} />
+        <meta property="og:image:width" content={"512"} />
+        <meta property="og:image:height" content={"512"} />
+        <meta property="og:image:type" content={"image/png"} />
+        <meta property="og:image:alt" content={"QuickRefer"} />
+        <meta property="og:image" content={"/android-chrome-512x512.png"} />
         <meta
-          name="description"
+          property="og:description"
           content={
             "Get instant referrals & elevate Your Career: Unlock Job Opportunities with Personal Referrals"
           }
         />
         <meta
-          property="og:description"
+          name="description"
           content={
             "Get instant referrals & elevate Your Career: Unlock Job Opportunities with Personal Referrals"
           }

@@ -1,18 +1,37 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Box, Input, List, ListItem, Spinner, Text } from "@chakra-ui/react";
-import { companies } from "@/constants/companies";
+import { Box, Input, Text } from "@chakra-ui/react";
 import FuzzySearch from "fuzzy-search";
-import { Loader2 } from "lucide-react";
-import { BeatLoader } from "react-spinners";
+import axios from "axios";
 
-const AutoCompleteCompanyName = ({ onSelect }) => {
-  const [query, setQuery] = useState("");
+const AutoCompleteCompanyName = ({ onSelect, defaultvalue }) => {
+  const [query, setQuery] = useState(defaultvalue || "");
   const [results, setResults] = useState([]);
   const [showResults, setShowResults] = useState(false);
-  const [loading, setLoading] = useState(false);
   const wrapperRef = useRef(null);
+  const [companies, setCompanies] = useState([]);
+  const [companyListLoading, setCompanyListLoading] = useState(false);
 
   useEffect(() => {
+    setCompanyListLoading(true);
+    axios
+      .get("/api/getCompanyList")
+      .then((res) => {
+        setCompanyListLoading(false);
+        setCompanies(res.data?.records[0]?._fields[0]);
+      })
+      .catch((err) => {
+        setCompanyListLoading(false);
+        console.log(err);
+      });
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
+        setShowResults(false);
+      }
+    };
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
@@ -24,30 +43,21 @@ const AutoCompleteCompanyName = ({ onSelect }) => {
     sort: true,
   };
 
-  const handleChange = async (event) => {
+  const searcher = new FuzzySearch(companies, [], searchOptions);
+
+  const handleChange = (event) => {
     const newQuery = event.target.value;
     setQuery(newQuery);
-    setLoading(true);
 
     if (newQuery) {
-      const res = await fetch(`/api/getCompanyList`, { cache: "no-cache" });
-      // const res = await fetch(`/api/getCompanyList`, {
-      //   next: { revalidate: 120 }, // in seconds
-      // });
-      const data = await res.json();
-      const searcher = new FuzzySearch(
-        data.records[0]._fields[0],
-        [],
-        searchOptions
-      );
-      setResults(searcher.search(newQuery));
+      const results = searcher.search(newQuery);
+      console.log("results", results, searcher);
+      setResults(results);
       setShowResults(true);
     } else {
       setResults([]);
       setShowResults(false);
     }
-
-    setLoading(false);
   };
 
   const handleSelect = (result) => {
@@ -57,30 +67,28 @@ const AutoCompleteCompanyName = ({ onSelect }) => {
     onSelect(result);
   };
 
-  const handleClickOutside = (event) => {
-    if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
-      setShowResults(false);
-    }
-  };
-
   const handleClick = () => {
-    setShowResults(true);
+    if (query && results.length > 0) {
+      setShowResults(true);
+    }
   };
 
   return (
     <Box ref={wrapperRef} position="relative">
-      <div className="flex flex-row items-center space-x-2">
-        <Input
-          bg="white"
-          value={query}
-          onChange={handleChange}
-          placeholder="Type to search company name"
-          onClick={handleClick}
-        />
-        {loading && <BeatLoader color="#ffc800e5" size={7} />}
-      </div>
-
-      {showResults && results?.length > 0 && (
+      <Input
+        bg="white"
+        value={query}
+        required
+        placeholder={
+          companyListLoading
+            ? "Fetching company list..."
+            : "Search for a company"
+        }
+        onChange={handleChange}
+        onClick={handleClick}
+        disabled={companyListLoading}
+      />
+      {showResults && results.length > 0 && (
         <Box
           mt="2"
           width="100%"
@@ -109,7 +117,7 @@ const AutoCompleteCompanyName = ({ onSelect }) => {
           ))}
         </Box>
       )}
-      {!loading && showResults && results?.length === 0 && (
+      {/* {!showResults && results.length === 0 && query && (
         <Box
           mt="2"
           position="absolute"
@@ -122,7 +130,7 @@ const AutoCompleteCompanyName = ({ onSelect }) => {
         >
           No results found
         </Box>
-      )}
+      )} */}
     </Box>
   );
 };
