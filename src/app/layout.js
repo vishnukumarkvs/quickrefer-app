@@ -1,12 +1,11 @@
-// app/layout.tsx
 import Provider from "@/components/Providers";
 import "./globals.css";
 
-export const metadata = {
-  title: "QuickRefer",
-  description: "Get instant referrals !!",
-  // viewport: "viewport-fit=cover",
-};
+// export const metadata = {
+//   title: "QuickRefer",
+//   description:
+//     "Get instant referrals & elevate Your Career: Unlock Job Opportunities with Personal Referrals",
+// };
 
 export default function RootLayout({ children }) {
   return (
@@ -15,8 +14,18 @@ export default function RootLayout({ children }) {
         <title>QuickRefer</title>
         <meta property="og:title" content={"QuickRefer"} />
         <meta property="og:url" content={"quickrefer.in"} />
-        <meta name="description" content={"Get instant referrals !!"} />
-        <meta property="og:description" content={"Get instant referrals !!"} />
+        <meta
+          name="description"
+          content={
+            "Get instant referrals & elevate Your Career: Unlock Job Opportunities with Personal Referrals"
+          }
+        />
+        <meta
+          property="og:description"
+          content={
+            "Get instant referrals & elevate Your Career: Unlock Job Opportunities with Personal Referrals"
+          }
+        />
         <meta name="twitter:site" content={`@quickrefer`} />
         {/* <meta
           name="twitter:card"
@@ -45,6 +54,7 @@ export default function RootLayout({ children }) {
           property="og:image"
           content={"/favicon/android-chrome-512x512.png"}
         />
+        <meta name="theme-color" content="#ffffff" />
       </head>
       <body className={`bg-[#fbf9f0]`}>
         <Provider>{children}</Provider>

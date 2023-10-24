@@ -1,7 +1,6 @@
 "use client";
 
 import { ResponsiveTable } from "responsive-table-react";
-import Link from "next/link";
 import AddFriendButton from "../chat/AddFriendButton";
 import EmptyComponent from "../emptystates/EmptyComponent";
 import {
@@ -16,6 +15,7 @@ import {
   Button,
   Box,
   Heading,
+  Link,
 } from "@chakra-ui/react";
 import {
   Table,
@@ -27,6 +27,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useRouter } from "next/navigation";
+import ShareButton from "../ShareButton";
 
 const isMobile = () => {
   try {
@@ -66,21 +67,24 @@ const UserList = ({ users, url }) => {
               <ButtonGroup spacing="2">
                 <AddFriendButton id={user.userId} url={url} />
                 <Link href={`/user/${user.username}`} passHref>
-                  <a target="_blank" rel="noopener noreferrer">
-                    <Button size="xs" variant="ghost" colorScheme="blue">
-                      View Profile
-                    </Button>
+                  <a
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue text-xs"
+                  >
+                    View Profile
                   </a>
                 </Link>
               </ButtonGroup>
             </CardFooter>
           </Card>
         ))}
+        <ShareButton />
       </div>
     ) : (
       <div className="my-5">
         <Table>
-          <TableCaption>A list of potential referrers.</TableCaption>
+          {/* <TableCaption>A list of potential referrers.</TableCaption> */}
           <TableHeader>
             <TableRow>
               <TableHead className="w-[100px]">No</TableHead>
@@ -117,6 +121,7 @@ const UserList = ({ users, url }) => {
             ))}
           </TableBody>
         </Table>
+        <ShareButton />
       </div>
     )
   ) : (

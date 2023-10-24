@@ -15,9 +15,14 @@ import {
 } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
+import registersw from "@/components/register-serviceworker";
+import { useEffect } from "react";
 
 export default function CallToActionWithAnnotation() {
   const router = useRouter();
+  useEffect(() => {
+    registersw();
+  }, []);
   return (
     <Flex
       direction={"column"}
