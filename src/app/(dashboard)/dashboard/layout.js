@@ -50,16 +50,17 @@ const Layout = async ({ children }) => {
                 />
               </li>
               <li>
-                <p className="text-sm font-semibold text-amber-950 p-1">
+                <p className="text-sm font-semibold text-amber-950 p-1 border-b-2 border-amber-950 border-solid">
                   Accepted By You
                 </p>
+
                 <SidebarChatList
                   sessionId={session.user.id}
                   friends={acceptedFriends}
                 />
               </li>
               <li>
-                <p className="text-sm font-semibold text-amber-950 p-1">
+                <p className="text-sm font-semibold text-amber-950 p-1 border-b-2 border-amber-950 border-solid">
                   Sent By You
                 </p>
                 <SidebarChatList
