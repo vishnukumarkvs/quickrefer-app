@@ -120,7 +120,7 @@ const ProfilePlane = ({ username }) => {
               className="mt-3"
               src={resumeUrl}
               width="100%"
-              height="1290px"
+              height="1200px"
               onError={() => setIframeLoaded(false)}
             />
           )}

@@ -606,10 +606,10 @@ const Profile = ({ username }) => {
           openPersonal={openPersonal}
           setOpenPersonal={setOpenPersonal}
         />
-        <div className="flex flex-col justify-start items-center">
+        <div className="flex flex-col justify-center items-center">
           <ResumeUpload />
           {session.user.isResume ? (
-            <div>
+            <div className="w-full text-center">
               {/* Show the "View" link only on smaller screens */}
               <a
                 target="_blank"
@@ -624,7 +624,7 @@ const Profile = ({ username }) => {
                 className="hidden lg:block mt-3" // This shows the iframe on screens larger than "lg" and hides on smaller ones
                 src={resumeUrl}
                 width="100%"
-                height="1290px"
+                height="1200px"
               >
                 Sorry, your browser doesnt support embedded PDFs. Please{" "}
                 <a target="_blank" href={resumeUrl}>
