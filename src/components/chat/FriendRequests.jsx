@@ -19,6 +19,7 @@ import { GoOrganization } from "react-icons/go";
 import { pusherClient } from "@/lib/pusher";
 import { toPusherKey } from "@/lib/utils";
 import { Building2, ExternalLink, UserCircle, UserCog } from "lucide-react";
+import analytics from "@/lib/analytics";
 
 const FriendRequests = ({ incomingFriendRequests, sessionId }) => {
   const router = useRouter();
@@ -43,6 +44,10 @@ const FriendRequests = ({ incomingFriendRequests, sessionId }) => {
       });
     };
   }, [sessionId]);
+
+  useEffect(() => {
+    analytics.page();
+  }, []);
 
   const acceptFriend = async (senderId, jobURL) => {
     await axios.post("/api/friends/accept", { id: senderId, url: jobURL });

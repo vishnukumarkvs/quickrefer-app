@@ -14,9 +14,14 @@ import {
 } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
+import { useEffect } from "react";
+import analytics from "@/lib/analytics";
 
 export default function CallToActionWithAnnotation() {
   const router = useRouter();
+  useEffect(() => {
+    analytics.page();
+  }, []);
   return (
     <>
       <Container maxW={"3xl"}>

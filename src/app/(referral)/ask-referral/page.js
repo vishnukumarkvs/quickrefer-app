@@ -26,6 +26,7 @@ import AutoCompleteCompanyName from "@/components/autocomplete/CompanyNameFromNe
 import EmptyComponent from "@/components/emptystates/EmptyComponent";
 import { isValidURL } from "@/lib/utils";
 import UserList from "@/components/ask-referral/UserList";
+import analytics from "@/lib/analytics";
 
 const Page = () => {
   const [company, setCompany] = useState(null);
@@ -100,6 +101,10 @@ const Page = () => {
       });
     }
   };
+
+  useEffect(() => {
+    analytics.page();
+  }, []);
 
   return (
     <div className="w-full max-w-screen-lg mx-auto">

@@ -17,10 +17,12 @@ import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import registersw from "@/components/register-serviceworker";
 import { useEffect } from "react";
+import analytics from "@/lib/analytics";
 
 export default function CallToActionWithAnnotation() {
   const router = useRouter();
   useEffect(() => {
+    analytics.page();
     registersw();
   }, []);
   return (
