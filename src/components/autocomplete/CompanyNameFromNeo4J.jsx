@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Box, Input, Text } from "@chakra-ui/react";
 import FuzzySearch from "fuzzy-search";
 import axios from "axios";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 const AutoCompleteCompanyName = ({ onSelect, defaultvalue }) => {
   const [query, setQuery] = useState(defaultvalue || "");
@@ -28,6 +28,8 @@ const AutoCompleteCompanyName = ({ onSelect, defaultvalue }) => {
     cacheTime: 0,
   });
 
+  const queryClient = useQueryClient();
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
@@ -36,6 +38,7 @@ const AutoCompleteCompanyName = ({ onSelect, defaultvalue }) => {
     };
 
     document.addEventListener("mousedown", handleClickOutside);
+    queryClient.invalidateQueries(["companyList"]);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
