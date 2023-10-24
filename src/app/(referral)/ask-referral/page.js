@@ -112,7 +112,7 @@ const Page = () => {
         <h1 className="text-5xl font-bold m-4 text-center">
           Ask for a Referral
         </h1>
-        <p className="w-[70%] mx-auto my-10 text-center">
+        <p className="w-full lg:w-[70%] mx-auto my-10 text-center">
           Submit the job link and choose the company for the referral. <br />{" "}
           Referrers interested in helping will connect with you via chat for
           details.
