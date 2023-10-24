@@ -1,5 +1,5 @@
 import driver from "@/lib/neo4jClient";
-// import { revalidatePath } from "next/cache";
+import { revalidatePath } from "next/cache";
 
 export async function GET(req) {
   const getAllCompaniesQuery = `
@@ -14,8 +14,8 @@ export async function GET(req) {
       return result;
     });
 
-    // const path = req.nextUrl.searchParams.get("path") || "/";
-    // revalidatePath(path);
+    const path = req.nextUrl.searchParams.get("path") || "/";
+    revalidatePath(path);
 
     return new Response(JSON.stringify(getResult), { status: 200 });
   } catch (error) {
