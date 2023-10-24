@@ -12,7 +12,8 @@ const AutoCompleteCompanyName = ({ onSelect, defaultvalue }) => {
 
   const getCompanyList = async () => {
     try {
-      const res = await axios.get("/api/getCompanyList");
+      const random = Math.floor(Math.random() * 1000000);
+      const res = await axios.get(`/api/getCompanyList/${random}`);
       return res.data?.records[0]?._fields[0];
     } catch (err) {
       console.log(err);
@@ -28,7 +29,7 @@ const AutoCompleteCompanyName = ({ onSelect, defaultvalue }) => {
     cacheTime: 0,
   });
 
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -38,7 +39,7 @@ const AutoCompleteCompanyName = ({ onSelect, defaultvalue }) => {
     };
 
     document.addEventListener("mousedown", handleClickOutside);
-    queryClient.invalidateQueries(["companyList"]);
+    // queryClient.invalidateQueries(["companyList"]);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
