@@ -9,7 +9,7 @@ import {
 
 const FAQ = () => {
   return (
-    <div className="w-[60%] h-screen m-10 mx-auto justify-center items-center">
+    <div className="w-full lg:w-[60%] h-screen m-10 mx-auto justify-center items-center">
       <p className="text-center text-5xl font-bold m-10 mb-[40px]">
         Frequently Asked Questions
       </p>
