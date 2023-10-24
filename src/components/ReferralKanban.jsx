@@ -285,7 +285,7 @@ const ReferralKanban = () => {
                                 {worksAt}
                               </Text>
                               <Text>
-                                Referred by:{" "}
+                                Being Referred by:{" "}
                                 <Link
                                   href={`/user/${username}`}
                                   target="_blank"
@@ -316,7 +316,7 @@ const ReferralKanban = () => {
                               {appliedDate && (
                                 <>
                                   <Text fontSize={"xl"} letterSpacing={2}>
-                                    Referred on
+                                    Accepted on
                                   </Text>
                                   <Tag>
                                     {format(
