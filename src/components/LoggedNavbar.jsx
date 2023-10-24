@@ -27,6 +27,7 @@ import { BiSolidUserCircle } from "react-icons/bi";
 import { FiMenu } from "react-icons/fi";
 import { BiLogOut } from "react-icons/bi";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const get_all_unseen = process.env.NEXT_PUBLIC_GET_ALL_UNSEEN_URL;
 if (!get_all_unseen) {
@@ -125,7 +126,12 @@ const SidebarContent = ({ onClose, unseenCount, session, ...rest }) => {
         <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
       </Flex>
       {LinkItems.map((link) => (
-        <NavItem key={link.name} icon={link.icon} link={link.link}>
+        <NavItem
+          key={link.name}
+          icon={link.icon}
+          link={link.link}
+          onClose={onClose}
+        >
           {link.name}
           {unseenCount > 0 && link.name == "Chat" && (
             <p className="bg-[#3453b9] rounded-full text-white px-2 ml-2">
@@ -169,41 +175,43 @@ const SidebarContent = ({ onClose, unseenCount, session, ...rest }) => {
   );
 };
 
-const NavItem = ({ icon, children, link, ...rest }) => {
+const NavItem = ({ icon, children, link, onClose, ...rest }) => {
+  const router = useRouter();
   return (
-    <Link href={link} passHref>
-      <Box
-        as="a"
-        style={{ textDecoration: "none" }}
-        _focus={{ boxShadow: "none" }}
+    <Box
+      onClick={() => {
+        router.push(link);
+        onClose();
+      }}
+      style={{ textDecoration: "none" }}
+      _focus={{ boxShadow: "none" }}
+    >
+      <Flex
+        align="center"
+        p="4"
+        mx="4"
+        borderRadius="lg"
+        role="group"
+        cursor="pointer"
+        _hover={{
+          bg: "yellow.400",
+          color: "white",
+        }}
+        {...rest}
       >
-        <Flex
-          align="center"
-          p="4"
-          mx="4"
-          borderRadius="lg"
-          role="group"
-          cursor="pointer"
-          _hover={{
-            bg: "yellow.400",
-            color: "white",
-          }}
-          {...rest}
-        >
-          {icon && (
-            <Icon
-              mr="4"
-              fontSize="16"
-              _groupHover={{
-                color: "white",
-              }}
-              as={icon}
-            />
-          )}
-          {children}
-        </Flex>
-      </Box>
-    </Link>
+        {icon && (
+          <Icon
+            mr="4"
+            fontSize="16"
+            _groupHover={{
+              color: "white",
+            }}
+            as={icon}
+          />
+        )}
+        {children}
+      </Flex>
+    </Box>
   );
 };
 

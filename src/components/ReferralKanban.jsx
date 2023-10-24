@@ -154,7 +154,7 @@ const ReferralKanban = () => {
         <div>Error: {error.message}</div>
       ) : (
         <React.Fragment>
-          <Flex gap="2">
+          <Flex gap="2" flexWrap="wrap">
             <Input
               type="text"
               placeholder="Search for a applied job or company ..."
