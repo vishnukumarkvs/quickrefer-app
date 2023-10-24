@@ -66,7 +66,7 @@ const UserList = ({ users, url }) => {
             <CardFooter pt="2">
               <ButtonGroup spacing="2">
                 <AddFriendButton id={user.userId} url={url} />
-                <Link href={`/user/${user.username}`} passHref>
+                {/* <Link href={`/user/${user.username}`} passHref>
                   <a
                     target="_blank"
                     rel="noopener noreferrer"
@@ -74,7 +74,7 @@ const UserList = ({ users, url }) => {
                   >
                     View Profile
                   </a>
-                </Link>
+                </Link> */}
               </ButtonGroup>
             </CardFooter>
           </Card>
@@ -90,7 +90,7 @@ const UserList = ({ users, url }) => {
               <TableHead className="w-[100px]">No</TableHead>
               <TableHead>Fullname</TableHead>
               <TableHead>Role</TableHead>
-              <TableHead>Profile</TableHead>
+              {/* <TableHead>Profile</TableHead> */}
               <TableHead>Experience</TableHead>
               <TableHead className="text-right">Send</TableHead>
             </TableRow>
@@ -103,7 +103,7 @@ const UserList = ({ users, url }) => {
                 <TableCell>
                   {user.currentJobRole || "Software Engineer"}
                 </TableCell>
-                <TableCell>
+                {/* <TableCell>
                   <Link
                     href={`/user/${user.username}`}
                     target="_blank"
@@ -112,7 +112,7 @@ const UserList = ({ users, url }) => {
                   >
                     {user.username}
                   </Link>
-                </TableCell>
+                </TableCell> */}
                 <TableCell>{user.experience} yrs</TableCell>
                 <TableCell className="text-right">
                   <AddFriendButton id={user.userId} url={url} />

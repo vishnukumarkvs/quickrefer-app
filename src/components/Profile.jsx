@@ -609,18 +609,30 @@ const Profile = ({ username }) => {
         <div className="flex flex-col justify-start items-center">
           <ResumeUpload />
           {session.user.isResume ? (
-            <iframe
-              className="mt-3"
-              src={resumeUrl}
-              width="100%"
-              height="1290px"
-            >
-              Sorry, your browser doesn{"'"}t support embedded PDFs. Please{" "}
-              <a target="_blank" href={resumeUrl}>
-                download the PDF
-              </a>{" "}
-              to view it.
-            </iframe>
+            <div>
+              {/* Show the "View" link only on smaller screens */}
+              <a
+                target="_blank"
+                href={resumeUrl}
+                className="lg:hidden text-blue-500 underline" // Added classes to make it blue and underlined
+              >
+                View
+              </a>
+
+              {/* Show the iframe only on screens larger than "lg" */}
+              <iframe
+                className="hidden lg:block mt-3" // This shows the iframe on screens larger than "lg" and hides on smaller ones
+                src={resumeUrl}
+                width="100%"
+                height="1290px"
+              >
+                Sorry, your browser doesn't support embedded PDFs. Please{" "}
+                <a target="_blank" href={resumeUrl}>
+                  download the PDF
+                </a>{" "}
+                to view it.
+              </iframe>
+            </div>
           ) : (
             <p className="my-2">Upload your resume to view it here!</p>
           )}
