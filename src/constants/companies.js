@@ -1,4 +1,5 @@
 export const companies = {
+  Infosys: "https://www.infosys.com/careers.html",
   Innovacer: "https://innovaccer.com/careers/#open-positions",
   Deloitte: "https://www2.deloitte.com/global/en/careers/job-search.html",
   JPMorgan: "https://careers.jpmorgan.com/us/en/home",
