@@ -116,13 +116,22 @@ const ProfilePlane = ({ username }) => {
         </div>
         <div className="flex flex-col justify-start items-center col-span-2">
           {data.resumeExists == true && (
-            <iframe
-              className="mt-3"
-              src={resumeUrl}
-              width="100%"
-              height="1200px"
-              onError={() => setIframeLoaded(false)}
-            />
+            <div className="w-full text-center">
+              <a
+                target="_blank"
+                href={resumeUrl}
+                className="lg:hidden text-blue-500 underline" // Added classes to make it blue and underlined
+              >
+                View
+              </a>
+              <iframe
+                className="mt-3"
+                src={resumeUrl}
+                width="100%"
+                height="1200px"
+                onError={() => setIframeLoaded(false)}
+              />
+            </div>
           )}
           {!iframeLoaded && <div>Resume not found.</div>}
         </div>
