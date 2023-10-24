@@ -2,28 +2,31 @@ import React, { useState, useRef, useEffect } from "react";
 import { Box, Input, Text } from "@chakra-ui/react";
 import FuzzySearch from "fuzzy-search";
 import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
 
 const AutoCompleteCompanyName = ({ onSelect, defaultvalue }) => {
   const [query, setQuery] = useState(defaultvalue || "");
   const [results, setResults] = useState([]);
   const [showResults, setShowResults] = useState(false);
   const wrapperRef = useRef(null);
-  const [companies, setCompanies] = useState([]);
-  const [companyListLoading, setCompanyListLoading] = useState(false);
 
-  useEffect(() => {
-    setCompanyListLoading(true);
-    axios
-      .get("/api/getCompanyList")
-      .then((res) => {
-        setCompanyListLoading(false);
-        setCompanies(res.data?.records[0]?._fields[0]);
-      })
-      .catch((err) => {
-        setCompanyListLoading(false);
-        console.log(err);
-      });
-  }, []);
+  const getCompanyList = async () => {
+    try {
+      const res = await axios.get("/api/getCompanyList");
+      return res.data?.records[0]?._fields[0];
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const {
+    data: companies,
+    isLoading: companyListLoading,
+    error: companyDataError,
+  } = useQuery(["companyList"], getCompanyList, {
+    enabled: true,
+    cacheTime: 0,
+  });
 
   useEffect(() => {
     const handleClickOutside = (event) => {
