@@ -595,7 +595,7 @@ const Profile = ({ username }) => {
   // console.log(session, "session profile");
 
   return (
-    <div className="w-[95%] h-full mx-auto">
+    <div className="w-full lg:w-[95%] h-full mx-auto">
       <p className="font-bold text-2xl text-center my-4 py-2 bg-white shadow-md rounded-md">
         My Profile
       </p>
