@@ -626,7 +626,7 @@ const Profile = ({ username }) => {
                 width="100%"
                 height="1290px"
               >
-                Sorry, your browser doesn't support embedded PDFs. Please{" "}
+                Sorry, your browser doesnt support embedded PDFs. Please{" "}
                 <a target="_blank" href={resumeUrl}>
                   download the PDF
                 </a>{" "}
