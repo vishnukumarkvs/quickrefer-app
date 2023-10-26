@@ -7,7 +7,7 @@ import { UpdateItemCommand } from "@aws-sdk/client-dynamodb";
 export async function POST(req) {
   const session = await getServerSession(authOptions);
 
-  const { username, company, exp, fullname } = await req.json();
+  const { username, company, exp, jobrole } = await req.json();
 
   const id = session.user.id;
   const email = session.user.email;
@@ -22,12 +22,12 @@ export async function POST(req) {
         sk: { S: `USER#${id}` },
       },
       UpdateExpression:
-        "SET jtusername = :jtusernameVal, userRole = :userRoleVal, company = :companyVal, fullname = :fullnameVal, userNew = :userNewVal",
+        "SET jtusername = :jtusernameVal, userRole = :userRoleVal, company = :companyVal, currentJobRole = :jobroleVal, userNew = :userNewVal",
       ExpressionAttributeValues: {
         ":jtusernameVal": { S: username },
         ":userRoleVal": { S: userRole },
         ":companyVal": { S: company },
-        ":fullnameVal": { S: fullname },
+        ":jobroleVal": { S: jobrole },
         ":userNewVal": { BOOL: false },
       },
     };

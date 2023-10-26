@@ -58,7 +58,7 @@ export default function LoggedNavbar() {
   }, [session?.user?.id]);
 
   if (status == "loading") {
-    return <>navbarloading...</>;
+    return <></>;
   }
 
   return (

@@ -107,7 +107,11 @@ const ProfilePlane = ({ username }) => {
   return (
     <div className="w-[95%] h-full mx-auto">
       <p className="font-bold text-2xl text-center my-4 py-2 bg-white shadow-md rounded-md">
-        {data.fullname || ""} Profile
+        {data.fullname
+          ? `${data.fullname} Profile`
+          : data.username
+          ? `${data.username} Profile`
+          : "Profile"}
       </p>
       <div className="flex flex-col">
         <div className="flex flex-col gap-2">

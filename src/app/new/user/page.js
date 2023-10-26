@@ -56,7 +56,7 @@ const Page = () => {
     try {
       await axios.post("/api/newusersubmit/user", {
         username: username,
-        fullname: data.fullname,
+        jobrole: data.jobrole,
         company: data.company,
         // skills: data.skills.map((skill) => skill.value),
         exp: data.exp,
@@ -96,18 +96,6 @@ const Page = () => {
         borderRadius={"8px"}
         boxShadow={"md"}
       >
-        <div>
-          <Text fontSize={"sm"} fontWeight={500}>
-            Full Name
-          </Text>
-          <Input
-            {...register("fullname", {
-              required: true,
-              maxLength: 32,
-              minLength: 3,
-            })}
-          />
-        </div>
         <div>
           <Text fontSize={"sm"} fontWeight={500}>
             Username
@@ -161,6 +149,18 @@ const Page = () => {
             />
           )}
         /> */}
+        <div>
+          <Text fontSize={"sm"} fontWeight={500}>
+            Job Role
+          </Text>
+          <Input
+            {...register("jobrole", {
+              required: true,
+              maxLength: 32,
+              minLength: 3,
+            })}
+          />
+        </div>
         <div>
           <Text fontSize={"sm"} fontWeight={500}>
             Experience
