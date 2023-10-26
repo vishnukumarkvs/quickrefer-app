@@ -40,6 +40,10 @@ export default function LoggedNavbar() {
 
   const [unseenCount, setUnseenCount] = useState();
 
+  if (status == "loading") {
+    return <></>;
+  }
+
   useEffect(() => {
     if (!session?.user?.id) return;
 

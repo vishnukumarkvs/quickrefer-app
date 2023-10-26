@@ -43,6 +43,8 @@ const Page = () => {
   const isSubmitDisabled = username === "" || isUsernameTaken;
 
   const handleUsernameChange = (newUsername) => {
+    newUsername = newUsername.toLowerCase();
+    newUsername = newUsername.trim().replace(/\s+/g, "-");
     setUsername(newUsername);
   };
 

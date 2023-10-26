@@ -9,7 +9,7 @@ export const companies = {
   Postman: "https://www.postman.com/company/careers/",
   MoodysAnalytics: "https://careers.moodys.com/",
   Wipro: "https://careers.wipro.com/careers-home/",
-  Qualcom: "https://www.qualcomm.com/company/careers",
+  Qualcomm: "https://www.qualcomm.com/company/careers",
   Internshala: "https://internshala.com/careers",
   Hike: "https://apply.workable.com/hike/?lng=en",
   GoldmanSachs: "https://www.goldmansachs.com/careers/",
@@ -158,4 +158,7 @@ export const companies = {
   BookMyShow: "https://bookmyshow.hire.trakstar.com/",
   Shopify: "https://www.shopify.com/careers",
   "Fidelity Investments": "https://jobs.fidelity.com/",
+  AWS: "https://aws.amazon.com/careers/",
+  "Fractal Analytics": "https://fractal.ai/workday-jobs/",
+  Atlassian: "https://www.atlassian.com/company/careers/all-jobs",
 };
