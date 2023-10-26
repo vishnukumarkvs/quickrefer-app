@@ -231,6 +231,10 @@ const PersonalDetails = ({ data, openPersonal, setOpenPersonal }) => {
             <p className="text-md font-medium mr-2">Full Name</p>
             <p className="text-md">{data.fullname}</p>
           </div>
+          <div className="grid grid-cols-2 items-center">
+            <p className="text-md font-medium mr-2">Username</p>
+            <p className="text-md">{data.username}</p>
+          </div>
 
           <div className="grid grid-cols-2 items-center">
             <p className="text-md font-medium mr-2">Email</p>
