@@ -40,10 +40,6 @@ export default function LoggedNavbar() {
 
   const [unseenCount, setUnseenCount] = useState();
 
-  if (status == "loading") {
-    return <></>;
-  }
-
   useEffect(() => {
     if (!session?.user?.id) return;
 
@@ -60,6 +56,10 @@ export default function LoggedNavbar() {
 
     fetchData();
   }, [session?.user?.id]);
+
+  if (status == "loading") {
+    return <>navbarloading...</>;
+  }
 
   return (
     <Box className={"bg-yellow-200"}>
