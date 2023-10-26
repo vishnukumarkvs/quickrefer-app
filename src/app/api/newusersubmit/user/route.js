@@ -44,7 +44,7 @@ export async function POST(req) {
     });
     const query = `
         MERGE (u:User {userId: $id})
-        ON CREATE SET u.username = $username, u.email = $email, u.userRole = $userRole, u.AcceptScore = 0, u.experience = $experience, u.currentJobRole = $jobrole
+        ON CREATE SET u.username = $username, u.fullname = $username, u.email = $email, u.userRole = $userRole, u.AcceptScore = 0, u.experience = $experience, u.currentJobRole = $jobrole
         MERGE (c:Company {name: $company})
         MERGE (u)-[:WORKS_AT]->(c)
     `;

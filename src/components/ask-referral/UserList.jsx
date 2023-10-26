@@ -88,7 +88,7 @@ const UserList = ({ users, url }) => {
           <TableHeader>
             <TableRow>
               <TableHead className="w-[100px]">No</TableHead>
-              <TableHead>Fullname</TableHead>
+              <TableHead>Name</TableHead>
               <TableHead>Role</TableHead>
               {/* <TableHead>Profile</TableHead> */}
               <TableHead>Experience</TableHead>
