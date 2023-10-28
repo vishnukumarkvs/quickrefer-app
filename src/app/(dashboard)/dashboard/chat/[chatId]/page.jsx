@@ -96,6 +96,7 @@ const Page = async ({ params }) => {
         userId={session.user.id}
         friendId={chatPartnerId}
         chatId={params.chatId}
+        friendEmail={chatPartner.email}
       />
     </div>
   );
