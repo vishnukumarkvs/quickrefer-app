@@ -26,7 +26,7 @@ const Page = async ({ params }) => {
       `
     MATCH (u:User {userId: $userId})
     MATCH (u)-[:WORKS_AT]->(c:Company)
-    RETURN u.userId as userId, u.email as email, u.username as name, c.name as company
+    RETURN u.userId as userId, u.email as email, u.fullname as name, c.name as company
     `,
       { userId: chatPartnerId }
     )
@@ -97,6 +97,7 @@ const Page = async ({ params }) => {
         friendId={chatPartnerId}
         chatId={params.chatId}
         friendEmail={chatPartner.email}
+        friendName={chatPartner.name}
       />
     </div>
   );

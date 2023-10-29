@@ -17,7 +17,7 @@ if (!chat_websocket_url || !get_messages_url) {
   );
 }
 
-const Messages = ({ userId, friendId, chatId, friendEmail }) => {
+const Messages = ({ userId, friendId, chatId, friendEmail, friendName }) => {
   const [messages, setMessages] = useState([]);
   const [webSocket, setWebSocket] = useState(null);
   const [input, setInput] = useState("");
@@ -77,6 +77,7 @@ const Messages = ({ userId, friendId, chatId, friendEmail }) => {
         chatId: chatId,
         content: input,
         receiverEmail: friendEmail,
+        receiverName: friendName,
       };
       if (webSocket && webSocket.readyState === WebSocket.OPEN) {
         webSocket.send(JSON.stringify(payload));
