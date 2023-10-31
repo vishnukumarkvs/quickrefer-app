@@ -53,13 +53,16 @@ const Page = () => {
   };
 
   const onSubmit = async (data) => {
+    if (data.exp == 0) {
+      data.exp = 1;
+    }
     try {
       await axios.post("/api/newusersubmit/user", {
         username: username,
-        jobrole: data.jobrole,
-        company: data.company,
+        jobrole: data.jobrole || "Software Engineer",
+        company: data.company || "Others",
         // skills: data.skills.map((skill) => skill.value),
-        exp: data.exp,
+        exp: data.exp || 1,
       });
       update({ jtusername: username, userNew: false });
       toast.success(
@@ -111,7 +114,7 @@ const Page = () => {
           </Text> */}
           <div className="mb-2">
             <p className="font-medium text-sm">Current/Previous Company</p>
-            <p className="text-xs font-normal">(Freshers can write: Others)</p>
+            {/* <p className="text-xs font-normal">(Freshers can write: Others)</p> */}
           </div>
           {/* <Input
           {...register("company", {
@@ -160,7 +163,7 @@ const Page = () => {
           </Text>
           <Input
             {...register("jobrole", {
-              required: true,
+              required: false,
               maxLength: 32,
               minLength: 3,
             })}
@@ -174,7 +177,7 @@ const Page = () => {
             type="number"
             min="0"
             {...register("exp", {
-              required: true,
+              required: false,
             })}
           />
         </div>
