@@ -27,6 +27,7 @@ import EmptyComponent from "@/components/emptystates/EmptyComponent";
 import { isValidURL } from "@/lib/utils";
 import UserList from "@/components/ask-referral/UserList";
 import analytics from "@/lib/analytics";
+import ShareButton from "@/components/ShareButton";
 
 const Page = () => {
   const [company, setCompany] = useState(null);
@@ -148,6 +149,9 @@ const Page = () => {
           </div>
         </div>
         <UserList users={users} url={url} />
+        <div className="my-4">
+          <ShareButton />
+        </div>
       </div>
     </div>
   );

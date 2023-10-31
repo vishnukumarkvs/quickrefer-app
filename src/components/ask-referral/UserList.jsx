@@ -79,7 +79,7 @@ const UserList = ({ users, url }) => {
             </CardFooter>
           </Card>
         ))}
-        <ShareButton />
+        {/* <ShareButton /> */}
       </div>
     ) : (
       <div className="my-5">
@@ -121,7 +121,7 @@ const UserList = ({ users, url }) => {
             ))}
           </TableBody>
         </Table>
-        <ShareButton />
+        {/* <ShareButton /> */}
       </div>
     )
   ) : (
