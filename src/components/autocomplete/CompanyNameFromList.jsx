@@ -3,7 +3,11 @@ import { Box, Input, Text } from "@chakra-ui/react";
 import FuzzySearch from "fuzzy-search";
 import { companies } from "@/constants/companies";
 
-const AutoCompleteCompanyName = ({ onSelect, defaultvalue }) => {
+const AutoCompleteCompanyName = ({
+  onSelect,
+  defaultvalue,
+  isRequired = true,
+}) => {
   const [query, setQuery] = useState(defaultvalue || "");
   const [results, setResults] = useState([]);
   const [showResults, setShowResults] = useState(false);
@@ -64,7 +68,7 @@ const AutoCompleteCompanyName = ({ onSelect, defaultvalue }) => {
       <Input
         bg="white"
         value={query}
-        required
+        required={isRequired}
         onChange={handleChange}
         onClick={handleClick}
       />

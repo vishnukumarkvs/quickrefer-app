@@ -125,6 +125,7 @@ const Page = () => {
             onSelect={(val) => {
               setValue("company", val);
             }}
+            isRequired={false}
           />
         </div>
         {/* <Text>Your Top 3 Skills</Text>
