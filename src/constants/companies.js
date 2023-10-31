@@ -161,4 +161,5 @@ export const companies = {
   AWS: "https://aws.amazon.com/careers/",
   "Fractal Analytics": "https://fractal.ai/workday-jobs/",
   Atlassian: "https://www.atlassian.com/company/careers/all-jobs",
+  Others: "Others",
 };

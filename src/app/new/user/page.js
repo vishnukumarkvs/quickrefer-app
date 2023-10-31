@@ -106,9 +106,13 @@ const Page = () => {
           />
         </div>
         <div>
-          <Text fontSize={"sm"} fontWeight={500}>
+          {/* <Text fontSize={"sm"} fontWeight={500}>
             Current/Previous Company
-          </Text>
+          </Text> */}
+          <div className="mb-2">
+            <p className="font-medium text-sm">Current/Previous Company</p>
+            <p className="text-xs font-normal">(Freshers can write: Others)</p>
+          </div>
           {/* <Input
           {...register("company", {
             required: true,
