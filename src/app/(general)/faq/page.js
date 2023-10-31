@@ -81,7 +81,7 @@ const FAQ = () => {
             What should I do if I encounter technical issues?
           </AccordionTrigger>
           <AccordionContent>
-            <p>Please contact me. Email id: kvs.vishnukumar@gmail.com</p>
+            <p>Please contact us. Email id: team@quickrefer.in</p>
           </AccordionContent>
         </AccordionItem>
         <AccordionItem value="item-6">

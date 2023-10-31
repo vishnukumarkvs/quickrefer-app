@@ -3,7 +3,7 @@ import Image from "next/image";
 
 function ShareButton() {
   const baseMessage =
-    "Get instant referrals & elevate Your Career. Unlock Job Opportunities with Personal Referrals. Check out www.quickrefer.in !";
+    "Get instant referrals & elevate Your Career. Unlock Job Opportunities with Personal Referrals. Check out https://quickrefer.in !";
 
   const whatsappURL = `https://wa.me/?text=${encodeURIComponent(baseMessage)}`;
 
