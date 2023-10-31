@@ -41,6 +41,9 @@ const AutoCompleteCompanyName = ({ onSelect, defaultvalue }) => {
       setResults([]);
       setShowResults(false);
     }
+
+    // Always update the parent component with the current input value
+    onSelect(newQuery);
   };
 
   const handleSelect = (result) => {
