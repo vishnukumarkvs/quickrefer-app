@@ -54,7 +54,7 @@ const Page = () => {
 
   const onSubmit = async (data) => {
     if (data.exp == 0) {
-      data.exp = 1;
+      data.exp = "1";
     }
     try {
       await axios.post("/api/newusersubmit/user", {
@@ -62,7 +62,7 @@ const Page = () => {
         jobrole: data.jobrole || "Software Engineer",
         company: data.company || "Others",
         // skills: data.skills.map((skill) => skill.value),
-        exp: data.exp || 1,
+        exp: data.exp || "1",
       });
       update({ jtusername: username, userNew: false });
       toast.success(
