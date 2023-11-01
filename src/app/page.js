@@ -64,6 +64,11 @@ export default function CallToActionWithAnnotation() {
             Privacy Policy
           </a>
         </Text>
+        <Text color={"blackAlpha.900"}>
+          <a href="/faqs" target="_blank" rel="noopener noreferrer">
+            FAQS
+          </a>
+        </Text>
         <Button
           bg={"#ffc800e5"}
           rounded={"full"}

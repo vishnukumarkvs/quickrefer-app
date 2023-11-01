@@ -1,24 +1,11 @@
 "use client";
 
-import Head from "next/head";
-import {
-  Box,
-  Heading,
-  Container,
-  Text,
-  Button,
-  Stack,
-  Icon,
-  useColorModeValue,
-  createIcon,
-} from "@chakra-ui/react";
-import { useRouter } from "next/navigation";
+import { Box, Heading, Container, Text, Button, Stack } from "@chakra-ui/react";
 import { signIn } from "next-auth/react";
 import { useEffect } from "react";
 import analytics from "@/lib/analytics";
 
 export default function CallToActionWithAnnotation() {
-  const router = useRouter();
   useEffect(() => {
     analytics.page();
   }, []);
