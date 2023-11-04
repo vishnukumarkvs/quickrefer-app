@@ -12,6 +12,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <head>
         <title>QuickRefer</title>
+        <link rel="canonical" href="https://www.quickrefer.in" />
         <meta property="og:title" content={"QuickRefer"} />
         <meta property="og:url" content={"quickrefer.in"} />
         <meta property="og:type" content={"website"} />
