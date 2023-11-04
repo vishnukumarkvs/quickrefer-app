@@ -15,8 +15,12 @@ export default function RootLayout({ children }) {
         <link rel="canonical" href="https://www.quickrefer.in" />
         <meta property="og:title" content={"QuickRefer"} />
         <meta property="og:url" content={"quickrefer.in"} />
-        <meta property="og:type" content={"website"} />
+        <meta property="og:type" content={"Website"} />
         <meta property="og:site_name" content={"QuickRefer"} />
+        <meta
+          name="keywords"
+          content="QuickRefer, quickrefer, quickrefer.in, QuickRefer, Referrals, Refer, Online Referral, Referral site, Job, Jobs in India, IT, Software"
+        />
         <meta property="og:locale" content={"en_IN"} />
         <meta property="og:image:width" content={"512"} />
         <meta property="og:image:height" content={"512"} />
@@ -26,13 +30,13 @@ export default function RootLayout({ children }) {
         <meta
           property="og:description"
           content={
-            "Get instant referrals & elevate Your Career: Unlock Job Opportunities with Personal Referrals"
+            "Quickrefer.in: Get instant referrals & elevate Your Career: Unlock Job Opportunities with Personal Referrals"
           }
         />
         <meta
           name="description"
           content={
-            "Get instant referrals & elevate Your Career: Unlock Job Opportunities with Personal Referrals"
+            "Quickrefer.in: Get instant referrals & elevate Your Career: Unlock Job Opportunities with Personal Referrals"
           }
         />
         <meta name="twitter:site" content={`@quickrefer`} />
