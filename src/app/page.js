@@ -106,6 +106,9 @@ export default function CallToActionWithAnnotation() {
               bg="black"
               color="white"
               rounded={"full"}
+              onClick={() => {
+                router.push("/search");
+              }}
             >
               Search for Referrals
             </Button>
