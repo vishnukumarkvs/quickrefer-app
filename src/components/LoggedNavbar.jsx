@@ -149,7 +149,11 @@ const SidebarContent = ({ onClose, unseenCount, session, ...rest }) => {
         as="a"
         style={{ textDecoration: "none" }}
         _focus={{ boxShadow: "none" }}
-        onClick={() => signOut()}
+        onClick={() => {
+          localStorage.removeItem("joburl");
+          localStorage.removeItem("company");
+          signOut();
+        }}
       >
         <Flex
           align="center"

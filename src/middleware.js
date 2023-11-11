@@ -8,7 +8,7 @@ export default withAuth(
 
     // Manage route protection
     const isAuth = await getToken({ req });
-    const isLoginPage = pathname === "/"; // Changed this line to treat root as login page
+    const isLoginPage = pathname === "/" || pathname === "/search"; // Changed this line to treat root as login page
 
     const sensitiveRoutes = [
       "/referral-status",
@@ -52,6 +52,7 @@ export default withAuth(
 export const config = {
   matcher: [
     "/",
+    "/search",
     "/dashboard/:path*",
     "/referral-status/:path*",
     "/user/:path*",

@@ -9,8 +9,6 @@ export async function POST(req) {
 
   const { username, company, exp, jobrole } = await req.json();
 
-  console.log(username, company, exp, jobrole);
-
   const id = session.user.id;
   const email = session.user.email;
 

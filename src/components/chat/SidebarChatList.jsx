@@ -61,9 +61,6 @@ const SidebarChatList = ({ friends: initialFriends, sessionId }) => {
     if (pathname?.includes("chat")) {
       const chatId = pathname.split("/").pop();
 
-      console.log("chatId@", chatId);
-      console.log("sessionId@", sessionId);
-
       const updateUnseenStatus = async () => {
         try {
           await axios.post(`${update_unseen}`, {

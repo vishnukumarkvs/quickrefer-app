@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-// import Select from "react-select";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
@@ -28,26 +27,33 @@ import { handleShareClick, isValidURL } from "@/lib/utils";
 import UserList from "@/components/ask-referral/UserList";
 import analytics from "@/lib/analytics";
 import ShareButton from "@/components/ShareButton";
+import { useSearchParams } from "next/navigation";
+import Image from "next/image";
+import { Text } from "@chakra-ui/react";
 
 const Page = () => {
+  const searchParams = useSearchParams();
+
   const [company, setCompany] = useState(null);
   const [users, setUsers] = useState(null);
   const [url, setUrl] = useState("");
   const [fetchUsersLoading, setFetchUsersLoading] = useState(false);
+
+  useEffect(() => {
+    if (searchParams.get("joburl")) {
+      console.log(searchParams.get("joburl"));
+      setUrl(searchParams.get("joburl"));
+    }
+    if (searchParams.get("company")) {
+      setCompany(searchParams.get("company"));
+    }
+  }, [searchParams]);
   // const [allCompanies, setAllCompanies] = useState([]);
 
   // useEffect(() => {
   //   router.query.previous = router.asPath
   //   console.log(router.query.previous)
   // }, [])
-
-  useEffect(() => {
-    if (localStorage) {
-      console.log(localStorage);
-      setUrl(localStorage.getItem("joburl"));
-      setCompany(localStorage.getItem("company"));
-    }
-  }, []);
 
   const loadOptions = async (inputValue, callback) => {
     try {
@@ -95,8 +101,8 @@ const Page = () => {
 
   const handleFetch = async (event) => {
     event.preventDefault();
-    if (company && url) {
-      if (!isValidURL(url)) {
+    if (company) {
+      if (url && !isValidURL(url)) {
         toast.error("Please enter a valid URL", {
           position: "bottom-right",
         });
@@ -104,10 +110,8 @@ const Page = () => {
       }
       setFetchUsersLoading(true);
       await getUsersOfCompany(company);
-      localStorage.removeItem("joburl");
-      localStorage.removeItem("company");
     } else {
-      toast.error("Please fill both Job Link and Company fields", {
+      toast.error("Please fill the company name to search", {
         position: "bottom-right",
       });
     }
@@ -118,28 +122,51 @@ const Page = () => {
   }, []);
 
   return (
-    <div className="w-full max-w-screen-lg mx-auto">
-      <div className="p-4">
-        <h1 className="text-5xl font-bold m-4 text-center">
-          Ask for a Referral
-        </h1>
-        <p className="w-full lg:w-[70%] mx-auto my-10 text-center">
-          Submit the job link and choose the company for the referral. <br />{" "}
-          Referrers interested in helping will connect with you via chat for
-          details.
-        </p>
-        {/* <ReferralSubmit options={options} /> */}
-        <div className="flex flex-col max-w-xl mx-auto gap-y-4">
-          <Input
-            type="text"
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
-            className="bg-white"
-            placeholder="Enter Job Link"
-            required
-          />
-          <div className="w-full">
-            {/* <AsyncSelect
+    <>
+      <Flex
+        bg={"#fcbd0b"}
+        color={"white"}
+        px={{ base: 5, md: 12 }}
+        py={4}
+        gap="2"
+        alignItems="center"
+        cursor="pointer"
+        onClick={() => {
+          window.location.href = "/";
+        }}
+      >
+        <Image
+          src="/android-chrome-512x512.png"
+          width="50"
+          height="50"
+          alt="Quick Refer Logo"
+        />
+        <Text fontSize="2xl" fontWeight="bold">
+          QuickRefer
+        </Text>
+      </Flex>
+      <div className="w-full max-w-screen-lg mx-auto">
+        <div className="p-4">
+          <h1 className="text-5xl font-bold m-4 text-center">
+            Ask for a Referral
+          </h1>
+          <p className="w-full lg:w-[70%] mx-auto my-10 text-center">
+            Submit the job link and choose the company for the referral. <br />{" "}
+            Referrers interested in helping will connect with you via chat for
+            details.
+          </p>
+          {/* <ReferralSubmit options={options} /> */}
+          <div className="flex flex-col max-w-xl mx-auto gap-y-4">
+            <Input
+              type="text"
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              className="bg-white"
+              placeholder="Enter Job Link (optional)"
+              required
+            />
+            <div className="w-full">
+              {/* <AsyncSelect
               // defaultOptions={defaultAsyncOptions}
               loadOptions={loadOptions} // Use the loadOptions function to fetch options asynchronously
               cacheOptions
@@ -150,41 +177,51 @@ const Page = () => {
               isClearable
               required
             /> */}
-            <AutoCompleteCompanyName
-              defaultvalue={company}
-              onSelect={(val) => setCompany(val)}
-            />
+              <AutoCompleteCompanyName
+                defaultvalue={company}
+                onSelect={(val) => setCompany(val)}
+              />
+            </div>
+            <div className="flex justify-center gap-2 items-center">
+              {/* <Button onClick={handleReferralSubmit}>Direct Submit</Button> */}
+              <Button
+                className="bg-[#ffc800e5] hover:bg-[#ffc800] text-black"
+                onClick={handleFetch}
+                isLoading={fetchUsersLoading}
+              >
+                Search
+              </Button>
+              <Button
+                onClick={() => {
+                  if (!company && !url)
+                    return toast.error(
+                      "Please fill atleast one field to share job search",
+                      {
+                        position: "bottom-right",
+                      }
+                    );
+                  handleShareClick(
+                    `Job Search for ${company || "a company"}`,
+                    `Hey, I found this job in ${
+                      company || "a company"
+                    } and I think you can get referrers here.`,
+                    `https://quickrefer.in/search?company=${
+                      company || ""
+                    }&joburl=${encodeURIComponent(url || "")}`
+                  );
+                }}
+              >
+                Share job search
+              </Button>
+            </div>
           </div>
-          <div className="flex justify-center items-center gap-2">
-            {/* <Button onClick={handleReferralSubmit}>Direct Submit</Button> */}
-            <Button
-              className="bg-[#ffc800e5] hover:bg-[#ffc800] text-black"
-              onClick={handleFetch}
-              isLoading={fetchUsersLoading}
-            >
-              Search
-            </Button>
-            <Button
-              onClick={() => {
-                handleShareClick(
-                  `Job Search for ${company}`,
-                  `Hey, I found this job in ${company} and I think you can get referrers here.`,
-                  `https://quickrefer.in/search?company=${company}&joburl=${encodeURIComponent(
-                    url
-                  )}`
-                );
-              }}
-            >
-              Share job search
-            </Button>
+          <UserList users={users} company={company} url={url} />
+          <div className="my-4">
+            <ShareButton />
           </div>
-        </div>
-        <UserList users={users} company={company} url={url} />
-        <div className="my-4">
-          <ShareButton />
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

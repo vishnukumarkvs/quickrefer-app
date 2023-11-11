@@ -29,9 +29,7 @@ const REQUESTED = "requested";
 const AVAILABLE_FOR_CHAT = "availableForChat";
 
 const fetchReferralRequests = async () => {
-  console.log("fetchReferralRequests entered");
   const { data } = await axios.get("/api/getreferralrequests");
-  console.log("fetchReferralRequestsAll", data);
   if (!data || !data.records || !Array.isArray(data.records)) {
     throw new Error("Invalid data structure from API");
   }
@@ -100,7 +98,6 @@ const processData = (records) => {
 // ... (previous imports and constants remain unchanged)
 
 const ReferralKanban = () => {
-  console.log("ReferralKanban entered");
   const [selectedDates, setSelectedDates] = useState(null);
   const [filter, setFilter] = useState("");
 

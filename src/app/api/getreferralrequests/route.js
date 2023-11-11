@@ -4,8 +4,6 @@ import { getServerSession } from "next-auth";
 
 export async function GET(req) {
   const usesseion = await getServerSession(authOptions);
-  console.log("usesseion", usesseion);
-
   // First, fetch users the main user sent friend requests to and who work at a company
   // UNION
   // Now fetch users who are friends with the main user and work at a company, excluding those already covered in sentFriendRequest

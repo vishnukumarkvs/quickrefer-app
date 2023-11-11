@@ -7,7 +7,6 @@ export async function POST(req) {
   const session = await getServerSession(authOptions);
 
   const { isResume } = await req.json();
-  console.log(isResume);
 
   const id = session.user.id;
 

@@ -28,3 +28,23 @@ export function linkify(inputText) {
     return `<a href="${url}" target="_blank" rel="noopener noreferrer" style="color: white; text-decoration:underline;">${url}</a>`;
   });
 }
+
+export const handleShareClick = async (title, shareText, url) => {
+  try {
+    if (navigator.share) {
+      await navigator.share({
+        title: title,
+        text: shareText,
+        url: url,
+      });
+    } else {
+      const baseMessage = `${shareText}\n${url}`;
+      const whatsappURL = `https://wa.me/?text=${encodeURIComponent(
+        baseMessage
+      )}`;
+      window.open(whatsappURL, "_blank");
+    }
+  } catch (error) {
+    console.error("Error sharing:", error);
+  }
+};

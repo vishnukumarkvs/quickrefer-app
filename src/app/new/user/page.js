@@ -69,7 +69,6 @@ const Page = () => {
         "Profile updated successfully, all the best for your job search"
       );
       router.push("/ask-referral");
-      console.log("successfully routed");
     } catch (err) {
       toast.error("Error updating profile");
       console.log(err);

@@ -5,7 +5,7 @@ import axios from "axios";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 const AutoCompleteCompanyName = ({ onSelect, defaultvalue }) => {
-  const [query, setQuery] = useState(defaultvalue || "");
+  const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [showResults, setShowResults] = useState(false);
   const wrapperRef = useRef(null);
@@ -28,6 +28,12 @@ const AutoCompleteCompanyName = ({ onSelect, defaultvalue }) => {
     enabled: true,
     cacheTime: 0,
   });
+
+  useEffect(() => {
+    if (defaultvalue) {
+      handleChange({ target: { value: defaultvalue } });
+    }
+  }, [defaultvalue, companies]);
 
   // const queryClient = useQueryClient();
 
@@ -57,8 +63,7 @@ const AutoCompleteCompanyName = ({ onSelect, defaultvalue }) => {
     setQuery(newQuery);
 
     if (newQuery) {
-      const results = searcher.search(newQuery);
-      console.log("results", results, searcher);
+      const results = searcher.search("tcs");
       setResults(results);
       setShowResults(true);
     } else {
@@ -107,6 +112,11 @@ const AutoCompleteCompanyName = ({ onSelect, defaultvalue }) => {
           boxShadow="rgba(100, 100, 111, 0.2) 0px 7px 29px 0px"
           borderRadius="md"
         >
+          <Box width="90%" margin="0 auto" padding="8px 0">
+            <Text fontSize={"sm"} fontWeight={500} color="gray.500">
+              Select from the list
+            </Text>
+          </Box>
           {results.map((result, index) => (
             <Box
               key={index}

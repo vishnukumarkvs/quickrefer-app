@@ -26,7 +26,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import ShareButton from "../ShareButton";
 
 const isMobile = () => {
@@ -37,9 +38,11 @@ const isMobile = () => {
   }
 };
 
-const UserList = ({ users, url }) => {
-  const router = useRouter();
-  console.log(users);
+const UserList = ({ users, url, company }) => {
+  const { data: session, status } = useSession();
+
+  if (status === "loading") return <></>;
+
   return users?.length > 0 ? (
     isMobile() ? (
       <div className="flex flex-col gap-3 my-5 items-start">
@@ -65,7 +68,21 @@ const UserList = ({ users, url }) => {
 
             <CardFooter pt="2">
               <ButtonGroup spacing="2">
-                <AddFriendButton id={user.userId} url={url} />
+                {session?.user?.id ? (
+                  <AddFriendButton id={user.userId} url={url} />
+                ) : (
+                  <Button
+                    size="xs"
+                    colorScheme="yellow"
+                    onClick={() => {
+                      localStorage.setItem("joburl", url);
+                      localStorage.setItem("company", company);
+                      signIn("google");
+                    }}
+                  >
+                    Request
+                  </Button>
+                )}
                 {/* <Link href={`/user/${user.username}`} passHref>
                   <a
                     target="_blank"
@@ -115,7 +132,21 @@ const UserList = ({ users, url }) => {
                 </TableCell> */}
                 <TableCell>{user.experience} yrs</TableCell>
                 <TableCell className="text-right">
-                  <AddFriendButton id={user.userId} url={url} />
+                  {session?.user?.id ? (
+                    <AddFriendButton id={user.userId} url={url} />
+                  ) : (
+                    <Button
+                      size="xs"
+                      colorScheme="yellow"
+                      onClick={() => {
+                        localStorage.setItem("joburl", url);
+                        localStorage.setItem("company", company);
+                        signIn("google");
+                      }}
+                    >
+                      Request
+                    </Button>
+                  )}
                 </TableCell>
               </TableRow>
             ))}

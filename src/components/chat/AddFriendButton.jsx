@@ -10,6 +10,12 @@ const AddFriendButton = ({ id, url }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const addFriend = async () => {
+    if (!url) {
+      toast.error("Please enter a valid Job URL", {
+        position: "bottom-center",
+      });
+      return;
+    }
     try {
       setIsLoading(true);
       await axios.post("/api/friends/add", { id, url });

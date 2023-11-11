@@ -13,7 +13,6 @@ function BottomNavbar({
 }) {
   const router = useRouter();
   const pathname = usePathname();
-  console.log("pathname", pathname);
   return (
     <Box
       display={{ base: "flex", lg: "hidden" }}
