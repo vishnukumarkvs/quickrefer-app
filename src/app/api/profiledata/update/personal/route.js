@@ -4,7 +4,8 @@ import { getServerSession } from "next-auth";
 
 export async function POST(req) {
   const usession = await getServerSession(authOptions);
-  const {
+
+  let {
     fullname,
     phone,
     location,
@@ -14,6 +15,16 @@ export async function POST(req) {
     noticePeriod,
     company,
   } = await req.json();
+
+  // Trimming the ending spaces and reassigning to the same variables
+  fullname = fullname.trim();
+  phone = phone.trim();
+  location = location.trim();
+  currentJobRole = currentJobRole.trim();
+  experience = experience.trim();
+  salary = salary.trim();
+  noticePeriod = noticePeriod.trim();
+  company = company.trim();
 
   try {
     const neo4jSession = driver.session({

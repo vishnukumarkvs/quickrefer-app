@@ -7,7 +7,12 @@ import { UpdateItemCommand } from "@aws-sdk/client-dynamodb";
 export async function POST(req) {
   const session = await getServerSession(authOptions);
 
-  const { username, company, exp, jobrole } = await req.json();
+  let { username, company, exp, jobrole } = await req.json();
+
+  username = username.trim();
+  company = company.trim();
+  exp = exp.trim();
+  jobrole = jobrole.trim();
 
   const id = session.user.id;
   const email = session.user.email;

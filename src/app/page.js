@@ -12,6 +12,7 @@ import {
   useColorModeValue,
   createIcon,
   Flex,
+  Grid,
 } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
@@ -82,7 +83,7 @@ export default function CallToActionWithAnnotation() {
           alignSelf={"center"}
           position={"relative"}
         >
-          <Flex gap="2">
+          <Flex gap="2" alignItems={"center"}>
             <Button
               size={{
                 base: "sm",
@@ -91,6 +92,10 @@ export default function CallToActionWithAnnotation() {
               bg={"#ffc800e5"}
               rounded={"full"}
               px={6}
+              _focus={{
+                outline: "2px solid black",
+                outlineOffset: "2px",
+              }}
               _hover={{
                 bg: "#ffc800e5",
               }}
@@ -106,6 +111,13 @@ export default function CallToActionWithAnnotation() {
               bg="black"
               color="white"
               rounded={"full"}
+              _focus={{
+                outline: "2px solid black",
+                outlineOffset: "2px",
+              }}
+              _hover={{
+                bg: "#000000",
+              }}
               onClick={() => {
                 router.push("/search");
               }}
@@ -113,18 +125,21 @@ export default function CallToActionWithAnnotation() {
               Search for Referrals
             </Button>
           </Flex>
-          <Flex gap="2">
-            <Text color={"blackAlpha.900"} textDecoration="underline">
+          <Grid templateColumns="1fr auto 1fr" alignItems="center" gap={2}>
+            <Text color={"blackAlpha.900"} textAlign="right">
               <a href="/policy" target="_blank" rel="noopener noreferrer">
-                Privacy Policy,
+                Privacy Policy
               </a>
             </Text>
-            <Text color={"blackAlpha.900"} textDecoration="underline">
+            <Text fontSize="lg" fontWeight="bold">
+              .
+            </Text>
+            <Text color={"blackAlpha.900"} textAlign="left">
               <a href="/faqs" target="_blank" rel="noopener noreferrer">
                 FAQs
               </a>
             </Text>
-          </Flex>
+          </Grid>
         </Stack>
       </Flex>
     </Box>

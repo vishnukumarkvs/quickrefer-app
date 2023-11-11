@@ -14,6 +14,7 @@ const AutoCompleteCompanyName = ({ onSelect, defaultvalue }) => {
     try {
       const random = Math.floor(Math.random() * 1000000);
       const res = await axios.get(`/api/getCompanyList/${random}`);
+      console.log("haha", res);
       return res.data?.records[0]?._fields[0];
     } catch (err) {
       console.log(err);
@@ -63,7 +64,7 @@ const AutoCompleteCompanyName = ({ onSelect, defaultvalue }) => {
     setQuery(newQuery);
 
     if (newQuery) {
-      const results = searcher.search("tcs");
+      const results = searcher.search(newQuery);
       setResults(results);
       setShowResults(true);
     } else {

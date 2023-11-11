@@ -2,7 +2,9 @@ import ddbClient from "@/lib/ddbclient";
 import { QueryCommand } from "@aws-sdk/client-dynamodb";
 
 export async function POST(req) {
-  const { username } = await req.json();
+  let { username } = await req.json();
+
+  username = username.trim();
 
   if (!username) {
     return new Response("Username parameter is required", { status: 400 });
