@@ -60,7 +60,7 @@ export default function RootLayout({ children }) {
           content="https://www.quickrefer.in/android-chrome-512x512.png"
         />
         <meta name="twitter:url" content="https://www.quickrefer.in" />
-        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="QuickRefer" />
         <meta
           name="twitter:description"
