@@ -26,7 +26,14 @@ export default function RootLayout({ children }) {
         <meta property="og:image:height" content={"512"} />
         <meta property="og:image:type" content={"image/png"} />
         <meta property="og:image:alt" content={"QuickRefer"} />
-        <meta property="og:image" content={"/android-chrome-512x512.png"} />
+        <meta
+          property="og:image"
+          content={"https://www.quickrefer.in/android-chrome-512x512.png"}
+        />
+        <meta
+          property="og:image:secure_url"
+          content="https://www.quickrefer.in/android-chrome-512x512.png"
+        />
         <meta
           property="og:description"
           content={
