@@ -28,6 +28,10 @@ export default function RootLayout({ children }) {
         <meta property="og:image:alt" content={"QuickRefer"} />
         <meta property="og:image" content={"/android-chrome-512x512.png"} />
         <meta
+          property="og:image:secure_url"
+          content="https://www.quickrefer.in/android-chrome-512x512.png"
+        />
+        <meta
           property="og:description"
           content={
             "Quickrefer.in: Get instant referrals & elevate Your Career: Unlock Job Opportunities with Personal Referrals"
