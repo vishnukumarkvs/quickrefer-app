@@ -17,14 +17,14 @@ export async function POST(req) {
   } = await req.json();
 
   // Trimming the ending spaces and reassigning to the same variables
-  fullname = fullname.trim();
-  phone = phone.trim();
-  location = location.trim();
-  currentJobRole = currentJobRole.trim();
-  experience = experience.trim();
-  salary = salary.trim();
-  noticePeriod = noticePeriod.trim();
-  company = company.trim();
+  fullname = fullname?.trim();
+  phone = phone?.trim();
+  location = location?.trim();
+  currentJobRole = currentJobRole?.trim();
+  experience = experience?.trim();
+  salary = salary?.trim();
+  noticePeriod = noticePeriod?.trim();
+  company = company?.trim();
 
   try {
     const neo4jSession = driver.session({
@@ -33,22 +33,22 @@ export async function POST(req) {
     let query = "MATCH (u:User {userId: $userId})";
     const updateClauses = [];
 
-    if (fullname != "") {
+    if (fullname) {
       updateClauses.push("u.fullname = $fullname");
     }
-    if (phone != "") {
+    if (phone) {
       updateClauses.push("u.phone = $phone");
     }
-    if (currentJobRole != "") {
+    if (currentJobRole) {
       updateClauses.push("u.currentJobRole = $currentJobRole");
     }
-    if (experience != null) {
+    if (experience) {
       updateClauses.push("u.experience = $experience");
     }
-    if (salary != null) {
+    if (salary) {
       updateClauses.push("u.salary = $salary");
     }
-    if (noticePeriod != null) {
+    if (noticePeriod) {
       updateClauses.push("u.noticePeriod = $noticePeriod");
     }
 
