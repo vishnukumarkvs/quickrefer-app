@@ -110,9 +110,10 @@ export async function POST(req) {
 
     // TODO: currenlty one can send multiple req to same person
     const addFriendRequestQuery = `
-      MATCH (u:User {userId: $userId}), (f:User {userId: $friendId})
-      MERGE (u)-[:SENT_FRIEND_REQUEST]->(f)
-      MERGE (u)-[:FOR_JOB_URL{url: $url, applied_on: datetime(), asked_to : $friendId}]->(:URLS {nodeId: 1})
+    MATCH (u:User {userId: $userId}), (f:User {userId: $friendId})
+    MERGE (u)-[:SENT_FRIEND_REQUEST]->(f)
+    MERGE (urlNode:URLS {nodeId: 1})
+    MERGE (u)-[rel:FOR_JOB_URL{applied_on: datetime(), asked_to: $friendId, url: $url}]->(urlNode)
     `;
     await session.run(addFriendRequestQuery, {
       userId: sessionAuth.user.id,
