@@ -48,9 +48,19 @@ export default function RootLayout({ children }) {
         />
         {/* <meta name="twitter:site" content={`@quickrefer`} /> */}
         <meta
-          name="twitter:card"
+          itemprop="thumbnailUrl"
           content="https://www.quickrefer.in/android-chrome-512x512.png"
         />
+        <link
+          rel="image_src"
+          href="https://www.quickrefer.in/android-chrome-512x512.png"
+        />
+        <meta
+          itemprop="image"
+          content="https://www.quickrefer.in/android-chrome-512x512.png"
+        />
+        <meta name="twitter:url" content="https://www.quickrefer.in" />
+        <meta name="twitter:card" content="summary" />
         <meta name="twitter:title" content="QuickRefer" />
         <meta
           name="twitter:description"
@@ -82,10 +92,7 @@ export default function RootLayout({ children }) {
           rel="manifest"
           href="https://www.quickrefer.in/site.webmanifest.json"
         />
-        <link
-          rel="shortcut icon"
-          href="https://www.quickrefer.in/favicon.ico"
-        />
+        <link rel="icon" href="https://www.quickrefer.in/favicon.ico" />
         <meta name="theme-color" content="#ffcd18" />
       </head>
       <body className={`bg-[#fbf9f0]`}>
