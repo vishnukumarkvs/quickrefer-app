@@ -28,11 +28,11 @@ export default function RootLayout({ children }) {
         <meta property="og:image:alt" content={"QuickRefer"} />
         <meta
           property="og:image"
-          content={"https://www.quickrefer.in/android-chrome-512x512.png"}
+          content="https://www.quickrefer.in/logo.jpg"
         />
         <meta
           property="og:image:secure_url"
-          content="https://www.quickrefer.in/android-chrome-512x512.png"
+          content="https://www.quickrefer.in/logo.jpg"
         />
         <meta
           property="og:description"
@@ -49,7 +49,7 @@ export default function RootLayout({ children }) {
         {/* <meta name="twitter:site" content={`@quickrefer`} /> */}
         <meta
           name="twitter:card"
-          content="https://www.quickrefer.in/android-chrome-512x512.png"
+          content="https://www.quickrefer.in/logo.jpg"
         />
         <meta name="twitter:title" content="QuickRefer" />
         <meta
@@ -58,7 +58,7 @@ export default function RootLayout({ children }) {
         />
         <meta
           name="twitter:image"
-          content="https://www.quickrefer.in/android-chrome-512x512.png"
+          content="https://www.quickrefer.in/logo.jpg"
         />
 
         <link
