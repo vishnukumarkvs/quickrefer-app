@@ -37,13 +37,13 @@ export default function RootLayout({ children }) {
         <meta
           property="og:description"
           content={
-            "Quickrefer.in: Get instant referrals & elevate Your Career: Unlock Job Opportunities with Personal Referrals"
+            "Get instant referrals & elevate Your Career. Unlock Job Opportunities with Personal Referrals"
           }
         />
         <meta
           name="description"
           content={
-            "Quickrefer.in: Get instant referrals & elevate Your Career: Unlock Job Opportunities with Personal Referrals"
+            "Get instant referrals & elevate Your Career. Unlock Job Opportunities with Personal Referrals"
           }
         />
         {/* <meta name="twitter:site" content={`@quickrefer`} /> */}
