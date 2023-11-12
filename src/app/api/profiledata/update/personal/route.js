@@ -6,14 +6,14 @@ export async function POST(req) {
   const usession = await getServerSession(authOptions);
 
   let {
-    fullname,
-    phone,
-    location,
-    currentJobRole,
-    experience,
-    salary,
-    noticePeriod,
-    company,
+    fullname = "",
+    phone = "",
+    location = "",
+    currentJobRole = "",
+    experience = "",
+    salary = "",
+    noticePeriod = "",
+    company = "",
   } = await req.json();
 
   // Trimming the ending spaces and reassigning to the same variables
