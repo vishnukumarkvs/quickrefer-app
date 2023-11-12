@@ -46,11 +46,21 @@ export default function RootLayout({ children }) {
             "Quickrefer.in: Get instant referrals & elevate Your Career: Unlock Job Opportunities with Personal Referrals"
           }
         />
-        <meta name="twitter:site" content={`@quickrefer`} />
-        {/* <meta
+        {/* <meta name="twitter:site" content={`@quickrefer`} /> */}
+        <meta
           name="twitter:card"
-          content={image ? "summary_large_image" : "summary"}
-        /> */}
+          content="https://www.quickrefer.in/android-chrome-512x512.png"
+        />
+        <meta name="twitter:title" content="QuickRefer" />
+        <meta
+          name="twitter:description"
+          content="Quickrefer.in: Get instant referrals & elevate Your Career: Unlock Job Opportunities with Personal Referrals"
+        />
+        <meta
+          name="twitter:image"
+          content="https://www.quickrefer.in/android-chrome-512x512.png"
+        />
+
         <link
           rel="apple-touch-icon"
           sizes="180x180"
