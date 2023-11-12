@@ -14,7 +14,7 @@ export default function RootLayout({ children }) {
         <title>QuickRefer</title>
         <link rel="canonical" href="https://www.quickrefer.in" />
         <meta property="og:title" content={"QuickRefer"} />
-        <meta property="og:url" content={"quickrefer.in"} />
+        <meta property="og:url" content={"https://www.quickrefer.in"} />
         <meta property="og:type" content={"Website"} />
         <meta property="og:site_name" content={"QuickRefer"} />
         <meta
@@ -64,23 +64,28 @@ export default function RootLayout({ children }) {
         <link
           rel="apple-touch-icon"
           sizes="180x180"
-          href="/apple-touch-icon.png"
+          href="https://www.quickrefer.in/apple-touch-icon.png"
         />
         <link
           rel="icon"
           type="image/png"
           sizes="32x32"
-          href="/favicon-32x32.png"
+          href="https://www.quickrefer.in/favicon-32x32.png"
         />
         <link
           rel="icon"
           type="image/png"
           sizes="16x16"
-          href="/favicon-16x16.png"
+          href="https://www.quickrefer.in/favicon-16x16.png"
         />
-        <link rel="manifest" href="/site.webmanifest.json" />
-        <link rel="shortcut icon" href="/favicon.ico" />
-        <meta property="og:image" content={"/android-chrome-512x512.png"} />
+        <link
+          rel="manifest"
+          href="https://www.quickrefer.in/site.webmanifest.json"
+        />
+        <link
+          rel="shortcut icon"
+          href="https://www.quickrefer.in/favicon.ico"
+        />
         <meta name="theme-color" content="#ffcd18" />
       </head>
       <body className={`bg-[#fbf9f0]`}>
