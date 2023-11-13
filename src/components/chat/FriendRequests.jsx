@@ -92,7 +92,7 @@ const FriendRequests = ({ incomingFriendRequests, sessionId }) => {
                 <a
                   href={`${process.env.NEXT_PUBLIC_CLOUDFRONT_URL}/${friendRequest.senderId}.pdf`}
                   target="_blank"
-                  rel="noopener noreferrer"
+                  rel="noopener"
                   className="text-blue-600 hover:underline"
                 >
                   <ExternalLink className="stroke-blue-600 pb-1" />
