@@ -27,9 +27,7 @@ const FriendRequests = ({ incomingFriendRequests, sessionId }) => {
       pusherClient.unsubscribe(
         toPusherKey(`user:${sessionId}:incoming_friend_requests`)
       );
-      pusherClient.unbind("incoming_friend_requests", (data) => {
-        setFriendRequests((prevRequests) => [...prevRequests, data]);
-      });
+      pusherClient.unbind("incoming_friend_requests");
     };
   }, [sessionId]);
 
