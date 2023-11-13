@@ -3,19 +3,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import {
-  Box,
-  Button,
-  Flex,
-  HStack,
-  Text,
-  VStack,
-  Input,
-  Select,
-  Link,
-} from "@chakra-ui/react";
 import { FaCheck, FaTimes } from "react-icons/fa";
-import { GoOrganization } from "react-icons/go";
 import { pusherClient } from "@/lib/pusher";
 import { toPusherKey } from "@/lib/utils";
 import { Building2, ExternalLink, UserCircle, UserCog } from "lucide-react";
@@ -104,7 +92,7 @@ const FriendRequests = ({ incomingFriendRequests, sessionId }) => {
                   {friendRequest.fullname} ({friendRequest.experience} yrs exp)
                 </p>
                 <a
-                  href={`/user/${friendRequest.username}`}
+                  href={`${process.env.NEXT_PUBLIC_CLOUDFRONT_URL}/${friendRequest.senderId}.pdf`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-blue-600 hover:underline"
@@ -129,10 +117,15 @@ const FriendRequests = ({ incomingFriendRequests, sessionId }) => {
               <p className="mt-2 text-sm">
                 Requesting referral for{" "}
                 <a
-                  href={`/job/${friendRequest.jobURL}`}
-                  className="text-blue-500 underline truncate"
+                  href={
+                    friendRequest.jobURL.startsWith("http://") ||
+                    friendRequest.jobURL.startsWith("https://")
+                      ? friendRequest.jobURL // Already an absolute URL
+                      : `http://${friendRequest.jobURL}` // Prepend "http://" if not
+                  }
                   target="_blank"
                   rel="noopener noreferrer"
+                  className="text-blue-600 hover:underline truncate"
                 >
                   {friendRequest.jobURL}
                 </a>

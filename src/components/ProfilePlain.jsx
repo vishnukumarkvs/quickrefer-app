@@ -118,7 +118,7 @@ const ProfilePlane = ({ username }) => {
           <PersonalDetails data={data} />
           <SocialButtons data={data} />
         </div>
-        <div className="flex flex-col justify-start items-center col-span-2">
+        {/* <div className="flex flex-col justify-start items-center col-span-2">
           {data.resumeExists == true && (
             <div className="w-full text-center">
               <a
@@ -138,7 +138,7 @@ const ProfilePlane = ({ username }) => {
             </div>
           )}
           {!iframeLoaded && <div>Resume not found.</div>}
-        </div>
+        </div> */}
       </div>
     </div>
   );
