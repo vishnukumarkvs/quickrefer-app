@@ -116,7 +116,7 @@ const SidebarContent = ({ onClose, unseenCount, session, ...rest }) => {
   }, [session]);
   return (
     <Box
-      bg={"yellow.200"}
+      className="bg-[#ffc800e8]"
       w={{ base: "full", md: 60 }}
       pos="fixed"
       h="full"
@@ -163,7 +163,7 @@ const SidebarContent = ({ onClose, unseenCount, session, ...rest }) => {
           role="group"
           cursor="pointer"
           _hover={{
-            bg: "yellow.400",
+            bg: "yellow.500",
             color: "white",
           }}
           {...rest}
@@ -202,7 +202,7 @@ const NavItem = ({ icon, children, link, onClose, ...rest }) => {
         role="group"
         cursor="pointer"
         _hover={{
-          bg: "yellow.400",
+          bg: "yellow.500",
           color: "white",
         }}
         {...rest}

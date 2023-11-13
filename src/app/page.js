@@ -31,7 +31,6 @@ export default function CallToActionWithAnnotation() {
     <Box minH={"100vh"}>
       <Flex
         bg={"#fcbd0b"}
-        color={"white"}
         px={{ base: 5, md: 12 }}
         py={4}
         gap="2"
