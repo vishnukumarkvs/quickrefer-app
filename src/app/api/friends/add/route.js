@@ -26,9 +26,12 @@ export async function POST(req) {
     }
 
     if (!sessionAuth.user.isResume) {
-      return new Response("Please upload Resume in your Profile page", {
-        status: 403,
-      });
+      return new Response(
+        "Please update fullname and upload Resume in your Profile page",
+        {
+          status: 403,
+        }
+      );
     }
 
     if (idToAdd === sessionAuth.user.id) {

@@ -31,7 +31,9 @@ const AddFriendButton = ({ id, url }) => {
             });
             break;
           case 403:
-            toast.error(error.response.data);
+            toast.error(error.response.data, {
+              duration: 5000,
+            });
             break;
           case 409:
             toast.error(error.response.data);
