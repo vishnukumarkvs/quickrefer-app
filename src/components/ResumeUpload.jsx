@@ -8,11 +8,11 @@ import { Button } from "./ui/button";
 import toast from "react-hot-toast";
 import { FileUpload } from "@/lib/file-upload";
 
-const resume_api_url = process.env.NEXT_PUBLIC_RESUME_UPLOAD_URL;
+// const resume_api_url = process.env.NEXT_PUBLIC_RESUME_UPLOAD_URL;
 
-if (!resume_api_url) {
-  console.error("API URL is not defined.");
-}
+// if (!resume_api_url) {
+//   console.error("Resume API URL is not defined.");
+// }
 
 const ResumeUpload = () => {
   const { data: session, update } = useSession();

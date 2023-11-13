@@ -5,6 +5,19 @@ import { Controller } from "react-hook-form";
 import AsyncSelect from "react-select/async";
 import { options } from "@/assets/location-options";
 
+// export const options = [
+//   { value: "Tokyo, Japan", label: "Tokyo, Japan" },
+//   { value: "Jakarta, Indonesia", label: "Jakarta, Indonesia" },
+//   { value: "Delhi, India", label: "Delhi, India" },
+//   { value: "Guangzhou, China", label: "Guangzhou, China" },
+//   { value: "Mumbai, India", label: "Mumbai, India" },
+//   { value: "Manila, Philippines", label: "Manila, Philippines" },
+//   { value: "Shanghai, China", label: "Shanghai, China" },
+//   { value: "SÃ£o Paulo, Brazil", label: "SÃ£o Paulo, Brazil" },
+//   { value: "Seoul, South Korea", label: "Seoul, South Korea" },
+//   { value: "Mexico City, Mexico", label: "Mexico City, Mexico" },
+// ];
+
 const defaultLocationOptions = [
   { value: "Bangalore, India", label: "Bangalore, India" },
   { value: "Mumbai, India", label: "Mumbai, India" },
@@ -19,16 +32,18 @@ const defaultLocationOptions = [
 ];
 
 const filterColors = async (inputValue) => {
-  return options.filter((i) =>
+  const t = await options.filter((i) =>
     i.label.toLowerCase().includes(inputValue.toLowerCase())
   );
+  return t;
 };
 
-const loadOptions = (inputValue, callback) => {
-  setTimeout(() => {
-    callback(filterColors(inputValue));
-  }, 1000);
-};
+const promiseOptions = (inputValue) =>
+  new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(filterColors(inputValue));
+    }, 1000);
+  });
 
 const AsyncLocationSelect = ({ control, name, defaultSelectedLocation }) => {
   return (
@@ -41,11 +56,10 @@ const AsyncLocationSelect = ({ control, name, defaultSelectedLocation }) => {
             <AsyncSelect
               {...field}
               placeholder="Search..."
-              loadOptions={loadOptions}
+              loadOptions={promiseOptions}
               defaultOptions={defaultLocationOptions}
               defaultValue={defaultSelectedLocation}
               defaultInputValue={defaultSelectedLocation || null}
-              isSearchable
             />
           </div>
         )}
