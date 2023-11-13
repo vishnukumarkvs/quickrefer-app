@@ -130,7 +130,7 @@ const Messages = ({ userId, friendId, chatId, friendEmail, friendName }) => {
                   >
                     <span
                       className={cn("px-4 py-2 rounded-lg inline-block", {
-                        "bg-indigo-600 text-white": isCurrentUser,
+                        "bg-[#faf089] text-gray-900": isCurrentUser,
                         "bg-gray-200 text-gray-900": !isCurrentUser,
                       })}
                       dangerouslySetInnerHTML={{
