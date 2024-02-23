@@ -1,30 +1,62 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@chakra-ui/react";
 import axios from "axios";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 
-const AddFriendButton = ({ id }) => {
+const AddFriendButton = ({ id, url }) => {
   const [showSuccessState, setShowSuccessState] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const addFriend = async () => {
+    if (!url) {
+      toast.error("Please enter a valid Job URL", {
+        position: "bottom-center",
+      });
+      return;
+    }
     try {
-      await axios.post("/api/friends/add", { id });
+      setIsLoading(true);
+      await axios.post("/api/friends/add", { id, url });
       setShowSuccessState(true);
     } catch (error) {
       console.error(error);
-      if (axios.isAxiosError(error)) {
-        toast.error("Something went wrong! Axios issue");
+
+      if (error.response) {
+        switch (error.response.status) {
+          case 400:
+            toast.error("You cannot send yourself to yourself", {
+              position: "bottom-center",
+            });
+            break;
+          case 403:
+            toast.error(error.response.data, {
+              duration: 5000,
+            });
+            break;
+          case 409:
+            toast.error(error.response.data);
+            break;
+          default:
+            toast.error("Something went wrong!");
+        }
       } else {
         toast.error("Something went wrong!");
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <Button variant="default" onClick={addFriend}>
-      {showSuccessState ? "Sent!" : "ADD"}
+    <Button
+      size="xs"
+      colorScheme="yellow"
+      onClick={addFriend}
+      isLoading={isLoading}
+    >
+      {showSuccessState ? "Sent!" : "Request"}
     </Button>
   );
 };

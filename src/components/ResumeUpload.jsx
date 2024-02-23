@@ -5,11 +5,22 @@ import axios from "axios";
 import { useSession } from "next-auth/react";
 import { Upload } from "lucide-react";
 import { Button } from "./ui/button";
+import toast from "react-hot-toast";
+import { FileUpload } from "@/lib/file-upload";
+
+// const resume_api_url = process.env.NEXT_PUBLIC_RESUME_UPLOAD_URL;
+
+// if (!resume_api_url) {
+//   console.error("Resume API URL is not defined.");
+// }
 
 const ResumeUpload = () => {
-  const { data: session } = useSession();
+  const { data: session, update } = useSession();
   const [file, setFile] = useState(null);
   const [fileName, setFileName] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const fileInputRef = React.useRef(null); // Add this line to get a reference to the input
 
   const onFileChange = (event) => {
     setFile(event.target.files[0]);
@@ -17,48 +28,49 @@ const ResumeUpload = () => {
   };
 
   const onFileUpload = async () => {
-    try {
-      const reader = new FileReader();
-
-      reader.onload = async () => {
-        const base64File = reader.result.split(",")[1];
-        const fileExtension = file.name.split(".").pop();
-        console.log("session user id", session.user.id);
-
-        // Send the data
-        const response = await axios.put(
-          "https://s9u8bu61y6.execute-api.us-east-1.amazonaws.com/dev/upload", // Replace with your API Gateway URL
-          {
-            fileData: base64File,
-            userId: session.user.id, // Replace with your user ID
-          },
-          {
-            headers: {
-              "file-extension": fileExtension,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-
-        console.log(response.data);
-      };
-
-      reader.readAsDataURL(file);
-    } catch (error) {
-      console.error(error);
+    if (!file) {
+      toast.error("Please select a file first");
+      return;
     }
+    if (file.type !== "application/pdf") {
+      toast.error("Please select a pdf file");
+      return;
+    }
+    setIsLoading(true);
+    FileUpload(file)
+      .then(async (res) => {
+        setIsLoading(false);
+        if (!session.user.isResume) {
+          update({ isResume: true });
+          await axios.post("/api/updateresume", { isResume: true });
+        }
+        // Reset the input field value
+        if (fileInputRef.current) {
+          fileInputRef.current.value = "";
+          setFile(null); // clear the file state too
+          setFileName(""); // clear the filename state
+        }
+        toast.success("File uploaded successfully");
+      })
+      .catch((err) => {
+        setIsLoading(false);
+        toast.error("Error uploading file");
+      });
   };
 
   return (
-    <div className="w-full m-7 bg-white rounded-lg shadow-md">
+    <div className="w-full bg-white rounded-lg shadow-md">
       <div className="flex gap-2 justify-center items-center">
         <input
+          ref={fileInputRef} // Attach the reference to the input
           type="file"
           onChange={onFileChange}
+          accept=".pdf"
           className="flex-1 px-4 py-2 border rounded-lg shadow-md focus:outline-none focus:ring focus:border-blue-300"
         />
-        <Button onClick={onFileUpload} variant="ghost">
-          <Upload size={24} />
+        <Button onClick={onFileUpload} variant="ghost" isLoading={isLoading}>
+          {/* <Upload size={24} /> */}
+          <p className="text-sm">Upload</p>
         </Button>
       </div>
     </div>

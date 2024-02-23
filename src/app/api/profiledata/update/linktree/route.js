@@ -5,10 +5,11 @@ import { getServerSession } from "next-auth";
 export async function POST(req) {
   const usession = await getServerSession(authOptions);
   const { github, linkedin, blog, portfolio } = await req.json();
-  console.log(linkedin, github, blog, portfolio);
 
   try {
-    const neo4jSession = driver.session({ database: "neo4j" });
+    const neo4jSession = driver.session({
+      database: process.env.NEO4J_DATABASE,
+    });
 
     let queryString = `
       MATCH (user:User {userId: $userId}) 
@@ -28,8 +29,6 @@ export async function POST(req) {
         portfolio: portfolio,
       })
     );
-
-    console.log("writeResult", writeResult);
 
     return new Response(JSON.stringify("Update Successful"), { status: 200 });
   } catch (e) {

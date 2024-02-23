@@ -12,14 +12,13 @@ export async function GET(req) {
     LIMIT 4;
 `;
 
-  const session = driver.session({ database: "neo4j" });
+  const session = driver.session({ database: process.env.NEO4J_DATABASE });
   try {
     const getResult = await session.executeRead((tx) => {
       const result = tx.run(getUsersOfCompany, { company: company });
       return result;
     });
 
-    console.log(`Write result:`, getResult);
     return new Response(JSON.stringify(getResult), { status: 200 });
   } catch (error) {
     console.error("Error querying Neo4j:", error);

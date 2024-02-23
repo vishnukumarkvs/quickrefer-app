@@ -5,7 +5,13 @@ import axios from "axios";
 import { Button } from "@/components/ui/button";
 import dynamic from "next/dynamic";
 import * as DOMPurify from "dompurify";
-import useRenderCounter from "@/helperClient/useRenderCount";
+
+const cloudfront_url = process.env.NEXT_PUBLIC_CLOUDFRONT_URL;
+if (!cloudfront_url) {
+  console.error(
+    "API URL is not defined. Please define NEXT_PUBLIC_CLOUDFRONT_URL in .env"
+  );
+}
 
 import {
   Dialog,
@@ -42,9 +48,18 @@ import { Controller, useForm } from "react-hook-form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { set } from "date-fns";
 import { QuillWrapper, modules } from "./ui/QuillWrapper";
-import { AsyncLocationSelect } from "./ui/AsyncLocationSelect";
+// import  AsyncLocationSelect  from "./ui/AsyncLocationSelect";
+const AsyncLocationSelect = dynamic(() => import("./ui/AsyncLocationSelect"), {
+  ssr: false,
+});
 import { useRouter } from "next/navigation";
 import ResumeUpload from "./ResumeUpload";
+import { useSession } from "next-auth/react";
+import PageLoader from "./PageLoader";
+import { Flex, Heading, Text } from "@chakra-ui/react";
+import SocialButtons from "./profile/SocialLinks";
+import AutoCompleteCompanyName from "./autocomplete/CompanyNameFromList";
+import { BeatLoader } from "react-spinners";
 
 // import Select from "react-select";
 
@@ -58,15 +73,11 @@ const useProfileData = (username) => {
 };
 
 const PersonalDetails = ({ data, openPersonal, setOpenPersonal }) => {
+  const [openLinkTree, setOpenLinkTree] = useState(false);
   const queryClient = useQueryClient();
   const mutationPersonal = useMutation(
     (data) => axios.post("/api/profiledata/update/personal", data),
     {
-      // onSuccess: (updatedData) => {
-      //   console.log("updatedData", updatedData);
-      //   queryClient.setQueryData("profileData", updatedData);
-      //   setOpenPersonal(false);
-      // },
       onSuccess: () => {
         queryClient.invalidateQueries("profileData");
         setOpenPersonal(false);
@@ -77,6 +88,7 @@ const PersonalDetails = ({ data, openPersonal, setOpenPersonal }) => {
     handleSubmit: handleSubmitPersonal,
     control: controlPersonal,
     register: registerPersonal,
+    setValue: setValuePersonal,
   } = useForm({
     defaultValues: {
       fullname: data.fullname,
@@ -86,6 +98,7 @@ const PersonalDetails = ({ data, openPersonal, setOpenPersonal }) => {
       experience: data.experience,
       salary: data.salary,
       noticePeriod: data.noticePeriod,
+      company: data.company,
     },
   });
 
@@ -99,109 +112,59 @@ const PersonalDetails = ({ data, openPersonal, setOpenPersonal }) => {
     <div className="">
       {/* Profile Section */}
       {/* <div className="w-full text-xl font-bold mb-5">Personal Details</div> */}
-      <div className="flex flex-col">
-        <div class="w-full bg-white shadow-lg rounded-lg px-4 py-2 mx-auto">
-          <div class="grid grid-cols-2 items-center">
-            <p class="text-md font-bold mr-2">Full Name:</p>
-            <p class="text-md">{data.fullname}</p>
-          </div>
-
-          <div class="grid grid-cols-2 items-center">
-            <p class="text-md font-bold mr-2">Email:</p>
-            <p class="text-md ">{data.email}</p>
-          </div>
-
-          <div class="grid grid-cols-2 items-center">
-            <p class="text-md font-bold mr-2">Phone:</p>
-            <p class="text-md ">{data.phone}</p>
-          </div>
-
-          <div class="grid grid-cols-2 items-center">
-            <p class="text-md font-bold mr-2">Location:</p>
-            <p class="text-md ">{data.location}</p>
-          </div>
-
-          <div class="grid grid-cols-2 items-center">
-            <p class="text-md font-bold mr-2">Current Job Role:</p>
-            <p class="text-md">{data.currentJobRole}</p>
-          </div>
-
-          <div class="grid grid-cols-2 items-center">
-            <p class="text-md font-bold mr-2">Experience (in years):</p>
-            <p class="text-md ">{data.experience}</p>
-          </div>
-
-          <div class="grid grid-cols-2 items-center">
-            <p class="text-md font-bold mr-2">Salary (in LPA):</p>
-            <p class="text-md ">{data.salary}</p>
-          </div>
-
-          <div class="grid grid-cols-2 items-center">
-            <p class="text-md font-bold mr-2">Notice Period (in days):</p>
-            <p class="text-md ">{data.noticePeriod}</p>
-          </div>
-        </div>
-
-        <div>
-          <Dialog open={openPersonal} onOpenChange={setOpenPersonal}>
-            <DialogTrigger asChild>
-              <Button variant="outline" className="my-4">
-                Edit Profile
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>Edit profile</DialogTitle>
-                <DialogDescription>
-                  Make changes to your profile here. Click save when you're
-                  done.
-                </DialogDescription>
-              </DialogHeader>
-              <form onSubmit={handleSubmitPersonal(onSubmit)}>
-                <div className="grid gap-4 py-4">
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="fullname" className="text-right">
-                      Full Name
-                    </Label>
-                    <Input
-                      id="fullname"
-                      className="col-span-3"
-                      {...registerPersonal("fullname")}
-                    />
-                  </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="phone" className="text-right">
-                      Phone
-                    </Label>
-                    <Input
-                      id="phone"
-                      className="col-span-3"
-                      {...registerPersonal("phone")}
-                    />
-                  </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="location" className="text-right">
-                      Location
-                    </Label>
-                    <div className="w-[280px]">
-                      <AsyncLocationSelect
-                        control={controlPersonal}
-                        name="location"
+      <div className="flex flex-col gap-5">
+        <Flex gap="2" justifyContent={"flex-end"}>
+          <div>
+            <Dialog open={openPersonal} onOpenChange={setOpenPersonal}>
+              <DialogTrigger asChild>
+                <Button size="sm">Edit Profile</Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                  <DialogTitle>Edit profile</DialogTitle>
+                  <DialogDescription>
+                    Make changes to your profile here. Click save when you{"'"}
+                    re done.
+                  </DialogDescription>
+                </DialogHeader>
+                <form onSubmit={handleSubmitPersonal(onSubmit)}>
+                  <div className="grid gap-4 py-4">
+                    <div className="flex flex-col gap-2">
+                      <Label htmlFor="fullname">Full Name</Label>
+                      <Input
+                        id="fullname"
+                        className="col-span-3"
+                        {...registerPersonal("fullname")}
                       />
                     </div>
-                  </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="currentJobRole" className="text-right">
-                      Current Job Role
-                    </Label>
-                    <Input
-                      id="currentJobRole"
-                      className="col-span-3"
-                      {...registerPersonal("currentJobRole")}
-                    />
-                  </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="salary" className="text-right">
+                    <div className="flex flex-col gap-2">
+                      <Label htmlFor="phone">Phone</Label>
+                      <Input
+                        id="phone"
+                        className="col-span-3"
+                        {...registerPersonal("phone")}
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-2">
+                      <Label htmlFor="currentJobRole">Current Job Role</Label>
+                      <Input
+                        id="currentJobRole"
+                        className="col-span-3"
+                        {...registerPersonal("currentJobRole")}
+                      />
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <Label htmlFor="company">Current Company</Label>
+                      <AutoCompleteCompanyName
+                        onSelect={(val) => {
+                          setValuePersonal("company", val);
+                        }}
+                        defaultvalue={data.company}
+                      />
+                    </div>
+                    {/* <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="salary" >
                       Salary <br /> (in LPA)
                     </Label>
                     <Input
@@ -209,23 +172,31 @@ const PersonalDetails = ({ data, openPersonal, setOpenPersonal }) => {
                       type="number"
                       className="col-span-3"
                       {...registerPersonal("salary")}
-                    />
-                  </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="experience" className="text-right">
-                      Experience <br /> (in yrs)
-                    </Label>
-                    <Input
-                      id="experience"
-                      type="number"
-                      defaultValue={data.experience}
-                      className="col-span-3"
-                      required
-                      {...registerPersonal("experience")}
-                    />
-                  </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="noticePeriod" className="text-right">
+                    /> 
+                  </div> */}
+                    <div className="flex flex-col gap-2">
+                      <Label htmlFor="experience">Experience (in yrs)</Label>
+                      <Input
+                        id="experience"
+                        type="number"
+                        defaultValue={data.experience}
+                        className="col-span-3"
+                        required
+                        {...registerPersonal("experience")}
+                      />
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <Label htmlFor="location">Location</Label>
+                      <div className="w-[280px]">
+                        <AsyncLocationSelect
+                          control={controlPersonal}
+                          name="location"
+                          defaultSelectedLocation={data.location}
+                        />
+                      </div>
+                    </div>
+                    {/* <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="noticePeriod" >
                       Notice Period <br />
                       (in days)
                     </Label>
@@ -235,17 +206,81 @@ const PersonalDetails = ({ data, openPersonal, setOpenPersonal }) => {
                       className="col-span-3"
                       {...registerPersonal("noticePeriod")}
                     />
+                  </div> */}
                   </div>
-                </div>
-                <DialogFooter>
-                  <Button type="submit" isLoading={mutationPersonal.isLoading}>
-                    Save changes
-                  </Button>
-                </DialogFooter>
-              </form>
-            </DialogContent>
-          </Dialog>
+                  <DialogFooter>
+                    <Button
+                      type="submit"
+                      isLoading={mutationPersonal.isLoading}
+                    >
+                      Save changes
+                    </Button>
+                  </DialogFooter>
+                </form>
+              </DialogContent>
+            </Dialog>
+          </div>
+          <LinkTree
+            data={data}
+            openLinkTree={openLinkTree}
+            setOpenLinkTree={setOpenLinkTree}
+          />
+        </Flex>
+        <div className="w-full bg-white shadow-lg rounded-lg px-4 py-2 mx-auto">
+          <div className="grid grid-cols-2 items-center">
+            <p className="text-md font-medium mr-2">Full Name</p>
+            <p className="text-md">{data.fullname}</p>
+          </div>
+          <div className="grid grid-cols-2 items-center">
+            <p className="text-md font-medium mr-2">Username</p>
+            <p className="text-md">{data.username}</p>
+          </div>
+
+          <div className="grid grid-cols-2 items-center">
+            <p className="text-md font-medium mr-2">Email</p>
+            <p className="text-md ">{data.email}</p>
+          </div>
+
+          <div className="grid grid-cols-2 items-center">
+            <p className="text-md font-medium mr-2">Phone</p>
+            <p className="text-md ">{data.phone}</p>
+          </div>
+
+          <div className="grid grid-cols-2 items-center">
+            <p className="text-md font-medium mr-2">Location</p>
+            <p className="text-md ">
+              {data.location.includes("null") ? "" : data.location}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 items-center">
+            <p className="text-md font-medium mr-2">Current Job Role</p>
+            <p className="text-md">{data.currentJobRole}</p>
+          </div>
+          <div className="grid grid-cols-2 items-center">
+            <p className="text-md font-medium mr-2">Current Company</p>
+            <p className="text-md">{data.company}</p>
+          </div>
+
+          <div className="grid grid-cols-2 items-center">
+            <p className="text-md font-medium mr-2">Experience</p>
+            <p className="text-md ">
+              {data.experience} <span className="pl-1">yrs</span>
+            </p>
+          </div>
+
+          {/* <div className="grid grid-cols-2 items-center">
+            <p className="text-md font-medium mr-2">Salary (in LPA)</p>
+            <p className="text-md ">{data.salary}</p>
+          </div>
+
+          <div className="grid grid-cols-2 items-center">
+            <p className="text-md font-medium mr-2">Notice Period (in days)</p>
+            <p className="text-md ">{data.noticePeriod}</p>
+          </div> */}
         </div>
+
+        <SocialButtons data={data} />
       </div>
     </div>
   );
@@ -306,7 +341,6 @@ const WorkDetails = ({ data, openWork, setOpenWork }) => {
 
   const onSubmitWorkDetails = (data1) => {
     setLoading(true);
-    console.log("data1", data1);
     if (editingExperience) {
       mutationEdit.mutate({
         ...data1,
@@ -318,7 +352,6 @@ const WorkDetails = ({ data, openWork, setOpenWork }) => {
   };
 
   let experiences = data.workExperiences;
-  console.log("experiences", experiences);
 
   const deleteWorkExperience = (workId) => {
     mutationDelete.mutate(workId);
@@ -378,7 +411,8 @@ const WorkDetails = ({ data, openWork, setOpenWork }) => {
             <DialogHeader>
               <DialogTitle>Edit Job Details</DialogTitle>
               <DialogDescription>
-                Make changes to your profile here. Click save when you're done.
+                Make changes to your profile here. Click save when you{"'"}re
+                done.
               </DialogDescription>
             </DialogHeader>
             <form onSubmit={handleSubmitWork(onSubmitWorkDetails)}>
@@ -457,130 +491,103 @@ const LinkTree = ({ data, openLinkTree, setOpenLinkTree }) => {
   const { handleSubmit: handleSubmitLinkTree, register: registerLinkTree } =
     useForm({});
 
-  let links = Object.entries(data.linktree.properties);
-  console.log("links", links);
+  let links = Object.entries(data.linktree?.properties || {});
 
   const onSubmit = (data0) => {
-    console.log("data0", data0);
     mutationLinkTree.mutate(data0);
   };
 
   return (
-    <div className="">
-      <div className="flex flex-col">
-        <div className="w-full bg-white shadow-lg rounded-lg px-4 py-2 mx-auto">
-          {links.length > 0 ? (
-            <ul>
-              {links.map(([name, value]) => {
-                // Check if the value is not empty before rendering
-                if (value.trim() !== "") {
-                  return (
-                    <li key={name}>
-                      <strong>{name}:</strong>{" "}
-                      <a href={value} target="_blank" rel="noopener noreferrer">
-                        {value}
-                      </a>
-                    </li>
-                  );
-                }
-                return null; // Don't render the list item if the value is empty
-              })}
-            </ul>
-          ) : (
-            <p>No links available.</p>
-          )}
-        </div>
-
-        <div>
-          <Dialog open={openLinkTree} onOpenChange={setOpenLinkTree}>
-            <DialogTrigger asChild>
-              <Button variant="outline" className="my-4">
-                Add or Edit Links
+    <div>
+      <Dialog open={openLinkTree} onOpenChange={setOpenLinkTree}>
+        <DialogTrigger asChild>
+          <Button size="sm">Add or Edit Links</Button>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Add links</DialogTitle>
+            <DialogDescription>
+              Fill the links that you have, leave the rest empty.
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleSubmitLinkTree(onSubmit)}>
+            <div className="">
+              <div className="grid grid-cols-4 items-center gap-4 my-2">
+                <Label htmlFor="linkedin" className="text-right">
+                  Linkedin
+                </Label>
+                <Input
+                  id="linkedin"
+                  className="col-span-3"
+                  defaultValue={data.linktree?.properties?.linkedin || ""}
+                  {...registerLinkTree("linkedin")}
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4 my-2">
+                <Label htmlFor="github" className="text-right">
+                  Github
+                </Label>
+                <Input
+                  id="github"
+                  className="col-span-3"
+                  defaultValue={data.linktree?.properties?.github || ""}
+                  {...registerLinkTree("github")}
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4 my-2">
+              <Label htmlFor="blog" className="text-right">
+                Blog
+              </Label>
+              <Input
+                id="blog"
+                className="col-span-3"
+                defaultValue={data.linktree?.properties?.blog || ""}
+                {...registerLinkTree("blog")}
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4 my-2">
+              <Label htmlFor="portfolio" className="text-right">
+                Portfolio
+              </Label>
+              <Input
+                id="portfolio"
+                className="col-span-3"
+                defaultValue={data.linktree?.properties?.portfolio || ""}
+                {...registerLinkTree("portfolio")}
+              />
+            </div>
+            <DialogFooter>
+              <Button type="submit" isLoading={mutationLinkTree.isLoading}>
+                Save changes
               </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>Add links</DialogTitle>
-                <DialogDescription>
-                  Fill the links that you have, leave the rest empty.
-                </DialogDescription>
-              </DialogHeader>
-              <form onSubmit={handleSubmitLinkTree(onSubmit)}>
-                <div className="">
-                  <div className="grid grid-cols-4 items-center gap-4 my-2">
-                    <Label htmlFor="linkedin" className="text-right">
-                      Linkedin
-                    </Label>
-                    <Input
-                      id="linkedin"
-                      className="col-span-3"
-                      defaultValue={data.linktree.properties.linkedin}
-                      {...registerLinkTree("linkedin")}
-                    />
-                  </div>
-                  <div className="grid grid-cols-4 items-center gap-4 my-2">
-                    <Label htmlFor="github" className="text-right">
-                      Github
-                    </Label>
-                    <Input
-                      id="github"
-                      className="col-span-3"
-                      defaultValue={data.linktree.properties.github}
-                      {...registerLinkTree("github")}
-                    />
-                  </div>
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4 my-2">
-                  <Label htmlFor="blog" className="text-right">
-                    Blog
-                  </Label>
-                  <Input
-                    id="blog"
-                    className="col-span-3"
-                    defaultValue={data.linktree.properties.blog}
-                    {...registerLinkTree("blog")}
-                  />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4 my-2">
-                  <Label htmlFor="portfolio" className="text-right">
-                    Portfolio
-                  </Label>
-                  <Input
-                    id="portfolio"
-                    className="col-span-3"
-                    defaultValue={data.linktree.properties.portfolio}
-                    {...registerLinkTree("portfolio")}
-                  />
-                </div>
-                <DialogFooter>
-                  <Button type="submit" isLoading={mutationLinkTree.isLoading}>
-                    Save changes
-                  </Button>
-                </DialogFooter>
-              </form>
-            </DialogContent>
-          </Dialog>
-        </div>
-      </div>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
 
 const Profile = ({ username }) => {
-  const renderCount = useRenderCounter();
+  // https://next-auth.js.org/getting-started/client
+  const { data: session, status } = useSession();
+  const { data, isLoading, error } = useProfileData(username);
 
   const [openPersonal, setOpenPersonal] = useState(false);
   const [openWork, setOpenWork] = useState(false);
   const [openWorkUpdate, setOpenWorkUpdate] = useState(false);
   const [openLinkTree, setOpenLinkTree] = useState(false);
 
-  const { data, isLoading, error } = useProfileData(username);
-  console.log("profile adta", data);
+  if (status === "loading") {
+    return <PageLoader />;
+  }
+  let resumeUrl = `${cloudfront_url}/${session.user.id}.pdf`;
 
   if (isLoading) {
     return (
       <div className="w-full h-screen flex justify-center items-center">
-        <Loader2 className="animate-spin" />
+        <BeatLoader color="#ffc800e5" />
       </div>
     );
   }
@@ -589,56 +596,50 @@ const Profile = ({ username }) => {
     return <div>Error: {error.message}</div>;
   }
 
+  // console.log(session, "session profile");
+
   return (
-    <div className="w-[95%] h-full mx-auto">
-      <p className="font-bold text-2xl text-center m-4 p-2 border-2">Profile</p>
-      <div className="grid grid-cols-2 gap-4">
-        <div className="mt-10">
-          <Accordion type="single" collapsible className="w-full">
-            <AccordionItem value="Personal Details">
-              <AccordionTrigger>Personal Details</AccordionTrigger>
-              <AccordionContent>
-                <PersonalDetails
-                  data={data}
-                  openPersonal={openPersonal}
-                  setOpenPersonal={setOpenPersonal}
-                />
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="Work Experience">
-              <AccordionTrigger>Work Experience</AccordionTrigger>
-              <AccordionContent>
-                <WorkDetails
-                  data={data}
-                  openWork={openWork}
-                  setOpenWork={setOpenWork}
-                  openWorkUpdate={openWorkUpdate}
-                  setOpenWorkUpdate={setOpenWorkUpdate}
-                />
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="Link Tree">
-              <AccordionTrigger>Link Tree</AccordionTrigger>
-              <AccordionContent>
-                <LinkTree
-                  data={data}
-                  openLinkTree={openLinkTree}
-                  setOpenLinkTree={setOpenLinkTree}
-                />
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-        </div>
-        <div className="flex flex-col justify-start items-center">
+    <div className="w-full lg:w-[95%] h-full mx-auto">
+      <p className="font-bold text-2xl text-center my-4 py-2 bg-white shadow-md rounded-md">
+        My Profile
+      </p>
+      {/* <div className="grid grid-cols-2 gap-4"> */}
+      <div className="flex flex-col gap-4">
+        <PersonalDetails
+          data={data}
+          openPersonal={openPersonal}
+          setOpenPersonal={setOpenPersonal}
+        />
+        <div className="flex flex-col justify-center items-center">
           <ResumeUpload />
-          <iframe
-            src="https://pizzads.s3.amazonaws.com/KvsVishnuKumar_Resume.pdf"
-            width="100%"
-            height="600px"
-            frameBorder="0"
-            title="PDF Viewer"
-            allowFullScreen
-          />
+          {session.user.isResume ? (
+            <div className="w-full text-center">
+              {/* Show the "View" link only on smaller screens */}
+              <a
+                target="_blank"
+                href={resumeUrl}
+                className="lg:hidden text-blue-500 underline" // Added classes to make it blue and underlined
+              >
+                View
+              </a>
+
+              {/* Show the iframe only on screens larger than "lg" */}
+              <iframe
+                className="hidden lg:block mt-3" // This shows the iframe on screens larger than "lg" and hides on smaller ones
+                src={resumeUrl}
+                width="100%"
+                height="1200px"
+              >
+                Sorry, your browser doesnt support embedded PDFs. Please{" "}
+                <a target="_blank" href={resumeUrl}>
+                  download the PDF
+                </a>{" "}
+                to view it.
+              </iframe>
+            </div>
+          ) : (
+            <p className="my-2">Upload your resume to view it here!</p>
+          )}
         </div>
       </div>
     </div>

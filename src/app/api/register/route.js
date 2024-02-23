@@ -10,7 +10,7 @@ export async function POST(req) {
   try {
     // Check if user already exists in DynamoDB
     const params = {
-      TableName: "Users",
+      TableName: process.env.DDB_USERS_TABLE,
       IndexName: "GSI1",
       KeyConditionExpression:
         "GSI1PK = :partitionValue AND GSI1SK = :sortValue",
@@ -20,11 +20,7 @@ export async function POST(req) {
       },
     };
 
-    console.log("checking user");
-
     const userResult = await ddbClient.send(new QueryCommand(params));
-    console.log("...");
-    console.log("User found:", userResult);
 
     if (userResult.Items.length > 0) {
       throw new Error("User already exists");
@@ -48,18 +44,14 @@ export async function POST(req) {
       GSI1SK: `USER#${email}`,
     };
 
-    console.log("User:", user);
-
     // Save user to DynamoDB
     const createUserCommand = new PutItemCommand({
-      TableName: "Users",
+      TableName: process.env.DDB_USERS_TABLE,
       Item: marshall(user),
     });
 
     try {
       const result = await ddbClient.send(createUserCommand);
-      console.log("User created successfully:", result);
-      // Handle the result accordingly
     } catch (error) {
       console.error("Failed to create user:", error);
       // Handle the error accordingly

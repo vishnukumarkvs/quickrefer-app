@@ -1,97 +1,78 @@
+import { z } from "zod";
 import { authOptions } from "@/lib/auth";
 import { pusherServer } from "@/lib/pusher";
-import { toPusherKey } from "@/lib/utils";
+import { chatHrefConstructor, toPusherKey } from "@/lib/utils";
 import { getServerSession } from "next-auth";
 import driver from "@/lib/neo4jClient";
+// import { messageValidator } from "@/lib/validations/message";
+import ddbClient from "@/lib/ddbclient";
+import { PutItemCommand } from "@aws-sdk/client-dynamodb";
+
+const addFriendSchema = z.object({
+  id: z.string(),
+  url: z.string(),
+});
 
 export async function POST(req) {
+  const session = driver.session();
   try {
-    const { id: idToAdd } = await req.json();
-    console.log(idToAdd);
+    const input = await req.json();
+    addFriendSchema.parse(input);
 
-    const session = await getServerSession(authOptions);
+    const { id: idToAdd, url } = input;
 
-    if (!session) {
+    const sessionAuth = await getServerSession(authOptions);
+    if (!sessionAuth) {
       return new Response("Unauthorized", { status: 401 });
     }
 
-    // verify both users are not already friends
-    // const isAlreadyFriends = await fetchRedis(
-    //   "sismember",
-    //   `user:${session.user.id}:friends`,
-    //   idToAdd
-    // );
-
-    const isAlreadyFriendsQuery = `
-      MATCH (u:User {userId: $userId})-[r:FRIENDS_WITH]-(f:User {userId: $friendId})
-      RETURN COUNT(r) > 0 AS isAlreadyFriends
-    `;
-
-    const result0 = await driver.session().run(isAlreadyFriendsQuery, {
-      userId: session.user.id,
-      friendId: idToAdd,
-    });
-
-    const isAlreadyFriends = result0.records[0].get("isAlreadyFriends");
-
-    if (isAlreadyFriends) {
-      return new Response("Already friends", { status: 400 }); // 400 = BAD REQUEST
-    }
-
-    // check again if the current user has this friend request or not
-    // const hasFriendRequest = await fetchRedis(
-    //   "sismember",
-    //   `user:${session.user.id}:incoming_friend_requests`,
-    //   idToAdd
-    // );
-
-    const hasFriendRequestQuery = `
-      MATCH (u:User {userId: $userId})-[r:SENT_FRIEND_REQUEST]-(f:User {userId: $friendId})
-      RETURN COUNT(r) > 0 AS hasFriendRequest
-    `;
-    const result1 = await driver.session().run(hasFriendRequestQuery, {
-      userId: session.user.id,
-      friendId: idToAdd,
-    });
-
-    const hasFriendRequest = result1.records[0].get("hasFriendRequest");
-
-    if (!hasFriendRequest) {
-      return new Response("No friend request", { status: 400 });
-    }
-
-    pusherServer.trigger(
+    await pusherServer.trigger(
       toPusherKey(`user:${idToAdd}:friends`),
       "new_friend",
       {}
     );
 
-    // add user to friends list
-    // await redis.sadd(`user:${session.user.id}:friends`, idToAdd);
-    // await redis.sadd(`user:${idToAdd}:friends`, session.user.id);
-
     const addFriendQuery = `
       MATCH (u:User {userId: $userId}), (f:User {userId: $friendId})
-      CREATE (u)-[r:FRIENDS_WITH]->(f)
-      CREATE (f)-[r2:FRIENDS_WITH]->(u)
-      WITH r, r2
-      MATCH (u)-[sent:SENT_FRIEND_REQUEST]->(f)
+      MERGE (u)-[r:FRIENDS_WITH {initiator: $friendId}]->(f)
+      MERGE (f)-[r2:FRIENDS_WITH {initiator: $friendId}]->(u)
+      WITH u, f
+      MATCH (f)-[sent:SENT_FRIEND_REQUEST]->(u)
+      SET u.AcceptScore = COALESCE(u.AcceptScore, 0) + 1
       DELETE sent
     `;
 
-    await driver.session().run(addFriendQuery, {
-      userId: session.user.id,
+    // console.log("Start1");
+
+    await session.run(addFriendQuery, {
+      userId: sessionAuth.user.id,
       friendId: idToAdd,
     });
+    // console.log("Start2");
 
-    // await redis.srem(
-    //   `user:${session.user.id}:incoming_friend_requests`,
-    //   idToAdd
-    // );
+    const currentUnixTimestamp = Math.floor(Date.now() / 1000);
+    const chatId = chatHrefConstructor(sessionAuth.user.id, idToAdd);
+
+    let content = `Hello, could you kindly consider providing a referral for the job: ${url}. Thank you.`;
+
+    const messageParams = {
+      TableName: "QrChatMessages3",
+      Item: {
+        chatId: { S: chatId },
+        timestamp: { N: currentUnixTimestamp.toString() },
+        senderId: { S: idToAdd },
+        // receiverId: { S: receiverId },
+        content: { S: content },
+      },
+    };
+
+    await ddbClient.send(new PutItemCommand(messageParams));
 
     return new Response("OK");
   } catch (error) {
     console.error("Failed to accept friend request:", error);
     return new Response("Failed to accept friend request", { status: 500 });
+  } finally {
+    await session.close(); // Always close your session when you're done!
   }
 }

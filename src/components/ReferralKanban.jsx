@@ -1,93 +1,353 @@
 "use client";
 
-import React, { useState } from "react";
-import { format, parseISO, isWithinInterval } from "date-fns";
-import { Input } from "./ui/input";
-import DatePickerWithRange from "./DateRangePicker";
+import React, { useState, useMemo } from "react";
+import { format, parseISO, isWithinInterval, formatDistance } from "date-fns";
+import axios from "axios";
 
-const initialJobs = [
-  { id: 1, title: "job 1", status: "Requested", appliedDate: "2023-06-01" },
-  { id: 2, title: "job 2", status: "Requested", appliedDate: "2023-06-03" },
-  { id: 3, title: "job 3", status: "Chat Mode", appliedDate: "2023-06-10" },
-  { id: 4, title: "job 4", status: "Result", appliedDate: "2023-06-15" },
-];
+// UI Components
+import {
+  Card,
+  Flex,
+  Input,
+  Link,
+  Tab,
+  Tabs,
+  Tag,
+  Text,
+  TabList,
+  TabPanel,
+  TabPanels,
+} from "@chakra-ui/react";
+import DatePickerWithRange from "./DateRangePicker";
+import PageLoader from "./PageLoader";
+
+// Hooks
+import { useQuery } from "@tanstack/react-query";
+import EmptyComponent from "./emptystates/EmptyComponent";
+
+const REQUESTED = "requested";
+const AVAILABLE_FOR_CHAT = "availableForChat";
+
+const fetchReferralRequests = async () => {
+  const { data } = await axios.get("/api/getreferralrequests");
+  if (!data || !data.records || !Array.isArray(data.records)) {
+    throw new Error("Invalid data structure from API");
+  }
+  return processData(data.records);
+};
+
+const transformDate = (applied_on) => {
+  try {
+    return new Date(
+      applied_on.year?.low,
+      (applied_on.month?.low || 1) - 1,
+      applied_on.day?.low,
+      applied_on.hour?.low,
+      applied_on.minute?.low,
+      applied_on.second?.low,
+      applied_on.nanosecond?.low / 1000000
+    )
+      .toISOString()
+      .substring(0, 10);
+  } catch (error) {
+    console.error("Error transforming date:", error);
+    return null;
+  }
+};
+
+const transformRecord = (record, status) => {
+  const transformedRecord = {
+    id: record.user.userId,
+    fullname: record.user.fullname,
+    username: record.user.username,
+    job_url: record.job_url || null,
+    status,
+    appliedDate: transformDate(record.applied_on),
+    worksAt: record.company.name || "Unknown Company",
+  };
+  return transformedRecord;
+};
+
+const processData = (records) => {
+  if (!Array.isArray(records)) {
+    return { sentFriendRequests: [], friends: [] };
+  }
+
+  const allRequests = records.flatMap((record) => {
+    const fields = record._fields;
+    return {
+      relationship: fields[0],
+      user: fields[1].properties,
+      company: fields[2].properties,
+      applied_on: fields[3],
+      job_url: fields[4],
+    };
+  });
+
+  const sentFriendRequests = allRequests
+    .filter((request) => request.relationship === "sentFriendRequest")
+    .map((request) => transformRecord(request, REQUESTED));
+
+  const friends = allRequests
+    .filter((request) => request.relationship === "friends")
+    .map((request) => transformRecord(request, AVAILABLE_FOR_CHAT));
+
+  return { sentFriendRequests, friends };
+};
+
+// ... (previous imports and constants remain unchanged)
 
 const ReferralKanban = () => {
   const [selectedDates, setSelectedDates] = useState(null);
+  const [filter, setFilter] = useState("");
+
+  const {
+    isLoading,
+    isError,
+    data: userData,
+    error,
+  } = useQuery({
+    queryKey: ["referralRequests"],
+    queryFn: fetchReferralRequests,
+  });
+
   const handleDateChange = (dateRange) => {
     setSelectedDates(dateRange);
-    console.log(selectedDates);
   };
 
-  const [filter, setFilter] = useState("");
-  let jobs = initialJobs.filter((job) =>
-    job.title
-      .replace(/\s/g, "")
-      .toLowerCase()
-      .includes(filter.replace(/\s/g, "").toLowerCase())
-  );
+  const { sentRequests, friendRequests } = useMemo(() => {
+    if (!userData) return { sentRequests: [], friendRequests: [] };
 
-  // Filter jobs based on date range if one is selected
-  if (selectedDates?.from && selectedDates?.to) {
-    jobs = jobs.filter((job) =>
-      isWithinInterval(parseISO(job.appliedDate), {
-        start: selectedDates.from,
-        end: selectedDates.to,
-      })
-    );
-  }
+    const filterJobs = (jobs) => {
+      return jobs
+        .filter((job) => {
+          return (job.fullname + " " + job.worksAt)
+            .replace(/\s/g, "")
+            .toLowerCase()
+            .includes(filter.replace(/\s/g, "").toLowerCase());
+        })
+        .filter((job) => {
+          if (selectedDates?.from && selectedDates?.to) {
+            return isWithinInterval(parseISO(job.appliedDate), {
+              start: selectedDates.from,
+              end: selectedDates.to,
+            });
+          }
+          return true;
+        });
+    };
+
+    const sentRequests = filterJobs(userData.sentFriendRequests);
+    const friendRequests = filterJobs(userData.friends);
+
+    return { sentRequests, friendRequests };
+  }, [userData, filter, selectedDates]);
+
   return (
-    <div className="w-full">
-      <div className="flex p-5">
-        <div className="w-full">
-          <Input
-            type="text"
-            placeholder="Search here for any applied job ..."
-            value={filter}
-            onChange={(e) => setFilter(e.target.value)}
-            className="p-2 border border-zinc-400 rounded placeholder:italic placeholder:text-slate-500"
-            style={{ width: "50%" }} // Set the width to 50% for equal width
-          />
-        </div>
-        <div className="w-full flex items-center gap-x-2">
-          <p>Filter by date:</p>
-          <DatePickerWithRange onDateChange={handleDateChange} />
-        </div>
-      </div>
-      <div className="w-full flex justify-between p-5 gap-x-4">
-        {["Requested", "Chat Mode", "Result"].map((status) => (
-          <Column
-            key={status}
-            status={status}
-            jobs={jobs.filter((job) => job.status === status)}
-          />
-        ))}
-      </div>
-    </div>
+    <Flex direction="column" gap="7" p={{ base: "0", lg: "5" }}>
+      {isLoading ? (
+        <PageLoader />
+      ) : isError ? (
+        <div>Error: {error.message}</div>
+      ) : (
+        <React.Fragment>
+          <Flex gap="2" flexWrap="wrap">
+            <Input
+              type="text"
+              placeholder="Search for a applied job or company ..."
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
+              bg="white"
+              boxShadow="md"
+              borderRadius="md"
+              border="none"
+              width={{ base: "full", lg: "50%" }}
+            />
+            <DatePickerWithRange onDateChange={handleDateChange} />
+          </Flex>
+          <Tabs>
+            <TabList>
+              <Tab>Pending Requests ({sentRequests?.length})</Tab>
+              <Tab>Accepted Requests ({friendRequests?.length})</Tab>
+            </TabList>
+
+            <TabPanels>
+              <TabPanel>
+                <Flex direction={"column"} gap="5">
+                  {sentRequests?.length > 0 ? (
+                    sentRequests.map((job) => {
+                      const {
+                        worksAt = "Unknown",
+                        username,
+                        fullname,
+                        job_url,
+                        appliedDate,
+                      } = job;
+
+                      return (
+                        <Card
+                          key={job.id || username}
+                          variant={"elevated"}
+                          p="4"
+                        >
+                          <Flex justifyContent={"space-between"}>
+                            <Flex direction={"column"} gap="2">
+                              <Text fontSize={"xl"} fontWeight={"bold"}>
+                                {worksAt}
+                              </Text>
+                              <Text>
+                                Referrer:{" "}
+                                <Link
+                                  href={`/user/${username}`}
+                                  target="_blank"
+                                  className="text-blue-500"
+                                >
+                                  {fullname}
+                                </Link>
+                              </Text>
+                              {job_url && (
+                                <Text>
+                                  Job URL:{" "}
+                                  <Link
+                                    href={job_url}
+                                    target="_blank"
+                                    className="text-blue-500"
+                                  >
+                                    {job_url}
+                                  </Link>
+                                </Text>
+                              )}
+                            </Flex>
+                            <Flex
+                              direction={"column"}
+                              gap="5"
+                              borderLeft={"1px solid black"}
+                              px="4"
+                            >
+                              {appliedDate && (
+                                <>
+                                  <Text fontSize={"xl"} letterSpacing={2}>
+                                    Applied on
+                                  </Text>
+                                  <Tag>
+                                    {format(
+                                      new Date(appliedDate),
+                                      "dd MMM yyyy"
+                                    )}{" "}
+                                    (
+                                    {formatDistance(
+                                      new Date(appliedDate),
+                                      new Date(),
+                                      {
+                                        addSuffix: true,
+                                      }
+                                    )}
+                                    )
+                                  </Tag>
+                                </>
+                              )}
+                            </Flex>
+                          </Flex>
+                        </Card>
+                      );
+                    })
+                  ) : (
+                    <EmptyComponent title="No pending referral requests" />
+                  )}
+                </Flex>
+              </TabPanel>
+              <TabPanel>
+                {/* For now, this is a placeholder. You would need to fetch and display the users who referred the main user here. */}
+                <Flex direction={"column"} gap="5">
+                  {/* Map over the referrals received by the user. For now, I'm reusing the same `requests` data for demonstration. */}
+                  {friendRequests?.length > 0 ? (
+                    friendRequests.map((job) => {
+                      const {
+                        worksAt = "Unknown",
+                        username,
+                        fullname,
+                        job_url,
+                        appliedDate,
+                      } = job;
+
+                      return (
+                        <Card
+                          key={job.id || username}
+                          variant={"elevated"}
+                          p="4"
+                        >
+                          <Flex justifyContent={"space-between"}>
+                            <Flex direction={"column"} gap="2">
+                              <Text fontSize={"xl"} fontWeight={"bold"}>
+                                {worksAt}
+                              </Text>
+                              <Text>
+                                Being Referred by:{" "}
+                                <Link
+                                  href={`/user/${username}`}
+                                  target="_blank"
+                                  className="text-blue-500"
+                                >
+                                  {fullname}
+                                </Link>
+                              </Text>
+                              {job_url && (
+                                <Text>
+                                  Job URL:{" "}
+                                  <Link
+                                    href={job_url}
+                                    target="_blank"
+                                    className="text-blue-500"
+                                  >
+                                    {job_url}
+                                  </Link>
+                                </Text>
+                              )}
+                            </Flex>
+                            <Flex
+                              direction={"column"}
+                              gap="5"
+                              borderLeft={"1px solid black"}
+                              px="4"
+                            >
+                              {appliedDate && (
+                                <>
+                                  <Text fontSize={"xl"} letterSpacing={2}>
+                                    Accepted on
+                                  </Text>
+                                  <Tag>
+                                    {format(
+                                      new Date(appliedDate),
+                                      "dd MMM yyyy"
+                                    )}{" "}
+                                    (
+                                    {formatDistance(
+                                      new Date(appliedDate),
+                                      new Date(),
+                                      {
+                                        addSuffix: true,
+                                      }
+                                    )}
+                                    )
+                                  </Tag>
+                                </>
+                              )}
+                            </Flex>
+                          </Flex>
+                        </Card>
+                      );
+                    })
+                  ) : (
+                    <EmptyComponent title="No referrals received yet" />
+                  )}
+                </Flex>
+              </TabPanel>
+            </TabPanels>
+          </Tabs>
+        </React.Fragment>
+      )}
+    </Flex>
   );
 };
 
-const Column = ({ status, jobs }) => {
-  return (
-    <div className="w-1/3 bg-gray-200 p-2 rounded border border-gray-300">
-      <h2 className="text-lg font-bold mb-2 text-center border-b pb-1">
-        {status}
-      </h2>
-      {jobs.map((job) => (
-        <Card key={job.id} job={job} />
-      ))}
-    </div>
-  );
-};
-
-const Card = ({ job }) => {
-  return (
-    <div className="bg-white p-2 rounded mb-2 border border-gray-300">
-      <p className="font-semibold">{job.title}</p>
-      <p className="text-xs text-gray-500">
-        Applied on: {format(parseISO(job.appliedDate), "MMM dd, yyyy")}
-      </p>
-    </div>
-  );
-};
 export default ReferralKanban;

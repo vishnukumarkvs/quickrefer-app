@@ -1,15 +1,146 @@
-import { authOptions } from "@/lib/auth";
-import { getServerSession } from "next-auth";
+"use client";
 
-export default async function Home() {
-  const session = await getServerSession(authOptions);
+import Head from "next/head";
+import {
+  Box,
+  Heading,
+  Container,
+  Text,
+  Button,
+  Stack,
+  Icon,
+  useColorModeValue,
+  createIcon,
+  Flex,
+  Grid,
+} from "@chakra-ui/react";
+import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
+import registersw from "@/components/register-serviceworker";
+import { useEffect } from "react";
+import analytics from "@/lib/analytics";
+import Image from "next/image";
 
+export default function CallToActionWithAnnotation() {
+  const router = useRouter();
+  useEffect(() => {
+    analytics.page();
+    registersw();
+  }, []);
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="flex flex-col items-center justify-center">
-        name
-        <pre>{JSON.stringify(session, null, 2)}</pre>
-      </div>
-    </main>
+    <Box minH={"100vh"}>
+      <Flex
+        bg={"#fcbd0b"}
+        px={{ base: 5, md: 12 }}
+        py={4}
+        gap="2"
+        alignItems="center"
+        cursor="pointer"
+        onClick={() => {
+          window.location.href = "/";
+        }}
+      >
+        <Image
+          src="/android-chrome-512x512.png"
+          width="50"
+          height="50"
+          alt="Quick Refer Logo"
+        />
+        <Text fontSize="2xl" fontWeight="bold">
+          QuickRefer
+        </Text>
+      </Flex>
+      <Flex
+        direction={"column"}
+        textAlign={"center"}
+        py={{ base: 20, md: 36 }}
+        px={{ base: 10, md: 24 }}
+        justifyContent={"center"}
+        alignItems={"center"}
+        height={"100%"}
+      >
+        <Heading
+          fontWeight={600}
+          fontSize={{ base: "2xl", sm: "4xl", md: "6xl" }}
+          lineHeight={"110%"}
+          mb="7"
+        >
+          Connecting Tech Talents <br />
+          <Text as={"span"} color={"#ffc800e5"}>
+            Request and Give Referrals!
+          </Text>
+        </Heading>
+        <Text color={"gray.500"} mb="10">
+          The ultimate hub for IT professionals seeking career opportunities.
+          Seamlessly request and provide referrals. Join our thriving network
+          and build meaningful connections that power your tech journey!
+        </Text>
+        <Stack
+          direction={"column"}
+          spacing={3}
+          align={"center"}
+          alignSelf={"center"}
+          position={"relative"}
+        >
+          <Flex gap="2" alignItems={"center"}>
+            <Button
+              size={{
+                base: "sm",
+                md: "md",
+              }}
+              bg={"#ffc800e5"}
+              rounded={"full"}
+              px={6}
+              _focus={{
+                outline: "2px solid black",
+                outlineOffset: "2px",
+              }}
+              _hover={{
+                bg: "#ffc800e5",
+              }}
+              onClick={() => signIn("google")}
+            >
+              Sign in with Google
+            </Button>
+            <Button
+              size={{
+                base: "sm",
+                md: "md",
+              }}
+              bg="black"
+              color="white"
+              rounded={"full"}
+              _focus={{
+                outline: "2px solid black",
+                outlineOffset: "2px",
+              }}
+              _hover={{
+                bg: "#000000",
+              }}
+              onClick={() => {
+                router.push("/search");
+              }}
+            >
+              Search for Referrals
+            </Button>
+          </Flex>
+          <Grid templateColumns="1fr auto 1fr" alignItems="center" gap={2}>
+            <Text color={"blackAlpha.900"} textAlign="right">
+              <a href="/policy" target="_blank" rel="noopener noreferrer">
+                Privacy Policy
+              </a>
+            </Text>
+            <Text fontSize="lg" fontWeight="bold">
+              .
+            </Text>
+            <Text color={"blackAlpha.900"} textAlign="left">
+              <a href="/faqs" target="_blank" rel="noopener noreferrer">
+                FAQs
+              </a>
+            </Text>
+          </Grid>
+        </Stack>
+      </Flex>
+    </Box>
   );
 }

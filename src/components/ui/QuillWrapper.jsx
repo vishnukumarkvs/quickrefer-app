@@ -8,6 +8,7 @@ import "react-quill/dist/quill.snow.css";
 export const QuillWrapper = dynamic(
   async () => {
     const { default: RQ } = await import("react-quill");
+    // eslint-disable-next-line react/display-name
     return ({ ...props }) => <RQ {...props} />;
   },
   {

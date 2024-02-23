@@ -1,9 +1,9 @@
 // dynamic route
 
-import ChatInput from "@/components/chat/ChatInput";
 import Messages from "@/components/chat/Messages";
 import { authOptions } from "@/lib/auth";
 import driver from "@/lib/neo4jClient";
+import { Download } from "lucide-react";
 // import { redis } from "@/lib/redis";
 import { getServerSession } from "next-auth";
 import { notFound } from "next/navigation";
@@ -25,7 +25,8 @@ const Page = async ({ params }) => {
     .run(
       `
     MATCH (u:User {userId: $userId})
-    RETURN u.userId as userId, u.email as email, u.username as name
+    MATCH (u)-[:WORKS_AT]->(c:Company)
+    RETURN u.userId as userId, u.email as email, u.fullname as name, c.name as company
     `,
       { userId: chatPartnerId }
     )
@@ -36,18 +37,31 @@ const Page = async ({ params }) => {
           userId: record.get("userId"),
           email: record.get("email"),
           name: record.get("name"),
+          company: record.get("company"),
         };
       } else {
         return null;
       }
     });
 
+  let resumeurl = `${process.env.NEXT_PUBLIC_CLOUDFRONT_URL}/${chatPartner.userId}.pdf`;
+  const downloadResume = (
+    <a
+      href={resumeurl}
+      target="_blank"
+      download
+      style={{ display: "inline-block" }}
+    >
+      <Download className="pt-1" />
+    </a>
+  );
+
   // console.log(chatPartner);
 
   // console.log("roberto", params.chatId);
 
   return (
-    <div className="flex-1 justify-between flex flex-col h-full max-h-[calc(100vh-6rem)]">
+    <div className="flex-1 justify-between flex flex-col h-full  max-h-[calc(80vh-6rem)] lg:max-h-[calc(100vh-6rem)]">
       <div className="flex sm:items-center justify-between py-3 border-b-2 border-gray-200">
         <div className="relative flex items-center space-x-4">
           <div className="relative">
@@ -67,12 +81,24 @@ const Page = async ({ params }) => {
                 {chatPartner.name}
               </span>
             </div>
-            <span className="text-sm text-gray-600">{chatPartner.email}</span>
+            <span
+              className="text-sm text-gray-600"
+              style={{ display: "inline-block" }}
+            >
+              Works At{" "}
+              <span className="font-semibold">{chatPartner.company}</span>,
+              Resume:<span className="mt-2">{downloadResume}</span>
+            </span>
           </div>
         </div>
       </div>
-      <Messages sessionId={session.user.id} chatId={params.chatId} />
-      <ChatInput chatId={params.chatId} chatPartner={chatPartner} />
+      <Messages
+        userId={session.user.id}
+        friendId={chatPartnerId}
+        chatId={params.chatId}
+        friendEmail={chatPartner.email}
+        friendName={chatPartner.name}
+      />
     </div>
   );
 };

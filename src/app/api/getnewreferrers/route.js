@@ -7,30 +7,58 @@ export async function GET(req) {
   // const { company } = await req.json();
   const url = new URL(req.url);
   const company = url.searchParams.get("company");
-  const getUsersOfCompany = `
+
+  const session = driver.session({ database: process.env.NEO4J_DATABASE });
+
+  if (!usesseion?.user) {
+    const getUsersOfCompany = `
     MATCH (n:User {userRole: "Referrer"})-[:WORKS_AT]->(c:Company {name: $company})
-    WHERE NOT EXISTS((n)-[:FRIENDS_WITH]->(:User {userId: $requester}))
     RETURN n
     ORDER BY RAND() 
-    LIMIT 4;
+    LIMIT 15;
     `;
-
-  const session = driver.session({ database: "neo4j" });
-  try {
-    const getResult = await session.executeRead((tx) => {
-      const result = tx.run(getUsersOfCompany, {
-        company: company,
-        requester: usesseion.user.id,
+    try {
+      const getResult = await session.executeRead((tx) => {
+        const result = tx.run(getUsersOfCompany, {
+          company: company,
+        });
+        return result;
       });
-      return result;
-    });
 
-    console.log(`Write result:`, getResult);
-    return new Response(JSON.stringify(getResult), { status: 200 });
-  } catch (error) {
-    console.error("Error querying Neo4j:", error);
-    return new Response("Internal Server error", { status: 500 });
-  } finally {
-    await session.close();
+      // console.log(`Write result:`, getResult);
+      return new Response(JSON.stringify(getResult), { status: 200 });
+    } catch (error) {
+      console.error("Error querying Neo4j:", error);
+      return new Response("Internal Server error", { status: 500 });
+    } finally {
+      await session.close();
+    }
+  } else {
+    const getUsersOfCompany = `
+  MATCH (n:User {userRole: "Referrer"})-[:WORKS_AT]->(c:Company {name: $company})
+  WHERE NOT EXISTS((n)-[:FRIENDS_WITH]->(:User {userId: $requester}))
+  AND n.userId <> $requester
+  RETURN n
+  ORDER BY RAND() 
+  LIMIT 4;
+  `;
+
+    try {
+      const getResult = await session.executeRead((tx) => {
+        const result = tx.run(getUsersOfCompany, {
+          company: company,
+          requester: usesseion.user.id,
+        });
+        return result;
+      });
+
+      // console.log(`Write result:`, getResult);
+      return new Response(JSON.stringify(getResult), { status: 200 });
+    } catch (error) {
+      console.error("Error querying Neo4j:", error);
+      return new Response("Internal Server error", { status: 500 });
+    } finally {
+      await session.close();
+    }
   }
 }

@@ -1,104 +1,134 @@
 import { authOptions } from "@/lib/auth";
 import { pusherServer } from "@/lib/pusher";
 import { toPusherKey } from "@/lib/utils";
-import { addFriendValidator } from "@/lib/validations/add-friend";
+// import { addFriendValidator } from "@/lib/validations/add-friend";
 import { getServerSession } from "next-auth";
 import { z } from "zod";
 import driver from "@/lib/neo4jClient";
 
+const addFriendSchema = z.object({
+  id: z.string(),
+  url: z.string(),
+});
+
 export async function POST(req) {
+  const session = driver.session();
   try {
-    const { id: idToAdd } = await req.json();
+    const input = await req.json();
+    addFriendSchema.parse(input);
 
-    // const { email: emailToAdd } = addFriendValidator.parse(body.email);
+    const { id: idToAdd, url } = input;
 
-    const session = await getServerSession(authOptions);
-    if (!session) {
+    const sessionAuth = await getServerSession(authOptions);
+
+    if (!sessionAuth) {
       return new Response("Unauthorized", { status: 401 });
     }
 
-    if (idToAdd === session.user.id) {
+    if (!sessionAuth.user.isResume) {
+      return new Response("Please upload Resume in your Profile page", {
+        status: 403,
+      });
+    }
+
+    if (idToAdd === sessionAuth.user.id) {
       return new Response("You cannot add yourself as a friend", {
         status: 400,
       });
     }
 
-    console.log("idToAdd", idToAdd, "session.user.id", session.user.id);
-
-    // if user already added
-    // const isAlreadyAdded =
-    //   (await fetchRedis(
-    //     "sismember",
-    //     `user:${idToAdd}:incoming_friend_requests`,
-    //     session.user.id
-    //   )) === 1;
-
-    const isAlreadyAddedQuery = `
-      MATCH (u:User {userId: $userId})-[r:SENT_FRIEND_REQUEST]-(f:User {userId: $friendId})
-      RETURN COUNT(r) > 0 AS isAlreadyAdded
+    ///////////////////
+    // Define the Cypher query to check for existing relationships between users
+    const existingRelationshipsQuery = `
+    MATCH (u:User {userId: $userId})
+    RETURN 
+      EXISTS((u)-[:SENT_FRIEND_REQUEST]->(:User {userId: $friendId})) as sentFriendRequest,
+      EXISTS((u)-[:FRIENDS_WITH]->(:User {userId: $friendId})) as friendsWith
     `;
-    const result = await driver.session().run(isAlreadyAddedQuery, {
-      userId: session.user.id,
-      friendId: idToAdd,
-    });
 
-    const isAlreadyAdded = result.records[0].get("isAlreadyAdded");
+    // Execute the query with the given userId and friendId
+    const existingRelationshipsResult = await session.run(
+      existingRelationshipsQuery,
+      {
+        userId: sessionAuth.user.id,
+        friendId: idToAdd,
+      }
+    );
 
-    console.log("isAlreadyAdded", isAlreadyAdded);
+    // Check if there are any records returned
+    if (existingRelationshipsResult.records.length > 0) {
+      const record = existingRelationshipsResult.records[0];
 
-    if (isAlreadyAdded) {
-      return new Response("You already sent request", { status: 400 });
+      // Extract values from the record
+      const sentFriendRequest = record.get("sentFriendRequest");
+      const friendsWith = record.get("friendsWith");
+
+      // Check if a friend request has already been sent
+      if (sentFriendRequest) {
+        return new Response("Friend request already sent", { status: 409 }); // Conflict status
+      }
+
+      // Check if they are already friends
+      if (friendsWith) {
+        return new Response("You are already friends with this person", {
+          status: 409,
+        }); // Conflict status
+      }
     }
 
-    // const isAlreadyFriends =
-    //   (await fetchRedis(
-    //     "sismember",
-    //     `user:${session.user.id}:friends`,
-    //     idToAdd
-    //   )) === 1;
+    ///////////////////
 
-    const isAlreadyFriendsQuery = `
-      MATCH (u:User {userId: $userId})-[r:FRIENDS_WITH]-(f:User {userId: $friendId})
-      RETURN COUNT(r) > 0 AS isAlreadyFriends
+    const myDataQuery = `
+      MATCH (f:User {userId: $userId})-[:WORKS_AT]-(c:Company)
+      RETURN f.userId as senderId, f.fullname as fullname, f.experience as experience, f.email as email, f.username as username, c.name as companyName
     `;
-    const result2 = await driver.session().run(isAlreadyFriendsQuery, {
-      userId: session.user.id,
-      friendId: idToAdd,
+    const myDataResult = await session.run(myDataQuery, {
+      userId: sessionAuth.user.id,
     });
 
-    const isAlreadyFriends = result2.records[0].get("isAlreadyFriends");
-
-    if (isAlreadyFriends) {
-      return new Response("You already added this person", { status: 400 });
+    if (myDataResult.records.length === 0) {
+      return new Response("Friend data not found", { status: 404 });
     }
 
-    // send friend request
-    pusherServer.trigger(
+    const myData = myDataResult.records[0].toObject();
+    const { senderId, fullname, experience, email, username, companyName } =
+      myData;
+
+    await pusherServer.trigger(
       toPusherKey(`user:${idToAdd}:incoming_friend_requests`),
       "incoming_friend_requests",
       {
-        senderId: session.user.id,
-        senderEmail: session.user.email,
+        senderId: senderId,
+        username: username,
+        experience: experience,
+        email: email,
+        companyName: companyName,
+        jobURL: url,
+        fullname: fullname,
       }
     );
-    // redis.sadd(`user:${idToAdd}:incoming_friend_requests`, session.user.id);
 
-    // add friend request to neo4j
+    // TODO: currenlty one can send multiple req to same person
     const addFriendRequestQuery = `
-      MATCH (u:User {userId: $userId}), (f:User {userId: $friendId})
-      CREATE (u)-[:SENT_FRIEND_REQUEST]->(f)
+    MATCH (u:User {userId: $userId}), (f:User {userId: $friendId})
+    MERGE (u)-[:SENT_FRIEND_REQUEST]->(f)
+    MERGE (urlNode:URLS {nodeId: 1})
+    MERGE (u)-[rel:FOR_JOB_URL{applied_on: datetime(), asked_to: $friendId, url: $url}]->(urlNode)
     `;
-    await driver.session().run(addFriendRequestQuery, {
-      userId: session.user.id,
+    await session.run(addFriendRequestQuery, {
+      userId: sessionAuth.user.id,
       friendId: idToAdd,
+      url: url,
     });
 
     return new Response("OK");
   } catch (err) {
     console.error(err);
     if (err instanceof z.ZodError) {
-      return new Response("invalid request payload", { status: 422 });
+      return new Response("Invalid request payload", { status: 422 });
     }
     return new Response("Invalid Request", { status: 400 });
+  } finally {
+    await session.close(); // Always close your session when you're done!
   }
 }

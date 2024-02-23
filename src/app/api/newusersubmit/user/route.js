@@ -2,46 +2,38 @@ import { authOptions } from "@/lib/auth";
 import driver from "@/lib/neo4jClient";
 import { getServerSession } from "next-auth";
 import ddbClient from "@/lib/ddbclient";
-import s3Client from "@/lib/s3Client";
-import { AbortMultipartUploadCommand } from "@aws-sdk/client-s3";
 import { UpdateItemCommand } from "@aws-sdk/client-dynamodb";
 
 export async function POST(req) {
   const session = await getServerSession(authOptions);
 
-  const { username, company, isJobReferrer, skills } = await req.json();
-  // console.log("resume", resume);
+  let { username, company, exp, jobrole } = await req.json();
+
+  username = username.trim();
+  company = company.trim();
+  exp = exp.trim();
+  jobrole = jobrole.trim();
 
   const id = session.user.id;
   const email = session.user.email;
 
-  // const params = {
-  //   Bucket: "JtResumes",
-  //   Key: id,
-  //   Body: resume.data, // Set the file data
-  // };
-  // const command = new AbortMultipartUploadCommand(params);
-  // const data = await s3Client.send(command);
-  // console.log("data", data);
-
-  let userRole = "User";
-  if (isJobReferrer) {
-    userRole = "Referrer";
-  }
+  let userRole = "Referrer";
 
   try {
     const paramsUpdate = {
-      TableName: "Users",
+      TableName: process.env.DDB_USERS_TABLE,
       Key: {
         pk: { S: `USER#${id}` }, // replace 'userPK' and 'userSK' with actual values
         sk: { S: `USER#${id}` },
       },
       UpdateExpression:
-        "SET jtusername = :jtusernameVal, userRole = :userRoleVal, company = :companyVal",
+        "SET jtusername = :jtusernameVal, userRole = :userRoleVal, company = :companyVal, currentJobRole = :jobroleVal, userNew = :userNewVal",
       ExpressionAttributeValues: {
         ":jtusernameVal": { S: username },
         ":userRoleVal": { S: userRole },
         ":companyVal": { S: company },
+        ":jobroleVal": { S: jobrole },
+        ":userNewVal": { BOOL: false },
       },
     };
 
@@ -52,17 +44,14 @@ export async function POST(req) {
   }
 
   try {
-    const neo4jSession = driver.session({ database: "neo4j" });
+    const neo4jSession = driver.session({
+      database: process.env.NEO4J_DATABASE,
+    });
     const query = `
         MERGE (u:User {userId: $id})
-        ON CREATE SET u.username = $username, u.email = $email, u.userRole = $userRole, u.ReferralScore = 0
+        ON CREATE SET u.username = $username, u.fullname = $username, u.email = $email, u.userRole = $userRole, u.AcceptScore = 0, u.experience = $experience, u.currentJobRole = $jobrole
         MERGE (c:Company {name: $company})
         MERGE (u)-[:WORKS_AT]->(c)
-        WITH u
-        UNWIND $topSkills AS skill
-        MERGE (s:Skill {name: skill})
-        MERGE (u)-[:HAS_TOP_SKILL]->(s)
-        MERGE (c)-[:HAS_SKILL]->(s)
     `;
     const writeResult = await neo4jSession.executeWrite((tx) =>
       tx.run(query, {
@@ -71,7 +60,8 @@ export async function POST(req) {
         email: email,
         company: company,
         userRole: userRole,
-        topSkills: skills,
+        experience: exp,
+        jobrole: jobrole,
       })
     );
 

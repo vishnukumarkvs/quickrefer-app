@@ -92,7 +92,7 @@ const getGoogleCredentials = () => {
 const authorizeCredentials = async (credentials) => {
   // Use secondary index GSI1 to fetch the user by email
   const params = {
-    TableName: "Users",
+    TableName: process.env.DDB_USERS_TABLE,
     IndexName: "GSI1",
     KeyConditionExpression: "GSI1PK = :partitionValue AND GSI1SK = :sortValue",
     ExpressionAttributeValues: {
@@ -133,10 +133,9 @@ const authorizeCredentials = async (credentials) => {
   return user;
 };
 
-const jwtCallback = async ({ token, user, session, trigger, isNewUser }) => {
-  // console.log("JWT callback:", { token, user, session, trigger, isNewUser });
+const jwtCallback = async ({ token, user, session, trigger }) => {
   const params = {
-    TableName: "Users",
+    TableName: process.env.DDB_USERS_TABLE,
     Key: {
       pk: { S: `USER#${token.id}` },
       sk: { S: `USER#${token.id}` },
@@ -149,40 +148,25 @@ const jwtCallback = async ({ token, user, session, trigger, isNewUser }) => {
     if (user) {
       token.id = user.id;
     }
-
     return token;
   }
 
   let dbUser = unmarshall(dbUserResult.Item);
 
-  if (!dbUser.name) {
+  if (!dbUser.jtusername && dbUser.email) {
     const email = dbUser.email;
     const atIndex = email.indexOf("@");
     const username = email.substring(0, atIndex);
-    const name = username.replace(/\./g, " ");
+    const jtusername = username.replace(/\./g, "");
 
-    dbUser.name = name;
-
-    const putParams = {
-      TableName: "Users",
-      Item: marshall(dbUser),
-    };
-
-    await ddbClient.send(new PutItemCommand(putParams));
-  }
-
-  if (!dbUser.jtusername) {
-    const uid = nanoid(5);
-    const jtusername =
-      dbUser.name.replace(/\s+/g, "").toLowerCase() + "#" + uid;
-    dbUser.jtusername = jtusername;
-
-    let dbUsernamesResult = {};
-    dbUsernamesResult.jtusername = jtusername;
-    dbUsernamesResult.id = dbUser.id;
+    // Generate a NanoID and add it to the jtusername
+    const nanoId = nanoid();
+    dbUser.jtusername = `${jtusername}_${nanoId}`;
+    dbUser.userNew = true;
+    dbUser.isResume = false;
 
     const putParams = {
-      TableName: "Users",
+      TableName: process.env.DDB_USERS_TABLE,
       Item: marshall(dbUser),
     };
 
@@ -190,14 +174,20 @@ const jwtCallback = async ({ token, user, session, trigger, isNewUser }) => {
   }
 
   if (trigger === "update") {
-    return { ...token, ...session.user };
+    token.jtusername = session.jtusername;
+    token.userNew = session.userNew;
+    token.isResume = session.isResume;
+    return token;
   }
 
   return {
     id: dbUser.id,
-    name: dbUser.name || user.name, // Use dbUser.name if available, otherwise fallback to user.name
+    name: dbUser.name || user.name,
     email: dbUser.email,
     image: dbUser?.image,
+    jtusername: dbUser.jtusername,
+    userNew: dbUser.userNew,
+    isResume: dbUser.isResume,
   };
 };
 
@@ -207,6 +197,9 @@ const sessionCallback = ({ session, token }) => {
     session.user.name = token?.name;
     session.user.email = token.email;
     session.user.image = token?.image;
+    session.user.jtusername = token?.jtusername;
+    session.user.userNew = token?.userNew;
+    session.user.isResume = token?.isResume;
   }
 
   return session;
@@ -214,13 +207,13 @@ const sessionCallback = ({ session, token }) => {
 
 export const authOptions = {
   adapter: DynamoDBAdapter(cclient, {
-    tableName: "Users",
+    tableName: process.env.DDB_USERS_TABLE,
   }),
   session: {
     strategy: "jwt",
   },
   pages: {
-    signIn: "/login",
+    signIn: "/",
   },
   providers: [
     GoogleProvider(getGoogleCredentials()),
@@ -255,9 +248,9 @@ export const authOptions = {
   callbacks: {
     jwt: jwtCallback,
     session: sessionCallback,
-    redirect: () => "/",
+    // redirect: () => "/ask-referral",
   },
   pages: {
-    newUser: "/profile",
+    newUser: "/new/user",
   },
 };
