@@ -2,6 +2,12 @@
 
 Quickrefer is a website where users can request as well as provide job referrals.
 
+![image](https://github.com/vishnukumarkvs/quickrefer-app/assets/116954249/0b63979c-223d-4087-835f-148bb4443ece)
+
+## ProductHunt
+
+- 90 followers
+- https://youtu.be/DgquMELoQKk?si=h2f7sWo0RDktIohk
 
 ## Tech
 
